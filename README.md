@@ -22,8 +22,7 @@ Permite administrar **usuarios, salones, servicios, turnos y reservas**, además
 ## Tecnologías utilizadas
 
 - Node.js + Express
-- MySQL/MariaDB
-- Prisma ORM _(o mysql2, según configuración)_
+- MySQL/MariaDB (conexión mediante **mysql2**)
 - JWT (jsonwebtoken)
 - bcrypt
 - express-validator

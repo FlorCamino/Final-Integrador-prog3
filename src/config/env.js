@@ -1,24 +1,30 @@
-// Servidor
-PORT=3000
-NODE_ENV=development
+require('dotenv').config();
 
-// Base de datos (MySQL/MariaDB)
-DB_HOST=localhost
-DB_PORT=3306
-DB_USER=root
-DB_PASS=tu_password
-DB_NAME=reservas
+module.exports = {
+  port: process.env.PORT || 3000,
+  nodeEnv: process.env.NODE_ENV || 'development',
 
-// Autenticación
-JWT_SECRET=supersecreto
-JWT_EXPIRES=2
+  db: {
+    host: process.env.DB_HOST || 'localhost',
+    port: process.env.DB_PORT || 3306,
+    user: process.env.DB_USER || 'root',
+    pass: process.env.DB_PASS || '',
+    name: process.env.DB_NAME || 'reservas',
+  },
 
-// Email (SMTP)
-SMTP_HOST=smtp.example.com
-SMTP_PORT=587
-SMTP_USER="usuario@example.com"
-SMTP_PASS=clave_segura
-SMTP_FROM="Reservas API <noreply@example.com>"
+  jwt: {
+    secret: process.env.JWT_SECRET || 'supersecreto',
+    expiresIn: process.env.JWT_EXPIRES || '2h',
+  },
 
-// Logging
-LOG_LEVEL=debug
+  mail: {
+    host: process.env.SMTP_HOST || '',
+    port: process.env.SMTP_PORT || 587,
+    user: process.env.SMTP_USER || '',
+    pass: process.env.SMTP_PASS || '',
+    from: process.env.SMTP_FROM || 'Reservas API <noreply@example.com>',
+  },
+
+  logLevel: process.env.LOG_LEVEL || 'info',
+};
+
