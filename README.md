@@ -28,7 +28,7 @@ Permite administrar **usuarios, salones, servicios, turnos y reservas**, además
 - express-validator
 - Swagger (swagger-ui-express, swagger-jsdoc)
 - nodemailer, pdfkit, json2csv
-- dotenv, cors
+- dotenv
 
 ---
 

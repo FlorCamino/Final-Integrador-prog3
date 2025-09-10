@@ -1,12 +1,15 @@
-const mysql = require('mysql2/promise');
-const { db } = require('./env');
+import mysql from "mysql2/promise";
+import { entorno } from "./env.js"; 
 
-const pool = mysql.createPool({
-  host: db.host,
-  port: db.port,
-  user: db.user,
-  password: db.pass,
-  database: db.name,
+const conexionBaseDatos = mysql.createPool({
+  host: entorno.BD_HOST,
+  port: entorno.BD_PUERTO,
+  user: entorno.BD_USUARIO,
+  password: entorno.BD_CLAVE,
+  database: entorno.BD_NOMBRE,
+  waitForConnections: true,
+  connectionLimit: 10,
+  queueLimit: 0,
 });
 
-module.exports = pool;
+export default conexionBaseDatos;
