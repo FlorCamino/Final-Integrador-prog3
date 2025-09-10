@@ -1,23 +1,30 @@
-const { Router } = require('express');
-const pool = require('../config/db');
+import { Router } from "express";
+import conexionBaseDatos from "../config/db.js";
+import enrutadorReservas from "./reservas.route.js";
 
-const router = Router();
+const enrutador = Router();
 
-router.get('/health', async (req, res) => {
+enrutador.get("/estado", (_req, res) => {
+  res.status(201).json({ estado: "ok", mensaje: "API ejecutándose" });
+});
+
+enrutador.get("/conexion", async (_req, res) => {
   try {
-    const [rows] = await pool.query('SELECT NOW() AS ahora');
+    const [filas] = await conexionBaseDatos.query("SELECT NOW() AS ahora");
     res.json({
-      status: 'ok',
-      db: 'connected',
-      serverTime: rows[0].ahora,
+      estado: "ok",
+      baseDeDatos: "conectada",
+      horaServidor: filas[0].ahora,
     });
-  } catch (err) {
+  } catch (error) {
     res.status(500).json({
-      status: 'error',
-      db: 'disconnected',
-      message: err.message,
+      estado: "error",
+      baseDeDatos: "desconectada",
+      mensaje: error.message,
     });
   }
 });
 
-module.exports = router;
+enrutador.use("/reservas", enrutadorReservas);
+
+export default enrutador;
