@@ -4,7 +4,7 @@ import conexionBaseDatos from "./config/db.js";
 const PUERTO = process.env.PUERTO || 3000;
 
 const servidor = aplicacion.listen(PUERTO, () => {
-  console.log(`API corriendo en http://localhost:${PUERTO}`);
+  console.log(`API corriendo en http://localhost:${PUERTO}/api/docs`);
 });
 
 function cerrarServidorYBaseDeDatos() {
