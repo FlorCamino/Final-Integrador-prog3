@@ -14,7 +14,7 @@ const controladorReservas = new ControladorReservas(servicioReservas);
 enrutador.get("/", controladorReservas.obtenerTodas);
 enrutador.get("/:id", controladorReservas.obtenerPorId);
 enrutador.post("/", validarReservaCreacion, validarResultado, controladorReservas.crear);
-enrutador.put("/:id", validarReservaActualizacion, validarResultado, controladorReservas.actualizar);
-enrutador.delete("/:id", controladorReservas.eliminar);
+enrutador.put("/editar/:id", validarReservaActualizacion, validarResultado, controladorReservas.actualizar);
+enrutador.delete("/eliminar/:id", controladorReservas.eliminar);
 
 export default enrutador;

@@ -1,5 +1,6 @@
 import conexionBaseDatos from "../config/db.js";
 import { transformarReservaParaBD } from "../utils/reserva.mapper.js";
+import consultasSQL from "../sql/reservas.sql.js";
 
 export class ServicioReservas {
   constructor(repositorio) {
@@ -28,36 +29,28 @@ export class ServicioReservas {
         reservaTransformada.turno_id !== undefined;
 
       if (requiereVerificacion) {
-        const consultaVerificacion = `
-          SELECT reserva_id
-          FROM reservas
-          WHERE salon_id = ?
-            AND fecha_reserva = ?
-            AND turno_id = ?
-            AND reserva_id != ?  -- evitar que se choque consigo misma
-          FOR UPDATE
-        `;
-
-        const argumentos = [
-          reservaTransformada.salon_id,
-          reservaTransformada.fecha_reserva,
-          reservaTransformada.turno_id,
-          idReserva
-        ];
-
-        const [reservasOcupadas] = await conexion.query(consultaVerificacion, argumentos);
+        const [reservasOcupadas] = await conexion.query(
+          consultasSQL.verificarDuplicadoExcluyendoId,
+          [
+            reservaTransformada.salon_id,
+            reservaTransformada.fecha_reserva,
+            reservaTransformada.turno_id,
+            idReserva
+          ]
+        );
 
         if (reservasOcupadas.length) {
           const error = new Error(
-            `Ya existe una reserva para el salón ${reservaTransformada.salon_id} en la fecha ${reservaTransformada.fecha_reserva} y turno ${reservaTransformada.turno_id}.`);
+            `Ya existe una reserva para el salón ${reservaTransformada.salon_id} en la fecha ${reservaTransformada.fecha_reserva} y turno ${reservaTransformada.turno_id}.`
+          );
           error.code = "E_SLOT_TAKEN";
           throw error;
         }
       }
 
       const reservaActualizada = await this.repositorio.actualizar(idReserva, datos);
-      await conexion.commit();
 
+      await conexion.commit();
       return reservaActualizada;
     } catch (error) {
       await conexion.rollback();
@@ -79,34 +72,28 @@ export class ServicioReservas {
 
       const reservaTransformada = transformarReservaParaBD(datos);
 
-      const consultaVerificacion = `
-        SELECT reserva_id
-        FROM reservas
-        WHERE salon_id = ?
-          AND fecha_reserva = ?
-          AND turno_id = ?
-        FOR UPDATE
-      `;
-
-      const argumentos = [
-        reservaTransformada.salon_id,
-        reservaTransformada.fecha_reserva,
-        reservaTransformada.turno_id ?? null
-      ];
-
-      const [reservasOcupadas] = await conexion.query(consultaVerificacion, argumentos);
+      const [reservasOcupadas] = await conexion.query(
+        consultasSQL.verificarDuplicado,
+        [
+          reservaTransformada.salon_id,
+          reservaTransformada.fecha_reserva,
+          reservaTransformada.turno_id ?? null
+        ]
+      );
 
       if (reservasOcupadas.length) {
         const error = new Error(
-          `Horario no disponible para el salón ${reservaTransformada.salon_id} en la fecha ${reservaTransformada.fecha_reserva} y turno ${reservaTransformada.turno_id}.`);
+          `Horario no disponible para el salón ${reservaTransformada.salon_id} en la fecha ${reservaTransformada.fecha_reserva} y turno ${reservaTransformada.turno_id}.`
+        );
         error.code = "E_SLOT_TAKEN";
         throw error;
       }
 
-      const reservaCreada = await this.repositorio.crear(reservaTransformada, conexion);
-      await conexion.commit();
+      const reservaCompleta = await this.repositorio.crear(reservaTransformada, conexion);
+      reservaCompleta.mapaUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(reservaCompleta.direccion + ', Concordia, Entre Ríos')}`;
 
-      return reservaCreada;
+      await conexion.commit();
+      return reservaCompleta;
     } catch (error) {
       await conexion.rollback();
       throw error;

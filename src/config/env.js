@@ -14,5 +14,6 @@ export const entorno = {
   SMTP_USUARIO: process.env.SMTP_USUARIO,
   SMTP_CLAVE: process.env.SMTP_CLAVE,
   SMTP_DESDE: process.env.SMTP_DESDE,
+  ADMIN_EMAIL: process.env.ADMIN_EMAIL,
   NIVEL_LOG: process.env.NIVEL_LOG,
 };

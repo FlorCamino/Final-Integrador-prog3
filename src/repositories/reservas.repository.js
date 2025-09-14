@@ -8,9 +8,18 @@ export class RepositorioReservas {
     return filas.map(transformarReservaParaDatos);
   }
 
-  async obtenerPorId(idReserva) {
-    const [filas] = await conexionBaseDatos.query(consultasSQL.obtenerPorId, [idReserva]);
+  async obtenerPorId(idReserva, conexion = null) {
+    const cx = conexion || conexionBaseDatos;
+    const [filas] = await cx.query(consultasSQL.obtenerPorId, [idReserva]);
+    if (!filas.length) return null;
     return transformarReservaParaDatos(filas[0]);
+  }
+
+  async obtenerCompletaPorId(idReserva, conexion = null) {
+    const cx = conexion || conexionBaseDatos;
+    const [filas] = await cx.query(consultasSQL.obtenerCompletaPorId, [idReserva]);
+    if (!filas.length) return null;
+    return filas[0];
   }
 
   async crear(datos, conexion = null) {
@@ -26,11 +35,12 @@ export class RepositorioReservas {
       reserva.tematica ?? null,
       reserva.importe_salon ?? 0,
       reserva.importe_total ?? 0,
-      reserva.activo,
+      reserva.activo ?? 1,
     ];
 
     const [resultado] = await cx.query(consultasSQL.crear, parametros);
-    return this.obtenerPorId(resultado.insertId);
+
+    return this.obtenerCompletaPorId(resultado.insertId, cx);
   }
 
   async actualizar(idReserva, datos) {

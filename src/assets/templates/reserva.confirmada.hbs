@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <style>
+    body {
+      font-family: "Segoe UI", Arial, sans-serif;
+      background: #f4f6f8;
+      margin: 0;
+      padding: 30px;
+      color: #333;
+    }
+    .card {
+      max-width: 750px;
+      margin: auto;
+      background: #ffffff;
+      border-radius: 12px;
+      box-shadow: 0 6px 15px rgba(0,0,0,0.08);
+      overflow: hidden;
+    }
+    .header {
+      background: linear-gradient(90deg, #004e92, #000428);
+      color: white;
+      padding: 25px 30px;
+      display: flex;
+      align-items: center;
+    }
+    .header img {
+      width: 70px;
+      height: auto;
+      margin-right: 20px;
+    }
+    .header-text h2 {
+      margin: 0;
+      font-size: 24px;
+      font-weight: 700;
+    }
+    .subtitulo {
+      margin: 6px 0 0;
+      font-size: 15px;
+      color: #e0e0e0;
+    }
+    .section {
+      padding: 20px 30px;
+      border-bottom: 1px solid #eee;
+    }
+    .section h3 {
+      margin: 0 0 15px;
+      font-size: 18px;
+      color: #004e92;
+      font-weight: 600;
+    }
+    .detalle {
+      font-size: 16px;
+      margin: 10px 0;
+      padding: 12px 16px;
+      background: #f4f8ff;
+      border-left: 4px solid #004e92;
+      border-radius: 6px;
+    }
+    .detalle strong {
+      color: #00264d;
+    }
+    .btn {
+      display: inline-block;
+      margin-top: 15px;
+      padding: 12px 24px;
+      background: #004e92;
+      color: #fff !important;
+      text-decoration: none;
+      border-radius: 6px;
+      font-size: 15px;
+      font-weight: 600;
+    }
+    .btn:hover {
+      background: #003366;
+    }
+    .footer {
+      background: #004e92;
+      text-align: center;
+      font-size: 14px;
+      color: #fff;
+      padding: 20px;
+    }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <div class="header">
+      <img src="https://img.freepik.com/vector-premium/ilustracion-concepto-megafono_114360-19564.jpg" alt="Evento">
+      <div class="header-text">
+        <h2>Tu reserva ha sido confirmada</h2>
+        <p class="subtitulo">Estamos felices de acompañarte en este día tan especial</p>
+      </div>
+    </div>
+
+    <div class="section">
+      <h3>Detalles de la reserva</h3>
+      <p class="detalle"><strong>N° de Reserva:</strong> {{reserva_id}}</p>
+      <p class="detalle"><strong>Fecha:</strong> {{fecha}}</p>
+      <p class="detalle"><strong>Salón:</strong> {{salon}}</p>
+      <p class="detalle"><strong>Dirección:</strong> {{direccion}}</p>
+      <p class="detalle"><strong>Capacidad:</strong> {{capacidad}} personas</p>
+    </div>
+
+    <div class="section">
+      <h3>Dónde encontrarnos</h3>
+      <p>
+        Salón: <strong>{{salon}}</strong><br/>
+        {{direccion}}<br/>
+        Capacidad: {{capacidad}} personas<br/>
+        Ciudad: Concordia, Entre Ríos
+      </p>
+      <a href="{{mapaUrl}}" class="btn">Abrir en Google Maps</a>
+    </div>
+
+    <div class="footer">
+      <p>
+        Gracias por confiar en nosotros.<br/>
+        ¡Será un día inolvidable lleno de alegría y buenos momentos!
+      </p>
+    </div>
+  </div>
+</body>
+</html>
