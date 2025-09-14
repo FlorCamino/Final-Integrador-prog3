@@ -22,8 +22,29 @@ const controladorReservas = new ControladorReservas(servicioReservas);
  * @swagger
  * /reservas:
  *   get:
- *     summary: Obtener todas las reservas activas
+ *     summary: Obtener todas las reservas
  *     tags: [Reservas]
+ *     parameters:
+ *       - in: query
+ *         name: limit
+ *         schema:
+ *           type: integer
+ *         required: false
+ *         description: Cantidad máxima de reservas a devolver
+ *       - in: query
+ *         name: orderBy
+ *         schema:
+ *           type: string
+ *           enum: [reserva_id, fecha_reserva, creado, modificado, importe_total]
+ *         required: false
+ *         description: Campo por el que se ordenarán los resultados
+ *       - in: query
+ *         name: orderDir
+ *         schema:
+ *           type: string
+ *           enum: [ASC, DESC]
+ *         required: false
+ *         description: Dirección del ordenamiento (ascendente o descendente)
  *     responses:
  *       200:
  *         description: Lista de reservas
@@ -156,22 +177,34 @@ enrutador.put("/editar/:id", validarReservaActualizacion, validarResultado, cont
 
 /**
  * @swagger
- * /reservas/eliminar/{id}:
- *   delete:
- *     summary: Eliminar (desactivar) una reserva
+ * /reservas:
+ *   get:
+ *     summary: Obtener todas las reservas
  *     tags: [Reservas]
  *     parameters:
- *       - in: path
- *         name: id
+ *       - in: query
+ *         name: limit
  *         schema:
  *           type: integer
- *         required: true
- *         description: ID de la reserva
+ *         required: false
+ *         description: Cantidad máxima de reservas a devolver
+ *       - in: query
+ *         name: orderBy
+ *         schema:
+ *           type: string
+ *           enum: [reserva_id, fecha_reserva, tematica, importe_total]
+ *         required: false
+ *         description: Campo por el que se ordenarán los resultados
+ *       - in: query
+ *         name: orderDir
+ *         schema:
+ *           type: string
+ *           enum: [ASC, DESC]
+ *         required: false
+ *         description: Dirección del ordenamiento (ascendente o descendente)
  *     responses:
  *       200:
- *         description: Reserva eliminada correctamente
- *       404:
- *         description: Reserva no encontrada
+ *         description: Lista de reservas
  */
 enrutador.delete("/eliminar/:id", controladorReservas.eliminar);
 
