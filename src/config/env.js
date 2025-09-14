@@ -1,30 +1,19 @@
-require('dotenv').config();
+import 'dotenv/config';
 
-module.exports = {
-  port: process.env.PORT || 3000,
-  nodeEnv: process.env.NODE_ENV || 'development',
-
-  db: {
-    host: process.env.DB_HOST || 'localhost',
-    port: process.env.DB_PORT || 3306,
-    user: process.env.DB_USER || 'root',
-    pass: process.env.DB_PASS || '',
-    name: process.env.DB_NAME || 'reservas',
-  },
-
-  jwt: {
-    secret: process.env.JWT_SECRET || 'supersecreto',
-    expiresIn: process.env.JWT_EXPIRES || '2h',
-  },
-
-  mail: {
-    host: process.env.SMTP_HOST || '',
-    port: process.env.SMTP_PORT || 587,
-    user: process.env.SMTP_USER || '',
-    pass: process.env.SMTP_PASS || '',
-    from: process.env.SMTP_FROM || 'Reservas API <noreply@example.com>',
-  },
-
-  logLevel: process.env.LOG_LEVEL || 'info',
+export const entorno = {
+  PUERTO: process.env.PUERTO,
+  BD_HOST: process.env.BD_HOST,
+  BD_PUERTO: process.env.BD_PUERTO,
+  BD_USUARIO: process.env.BD_USUARIO,
+  BD_CLAVE: process.env.BD_CLAVE,
+  BD_NOMBRE: process.env.BD_NOMBRE,
+  CLAVE_JWT: process.env.CLAVE_JWT,
+  JWT_DURACION: process.env.JWT_DURACION,
+  SMTP_SERVIDOR: process.env.SMTP_SERVIDOR,
+  SMTP_PUERTO: process.env.SMTP_PUERTO,
+  SMTP_USUARIO: process.env.SMTP_USUARIO,
+  SMTP_CLAVE: process.env.SMTP_CLAVE,
+  SMTP_DESDE: process.env.SMTP_DESDE,
+  ADMIN_EMAIL: process.env.ADMIN_EMAIL,
+  NIVEL_LOG: process.env.NIVEL_LOG,
 };
-
