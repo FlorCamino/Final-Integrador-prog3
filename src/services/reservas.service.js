@@ -7,8 +7,8 @@ export class ServicioReservas {
     this.repositorio = repositorio;
   }
 
-  obtenerTodas() {
-    return this.repositorio.obtenerTodas();
+  obtenerTodas(cantidad, ordenarPor, ordenarDireccion) {
+    return this.repositorio.obtenerTodas(cantidad, ordenarPor, ordenarDireccion);
   }
 
   obtenerPorId(id) {

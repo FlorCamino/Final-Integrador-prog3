@@ -20,5 +20,4 @@ export async function enviarNotificacionReserva(emailUsuario, reserva) {
   };
 
   const info = await transporter.sendMail(mailOptions);
-  console.log("Correo enviado:", info.accepted);
 }

@@ -22,32 +22,57 @@ Permite administrar **usuarios, salones, servicios, turnos y reservas**, además
 ## Tecnologías utilizadas
 
 - Node.js + Express
-- MySQL/MariaDB (conexión mediante **mysql2**)
+- MySQL/MariaDB (conexión con **mysql2**)
 - JWT (jsonwebtoken)
 - bcrypt
 - express-validator
 - Swagger (swagger-ui-express, swagger-jsdoc)
-- nodemailer, pdfkit, json2csv
+- Nodemailer + Handlebars
 - dotenv
+- ESLint + Prettier
 
 ---
 
 ## Estructura del proyecto
 
 ```
-src/
-├─ app.js                # configuración de Express
-├─ server.js             # arranque del servidor
-├─ config/               # variables de entorno y DB
-├─ routes/               # definición de rutas por entidad
-├─ controllers/          # controladores (request/response)
-├─ services/             # lógica de negocio
-├─ repositories/         # acceso a datos
-├─ middlewares/          # JWT, roles, validaciones, errores
-├─ validators/           # express-validator
-├─ utils/                # helpers (bcrypt, pdf, mailer, etc.)
-├─ docs/                 # swagger.js
-└─ sql/                  # schema.sql, seed.sql, stored procedures
+FINAL-INTEGRADOR-PROG3/
+├─ node_modules/
+├─ src/
+│  ├─ assets/                 # imágenes, logos, etc. (para emails)
+│  ├─ config/                 # configuración central
+│  │   ├─ db.js               # conexión a MySQL/MariaDB
+│  │   ├─ env.js              # variables de entorno
+│  │   └─ email.js            # nodemailer + handlebars
+│  ├─ controllers/            # recibe requests y devuelve responses
+│  │   └─ reservas.controller.js
+│  ├─ docs/                   # documentación Swagger
+│  │   └─ swagger.js
+│  ├─ middlewares/            # validaciones, JWT, roles
+│  │   ├─ reservas.validator.js
+│  │   └─ validacion.resultado.js
+│  ├─ repositories/           # acceso a datos (consultas DB)
+│  │   └─ reservas.repository.js
+│  ├─ routes/                 # definición de rutas por entidad
+│  │   └─ reservas.routes.js
+│  ├─ services/               # lógica de negocio
+│  │   └─ reservas.service.js
+│  ├─ sql/                    # queries SQL centralizadas
+│  │   └─ reservas.sql.js
+│  ├─ templates/              # plantillas handlebars para emails
+│  │   └─ reserva.confirmada.hbs
+│  ├─ utils/                  # helpers reutilizables
+│  │   ├─ reserva.mapper.js   # transformación datos ↔ DB
+│  │   └─ reserva.notificaciones.js
+│  ├─ validators/             # validaciones específicas (si crecen más)
+│  ├─ app.js                  # configuración express, middlewares globales
+│  └─ server.js               # arranque del servidor
+├─ .env                       # variables de entorno (local)
+├─ .env.example               # variables de entorno de ejemplo
+├─ .gitignore
+├─ package.json
+├─ package-lock.json
+└─ README.md
 ```
 
 ---
@@ -71,8 +96,8 @@ JWT_SECRET=supersecreto
 
 4. Levantar el servidor:
 
-npm run dev # desarrollo
-npm start # producción
+npm run dev
+npm start
 
 ---
 

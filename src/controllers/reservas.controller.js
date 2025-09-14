@@ -5,9 +5,16 @@ export class ControladorReservas {
     this.servicio = servicio;
   }
 
-  obtenerTodas = async (_req, res) => {
+  obtenerTodas = async (req, res) => {
     try {
-      const reservas = await this.servicio.obtenerTodas();
+      const { limit, orderBy, orderDir } = req.query;
+
+      const reservas = await this.servicio.obtenerTodas(
+        limit ? parseInt(limit, 10) : null,  
+        orderBy || null,
+        orderDir || "ASC"
+      );
+
       res.json({ estado: "ok", data: reservas });
     } catch (error) {
       res.status(500).json({ estado: "error", mensaje: error.message });
@@ -46,14 +53,6 @@ export class ControladorReservas {
       } else {
         console.warn("DEBUG: La reserva no tiene ningún email válido.");
       }
-
-      // if (nuevaReserva?.email) {
-      //   try {
-      //     await enviarNotificacionReserva(nuevaReserva.email, nuevaReserva);
-      //   } catch (errorCorreo) {
-      //     console.error("Error al enviar correo:", errorCorreo.message);
-      //   }
-      // }
 
       res.status(201).json({
         estado: "ok",

@@ -5,7 +5,6 @@ const consultasSQL = {
            activo, creado, modificado
     FROM reservas
     WHERE activo = 1
-    ORDER BY fecha_reserva DESC
   `,
 
   obtenerPorId: `
