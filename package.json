@@ -1,15 +1,24 @@
 {
+  "name": "app-reservas",
+  "version": "1.0.0",
+  "description": "aplicación de reservas de casa de cumpleaños",
+  "main": "src/server.js",
+  "type": "module",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node src/app.js"
+  },
   "dependencies": {
-    "cors": "^2.8.5",
     "dotenv": "^17.2.1",
     "express": "^5.1.0",
+    "express-handlebars": "^8.0.3",
     "express-validator": "^7.2.1",
+    "mysql2": "^3.15.0",
+    "nodemailer": "^7.0.6",
+    "nodemailer-express-handlebars": "^7.0.0",
     "swagger-jsdoc": "^6.2.8",
     "swagger-ui-express": "^5.0.1"
   },
-  "devDependencies": {
-    "eslint": "^9.34.0",
-    "nodemon": "^3.1.10",
-    "prettier": "^3.6.2"
-  }
+  "author": "",
+  "license": "ISC"
 }
