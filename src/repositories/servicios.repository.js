@@ -1,4 +1,4 @@
-import { pool } from '../config/db.js';
+import { conexion } from '../config/db.js';
 
 export async function obtenerTodosServicios({ limit, offset, estado, sort, order }) {
   let baseQuery = 'FROM servicios WHERE 1=1';
@@ -20,7 +20,7 @@ export async function obtenerTodosServicios({ limit, offset, estado, sort, order
   query += ' LIMIT ? OFFSET ?';
   params.push(limit, offset);
 
-  const [rows] = await pool.query(query, params);
+  const [rows] = await conexion.query(query, params);
 
   return { rows };
 }
