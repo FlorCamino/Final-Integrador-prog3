@@ -35,6 +35,21 @@ export async function findById(id) {
   return rows.length > 0 ? rows[0] : null;
 }
 
+export async function crearServicio({ descripcion, importe }) {
+  const [result] = await conexion.query(
+    `INSERT INTO servicios (descripcion, importe, activo) VALUES (?, ?, 1)`,
+    [descripcion, importe]
+  );
+
+  return {
+    servicio_id: result.insertId,
+    descripcion,
+    importe,
+    activo: 1
+  };
+}
+
+
 export async function eliminarServicioPorId(servicio_id) {
   const query = 'UPDATE servicios SET activo= 0 WHERE servicio_id = ?';
   const [result] = await conexion.query(query, [servicio_id]);

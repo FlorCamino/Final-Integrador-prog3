@@ -24,6 +24,17 @@ export async function getById(req, res, next) {
     }
 }
 
+export async function crearServicio(req, res) {
+  try {
+    const { descripcion, importe } = req.body;
+    const nuevoServicio = await servicio.agregarServicio({ descripcion, importe });
+    res.status(201).json({ success: true, data: nuevoServicio });
+  } catch (err) {
+    res.status(400).json({ success: false, message: err.message });
+  }
+}
+
+
 export async function eliminarServicios(req, res) {
   try {
     const { servicio_id } = req.params;

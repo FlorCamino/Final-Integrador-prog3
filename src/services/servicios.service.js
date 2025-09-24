@@ -27,6 +27,16 @@ export async function getServicioById(id) {
   return servicio;
 }
 
+export async function agregarServicio(datos) {
+  if (!datos.descripcion || typeof datos.descripcion !== 'string') {
+    throw new Error('La descripción es obligatoria y debe ser texto.');
+  }
+  if (isNaN(datos.importe) || datos.importe <= 0) {
+    throw new Error('El importe debe ser un número mayor a 0.');
+  }
+  return await repositorio.crearServicio(datos);
+}
+
 export async function borrarServicios(servicio_id) {
   const resultado = await repositorio.eliminarServicioPorId(servicio_id);
   return resultado;

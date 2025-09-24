@@ -1,5 +1,6 @@
 import { Router } from 'express';
 import * as serviciosController from '../controllers/servicios.controller.js';
+import { obtenerServicios, crearServicio } from '../controllers/servicios.controller.js';
 
 const router = Router();
 
@@ -90,5 +91,7 @@ router.get('/:id', serviciosController.getById);
  *       '500':
  *         description: Error del servidor
  */
+router.post('/', serviciosController.crearServicio);
 router.delete('/eliminar/:servicio_id', serviciosController.eliminarServicios);
+
 export default router;
