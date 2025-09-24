@@ -9,3 +9,9 @@ export async function listarServicios({ limit = 10, offset = 0, estado, sort, or
   const { rows } = await repositorio.obtenerTodosServicios({ limit, offset, estado, sort, order });
   return { data: rows };
 }
+
+export async function borrarServicios(servicio_id) {
+  const resultado = await repositorio.eliminarServicioPorId(servicio_id);
+  return resultado;
+}
+

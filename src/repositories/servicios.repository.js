@@ -24,3 +24,9 @@ export async function obtenerTodosServicios({ limit, offset, estado, sort, order
 
   return { rows };
 }
+
+export async function eliminarServicioPorId(servicio_id) {
+  const query = 'UPDATE servicios SET activo= 0 WHERE servicio_id = ?';
+  const [result] = await conexion.query(query, [servicio_id]);
+  return result;
+}

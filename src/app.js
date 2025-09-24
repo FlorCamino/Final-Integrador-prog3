@@ -5,6 +5,8 @@ import { swaggerSpec, swaggerUiMiddleware } from './config/swagger.js';
 const app = express();
 app.use(express.json());
 
+app.get('/swagger.json', (_req, res) => res.json(swaggerSpec));
+
 app.use('/api/v1/servicios', serviciosRoutes);
 
 app.use('/swagger', swaggerUiMiddleware.serve, swaggerUiMiddleware.setup(swaggerSpec));
