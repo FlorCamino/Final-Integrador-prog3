@@ -1,6 +1,6 @@
 import { Router } from 'express';
 import { obtenerServicios } from '../controllers/servicios.controller.js';
-
+import * as serviciosController from '../controllers/servicios.controller.js';
 const router = Router();
 
 /**
@@ -33,5 +33,28 @@ const router = Router();
  *         description: Lista de servicios
  */
 router.get('/', obtenerServicios);
+/**
+ * @swagger
+ * /servicios/{id}:
+ *   get:
+ *     summary: Obtener un servicio por su ID
+ *     tags: [Servicios]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         description: ID numérico del servicio a obtener.
+ *         schema:
+ *           type: integer
+ *     responses:
+ *       200:
+ *         description: OK - Servicio encontrado y devuelto.
+ *         
+ *       404:
+ *         description: Not Found - No se encontró el servicio con el ID especificado.
+ *       400:
+ *         description: Bad Request - El ID proporcionado no es válido.
+ */
+router.get('/:id', serviciosController.getById);
 
 export default router;

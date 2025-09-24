@@ -24,3 +24,13 @@ export async function obtenerTodosServicios({ limit, offset, estado, sort, order
 
   return { rows };
 }
+
+/**
+ * Busca ID.
+ * @param {number} id 
+ * @returns {Promise<object|null>} 
+ */
+export async function findById(id) {
+  const [rows] = await conexion.query('SELECT * FROM servicios WHERE servicio_id = ?', [id]);
+  return rows.length > 0 ? rows[0] : null;
+}
