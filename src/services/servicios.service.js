@@ -26,3 +26,9 @@ export async function getServicioById(id) {
 
   return servicio;
 }
+
+export async function borrarServicios(servicio_id) {
+  const resultado = await repositorio.eliminarServicioPorId(servicio_id);
+  return resultado;
+}
+

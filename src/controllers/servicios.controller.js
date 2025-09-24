@@ -21,5 +21,18 @@ export async function getById(req, res, next) {
     res.status(200).json({ success: true, data: servicio });
   } catch (error) {
     next(error); 
+    }
+}
+
+export async function eliminarServicios(req, res) {
+  try {
+    const { servicio_id } = req.params;
+    const resultado = await servicio.borrarServicios(servicio_id);
+    if (resultado.affectedRows === 0) {
+      return res.status(404).json({ success: false, message: 'Servicio no encontrado' });
+    }
+    res.json({ success: true, message: 'Servicio eliminado correctamente' });
+  } catch (err) {
+    res.status(500).json({ success: false, message: err.message });
   }
 }
