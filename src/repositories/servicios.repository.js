@@ -33,7 +33,8 @@ export async function obtenerTodosServicios({ limit, offset, estado, sort, order
 export async function findById(id) {
   const [rows] = await conexion.query('SELECT * FROM servicios WHERE servicio_id = ?', [id]);
   return rows.length > 0 ? rows[0] : null;
-  }
+}
+
 export async function eliminarServicioPorId(servicio_id) {
   const query = 'UPDATE servicios SET activo= 0 WHERE servicio_id = ?';
   const [result] = await conexion.query(query, [servicio_id]);

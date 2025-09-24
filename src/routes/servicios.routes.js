@@ -1,7 +1,5 @@
 import { Router } from 'express';
-import { obtenerServicios } from '../controllers/servicios.controller.js';
 import * as serviciosController from '../controllers/servicios.controller.js';
-import { obtenerServicios, eliminarServicios } from '../controllers/servicios.controller.js';
 
 const router = Router();
 
@@ -45,7 +43,7 @@ const router = Router();
  *       '200':
  *         description: Lista de servicios
  */
-router.get('/', obtenerServicios);
+router.get('/', serviciosController.obtenerServicios);
 /**
  * @swagger
  * /servicios/{id}:
@@ -92,5 +90,5 @@ router.get('/:id', serviciosController.getById);
  *       '500':
  *         description: Error del servidor
  */
-router.delete('/eliminar/:servicio_id', eliminarServicios);
+router.delete('/eliminar/:servicio_id', serviciosController.eliminarServicios);
 export default router;
