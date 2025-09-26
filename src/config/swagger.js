@@ -16,12 +16,11 @@ const swaggerOptions = {
     },
     servers: [
       {
-        url: 'http://localhost:4000/api/v1',
-        description: 'Servidor local',
+        url: 'http://localhost:4000/api/v1'
       },
     ],
   },
-  apis: [path.join(__dirname, '../routes/*.js')],
+  apis: [path.join(__dirname, '../v1/routes/*.js')],
 };
 
 export const swaggerSpec = swaggerJSDoc(swaggerOptions);

@@ -1,7 +1,9 @@
-import { Router } from 'express';
-import * as serviciosController from '../controllers/servicios.controller.js';
+import express, { Router } from 'express';
+import ServiciosController from '../../controllers/servicios.controller.js';
 
-const router = Router();
+const serviciosController = new ServiciosController();
+
+const router = express.Router();
 
 /**
  * @swagger
@@ -67,7 +69,7 @@ router.get('/', serviciosController.obtenerServicios);
  *       404:
  *         description: No encontrado
  */
-router.get('/:id', serviciosController.getById);
+router.get('/:id', serviciosController.obtenerServicioPorId);
 
 /**
  * @swagger
@@ -87,8 +89,8 @@ router.get('/:id', serviciosController.getById);
  *               importe:
  *                 type: number
  *           example:
- *             descripcion: "Servicio de internet"
- *             importe: 1500
+ *             descripcion: "Servicio de inflable infantil"
+ *             importe: 12500
  *     responses:
  *       201:
  *         description: Servicio creado correctamente
@@ -116,7 +118,7 @@ router.post('/', serviciosController.crearServicio);
  *       404:
  *         description: Servicio no encontrado
  */
-router.delete('/eliminar/:servicio_id', serviciosController.eliminarServicios);
+router.delete('/eliminar/:servicio_id', serviciosController.eliminarServicio);
 
 export default router;
 
