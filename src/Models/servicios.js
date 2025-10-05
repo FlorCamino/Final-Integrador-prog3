@@ -20,6 +20,7 @@ export default class Servicio {
     const [rows] = await conexion.query(query, params);
     return { rows };
   }
+  
   buscarServicioPorId = async (id) => {
     const [rows] = await conexion.query('SELECT * FROM servicios WHERE servicio_id = ?', [id]);
     return rows.length > 0 ? rows[0] : null;

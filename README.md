@@ -35,13 +35,8 @@ Además, incluye:
 
 - **Node.js + Express**
 - **MySQL/MariaDB** (conexión mediante `mysql2`)
-- **JWT** (`jsonwebtoken`)
-- **bcrypt** (hash de contraseñas)
-- **express-validator** (validación de entradas)
 - **Swagger** (`swagger-ui-express`, `swagger-jsdoc`)
-- **Nodemailer + Handlebars** (envío de emails)
 - **dotenv** (manejo de variables de entorno)
-- **ESLint + Prettier** (estilo y buenas prácticas de código)
 
 ---
 
@@ -56,18 +51,18 @@ FINAL-INTEGRADOR-PROG3/
 │  │   └─ swagger.js          # Configuración de Swagger
 │  ├─ controllers/            # Controladores (reciben requests, devuelven responses)
 │  │   └─ servicios.controller.js
-│  ├─ middlewares/            # Middlewares (JWT, roles, validaciones)
-│  │   └─ servicios.validator.js
-│  ├─ repositories/           # Acceso a datos (queries SQL)
-│  │   └─ servicios.repository.js
+│  ├─ middlewares/            # Middlewares (aun no utilizado)
+│  │   └─ validator.js
+│  ├─ models/           # Acceso a datos (queries SQL)
+│  │   └─ servicios.js
 │  ├─ routes/                 # Definición de endpoints por entidad
 │  │   └─ servicios.routes.js
 │  ├─ services/               # Lógica de negocio
 │  │   └─ servicios.service.js
-│  ├─ validators/             # Validaciones específicas adicionales
 │  ├─ app.js                  # Configuración Express y middlewares globales
-├─ .env                       # Variables de entorno (local, no subir)
-├─ .env.example               # Plantilla de variables de entorno
+│  └─ server.js               # Inicia el servidor Express y expone la documentación Swagger.
+├─ .env                       # Variables de entorno (local, ignorado a traves del .gitignore)
+├─ .env.example               # Plantilla de variables de entorno de ejemplo
 ├─ .gitignore
 ├─ package.json
 ├─ package-lock.json
