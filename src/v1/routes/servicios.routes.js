@@ -99,6 +99,8 @@ router.get('/:id', serviciosController.obtenerServicioPorId);
  */
 router.post('/', serviciosController.crearServicio);
 
+router.put('/modificar/:servicio_id', serviciosController.modificarServicio)
+
 /**
  * @swagger
  * /servicios/eliminar/{servicio_id}:

@@ -38,6 +38,12 @@ export default class Servicio {
     };
   }
 
+  modificarServicioPorId = async (servicio_id, {descripcion, importe}) => {
+    const query = 'UPDATE servicios SET descripcion = ?, importe = ? WHERE servicio_id = ?';
+    const [result] = await conexion.query(query, [descripcion, importe, servicio_id]);
+    return result;
+  };
+
   eliminarServicioPorId = async (servicio_id) => {
     const query = 'UPDATE servicios SET activo= 0 WHERE servicio_id = ?';
     const [result] = await conexion.query(query, [servicio_id]);

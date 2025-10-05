@@ -25,6 +25,11 @@ export default class ServiciosService {
     return nuevoServicio;
   }
 
+  actualizarServicio = async (servicio_id, datos) => {
+    const resultado = await this.servicioModel.modificarServicioPorId(servicio_id, datos);
+    return resultado;
+  }
+
   borrarServicios = async (servicio_id) => {
     const resultado = await this.servicioModel.eliminarServicioPorId(servicio_id);
     return resultado;

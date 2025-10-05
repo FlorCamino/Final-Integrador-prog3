@@ -43,6 +43,24 @@ export default class ServiciosController {
     }
   };
 
+  modificarServicio = async (req, res) => {
+    try {
+      const { servicio_id } = req.params;
+      const { descripcion, importe } = req.body;
+      if (!descripcion || !importe) {
+        return res.status(400).json({success: false, message: 'Por favor, completa todos los campos'})
+      }
+      const resultado = await this.serviciosService.actualizarServicio(servicio_id, { descripcion, importe });
+      if (resultado.affectedRows === 0) {
+        return res.status(404).json({success: false, message: 'Servicio no encontrado'})
+      }
+      res.json({success: true, message: 'Servicio modificado correctamente'})
+    }
+    catch (err) {
+      res.status(500).json({success:false, message: err.message})
+    }
+  }
+
   eliminarServicio = async (req, res) => {
     try {
       const { servicio_id } = req.params;  
