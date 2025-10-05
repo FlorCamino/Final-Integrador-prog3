@@ -1,4 +1,4 @@
-import express, { Router } from 'express';
+import express from 'express';
 import ServiciosController from '../../controllers/servicios.controller.js';
 
 const serviciosController = new ServiciosController();
@@ -99,6 +99,43 @@ router.get('/:id', serviciosController.obtenerServicioPorId);
  */
 router.post('/', serviciosController.crearServicio);
 
+/**
+ * @swagger
+ * /servicios/modificar/{servicio_id}:
+ *   put:
+ *     summary: Modificar un servicio existente
+ *     tags: [Servicios]
+ *     parameters:
+ *       - in: path
+ *         name: servicio_id
+ *         required: true
+ *         schema:
+ *           type: integer
+ *         description: ID del servicio a modificar
+ *         example: 3
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               descripcion:
+ *                 type: string
+ *                 example: "Servicio de animación infantil"
+ *               importe:
+ *                 type: number
+ *                 example: 15000
+ *     responses:
+ *       200:
+ *         description: Servicio modificado correctamente
+ *       400:
+ *         description: Datos inválidos o incompletos
+ *       404:
+ *         description: Servicio no encontrado
+ *       500:
+ *         description: Error en el servidor
+ */
 router.put('/modificar/:servicio_id', serviciosController.modificarServicio)
 
 /**
