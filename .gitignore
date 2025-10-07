@@ -1,7 +1,4 @@
-
+# Ignorar dependencias
 /node_modules
+# Ignorar archivos de entorno
 .env
-
-
-
-
