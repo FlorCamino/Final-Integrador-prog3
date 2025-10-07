@@ -1,10 +1,10 @@
 import { conexion } from '../config/db.js';
 
 export default class Servicio {
-  
+
   buscarTodosServicios = async ({ limit, offset, estado, sort, order }) => {
     let baseQuery = 'FROM servicios WHERE 1=1';
-    const params = [];  
+    const params = [];
     if (estado !== undefined) {
       baseQuery += ' AND activo = ?';
       params.push(estado);
@@ -20,11 +20,18 @@ export default class Servicio {
     const [rows] = await conexion.query(query, params);
     return { rows };
   }
-  
+
   buscarServicioPorId = async (id) => {
     const [rows] = await conexion.query('SELECT * FROM servicios WHERE servicio_id = ?', [id]);
     return rows.length > 0 ? rows[0] : null;
   }
+
+
+  modificarServicioPorId = async (servicio_id, { descripcion, importe }) => {
+    const query = 'UPDATE servicios SET descripcion = ?, importe = ? WHERE servicio_id = ?';
+    const [result] = await conexion.query(query, [descripcion, importe, servicio_id]);
+    return result;
+  };
 
   crearServicio = async ({ descripcion, importe }) => {
     const [result] = await conexion.query(
@@ -38,12 +45,6 @@ export default class Servicio {
       activo: 1
     };
   }
-
-  modificarServicioPorId = async (servicio_id, {descripcion, importe}) => {
-    const query = 'UPDATE servicios SET descripcion = ?, importe = ? WHERE servicio_id = ?';
-    const [result] = await conexion.query(query, [descripcion, importe, servicio_id]);
-    return result;
-  };
 
   eliminarServicioPorId = async (servicio_id) => {
     const query = 'UPDATE servicios SET activo= 0 WHERE servicio_id = ?';

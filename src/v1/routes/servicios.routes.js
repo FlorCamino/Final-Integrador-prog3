@@ -73,34 +73,6 @@ router.get('/:id', serviciosController.obtenerServicioPorId);
 
 /**
  * @swagger
- * /servicios:
- *   post:
- *     summary: Crear un servicio
- *     tags: [Servicios]
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             type: object
- *             properties:
- *               descripcion:
- *                 type: string
- *               importe:
- *                 type: number
- *           example:
- *             descripcion: "Servicio de inflable infantil"
- *             importe: 12500
- *     responses:
- *       201:
- *         description: Servicio creado correctamente
- *       400:
- *         description: Datos inválidos
- */
-router.post('/', serviciosController.crearServicio);
-
-/**
- * @swagger
  * /servicios/modificar/{servicio_id}:
  *   put:
  *     summary: Modificar un servicio existente
@@ -137,6 +109,34 @@ router.post('/', serviciosController.crearServicio);
  *         description: Error en el servidor
  */
 router.put('/modificar/:servicio_id', serviciosController.modificarServicio)
+
+/**
+ * @swagger
+ * /servicios:
+ *   post:
+ *     summary: Crear un servicio
+ *     tags: [Servicios]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               descripcion:
+ *                 type: string
+ *               importe:
+ *                 type: number
+ *           example:
+ *             descripcion: "Servicio de inflable infantil"
+ *             importe: 12500
+ *     responses:
+ *       201:
+ *         description: Servicio creado correctamente
+ *       400:
+ *         description: Datos inválidos
+ */
+router.post('/', serviciosController.crearServicio);
 
 /**
  * @swagger
