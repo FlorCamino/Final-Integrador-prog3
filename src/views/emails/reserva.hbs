@@ -1,0 +1,32 @@
+<h2 style="color:#ff3399; font-size:22px; margin-bottom:10px;">
+  ¡Hola {{nombreCliente}}! 🎈
+</h2>
+
+<p style="font-size:16px; color:#555; margin-bottom:25px;">
+  Tu reserva fue creada con éxito. Aquí tienes los detalles:
+</p>
+
+<table align="center" cellpadding="0" cellspacing="0" style="width:100%; max-width:450px; margin:auto; background:#fff6fa; border-radius:10px; padding:15px 25px; border:1px solid #ffd6e8;">
+  <tr>
+    <td style="padding:8px 0; font-size:15px;"><b>Salón:</b></td>
+    <td style="padding:8px 0; font-size:15px;">{{salon}}</td>
+  </tr>
+  <tr>
+    <td style="padding:8px 0; font-size:15px;"><b>Fecha:</b></td>
+    <td style="padding:8px 0; font-size:15px;">{{fecha}}</td>
+  </tr>
+  <tr>
+    <td style="padding:8px 0; font-size:15px;"><b>Importe total:</b></td>
+    <td style="padding:8px 0; font-size:15px; color:#ff3399;">${{importe}}</td>
+  </tr>
+</table>
+
+<p style="font-size:15px; color:#555; margin-top:30px;">
+  ¡Gracias por confiar en <b style="color:#ff3399;">PKES</b>!  
+  Te esperamos para celebrar juntos 🥳
+</p>
+
+<a href="http://localhost:{{port}}/swagger" 
+   style="display:inline-block; margin-top:20px; padding:12px 28px; background:#ff66b2; color:white; border-radius:25px; font-weight:600; text-decoration:none; font-size:15px;">
+  Ver más detalles
+</a>
