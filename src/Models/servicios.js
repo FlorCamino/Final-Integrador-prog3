@@ -3,9 +3,8 @@ import conexion from '../config/db.js';
 export default class Servicio {
 
   buscarTodosServicios = async ({ limit, offset, estado, sort, order }) => {
-    const conn = await conexion();
-
-    let baseQuery = 'FROM servicios WHERE 1=1';
+  const conn = await conexion();
+  let baseQuery = 'FROM servicios WHERE 1=1';
     const params = [];
     if (estado !== undefined) {
       baseQuery += ' AND activo = ?';
@@ -19,16 +18,14 @@ export default class Servicio {
     if (sortField) query += ` ORDER BY ${sortField} ${direction}`;
     query += ' LIMIT ? OFFSET ?';
     params.push(limit, offset);
-    const [rows] = await conexion.query(query, params);
-
+    const [rows] = await conn.query(query, params);
     await conn.end();
-
     return { rows };
   }
 
   buscarServicioPorId = async (id) => {
     const conn = await conexion();
-    const [rows] = await conexion.query('SELECT * FROM servicios WHERE servicio_id = ?', [id]);ç
+    const [rows] = await conn.query('SELECT * FROM servicios WHERE servicio_id = ?', [id]);
     await conn.end();
     return rows.length > 0 ? rows[0] : null;
   }
@@ -37,14 +34,14 @@ export default class Servicio {
   modificarServicioPorId = async (servicio_id, { descripcion, importe }) => {
     const conn = await conexion();
     const query = 'UPDATE servicios SET descripcion = ?, importe = ? WHERE servicio_id = ?';
-    const [result] = await conexion.query(query, [descripcion, importe, servicio_id]);
+    const [result] = await conn.query(query, [descripcion, importe, servicio_id]);
     await conn.end();
     return result;
   };
 
   crearServicio = async ({ descripcion, importe }) => {
     const conn = await conexion();
-    const [result] = await conexion.query(
+    const [result] = await conn.query(
       `INSERT INTO servicios (descripcion, importe, activo) VALUES (?, ?, 1)`,
       [descripcion, importe]
     );
@@ -60,7 +57,7 @@ export default class Servicio {
   eliminarServicioPorId = async (servicio_id) => {
     const conn = await conexion();
     const query = 'UPDATE servicios SET activo= 0 WHERE servicio_id = ?';
-    const [result] = await conexion.query(query, [servicio_id]);
+    const [result] = await conn.query(query, [servicio_id]);
     await conn.end();
     return result;
   }
