@@ -21,47 +21,55 @@
  *         description: "1 activo, 0 inactivo"
  *         example: 1
  *       - in: query
- *         name: rol
- *         schema:
- *           type: string
- *         description: "Filtrar por rol del usuario (admin, cliente, etc.)"
- *         example: "admin"
- *       - in: query
  *         name: sort
  *         schema:
  *           type: string
- *           enum: [nombre, email, creado, modificado]
- *         description: "Campo para ordenar"
+ *           enum: [nombre, apellido, nombre_usuario, creado, modificado]
+ *         description: "Campo para ordenar resultados"
  *         example: nombre
  *       - in: query
  *         name: order
  *         schema:
  *           type: string
- *           enum: [asc, desc]
- *           default: asc
- *         description: "Dirección de orden"
+ *           enum: [ASC, DESC]
+ *           default: ASC
+ *         description: "Dirección de ordenamiento"
  *       - in: query
  *         name: limit
  *         schema:
  *           type: integer
  *           default: 10
+ *         description: "Cantidad máxima de registros"
  *         example: 5
  *       - in: query
  *         name: offset
  *         schema:
  *           type: integer
  *           default: 0
+ *         description: "Desde qué registro iniciar la paginación"
  *         example: 0
  *     responses:
  *       200:
  *         description: Lista de usuarios
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: true
+ *                 data:
+ *                   type: array
+ *                   items:
+ *                     $ref: '#/components/schemas/Usuario'
  */
 
 /**
  * @swagger
  * /usuarios/{id}:
  *   get:
- *     summary: Obtener un usuario por ID
+ *     summary: Obtener un usuario por su ID
  *     tags: [Usuarios]
  *     security:
  *       - bearerAuth: []
@@ -71,12 +79,16 @@
  *         required: true
  *         schema:
  *           type: integer
- *         example: 15
+ *         example: 3
  *     responses:
  *       200:
  *         description: Usuario encontrado
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Usuario'
  *       404:
- *         description: No encontrado
+ *         description: Usuario no encontrado
  */
 
 /**
@@ -95,21 +107,27 @@
  *             type: object
  *             required:
  *               - nombre
- *               - email
+ *               - apellido
+ *               - nombre_usuario
  *               - password
+ *               - tipo_usuario
  *             properties:
  *               nombre:
  *                 type: string
- *                 example: "Juan Pérez"
- *               email:
+ *                 example: "Ana"
+ *               apellido:
  *                 type: string
- *                 example: "juanperez@example.com"
+ *                 example: "Flores"
+ *               nombre_usuario:
+ *                 type: string
+ *                 example: "anaflor"
  *               password:
  *                 type: string
  *                 example: "123456"
- *               rol:
- *                 type: string
- *                 example: "cliente"
+ *               tipo_usuario:
+ *                 type: integer
+ *                 description: "1 = admin, 2 = empleado, 3 = cliente"
+ *                 example: 3
  *     responses:
  *       201:
  *         description: Usuario creado correctamente
@@ -119,7 +137,7 @@
 
 /**
  * @swagger
- * /usuarios/modificar/{usuario_id}:
+ * /usuarios/{usuario_id}:
  *   put:
  *     summary: Modificar un usuario existente
  *     tags: [Usuarios]
@@ -132,7 +150,7 @@
  *         schema:
  *           type: integer
  *         description: ID del usuario a modificar
- *         example: 3
+ *         example: 4
  *     requestBody:
  *       required: true
  *       content:
@@ -142,14 +160,20 @@
  *             properties:
  *               nombre:
  *                 type: string
- *                 example: "Juan Pérez Actualizado"
- *               email:
+ *                 example: "Ana María"
+ *               apellido:
  *                 type: string
- *                 example: "juanperez_nuevo@example.com"
- *               rol:
+ *                 example: "Flores"
+ *               nombre_usuario:
  *                 type: string
- *                 example: "admin"
- *               estado:
+ *                 example: "anaflor_nuevo"
+ *               password:
+ *                 type: string
+ *                 example: "nuevaClave2025"
+ *               tipo_usuario:
+ *                 type: integer
+ *                 example: 2
+ *               activo:
  *                 type: integer
  *                 example: 1
  *     responses:
@@ -163,9 +187,9 @@
 
 /**
  * @swagger
- * /usuarios/eliminar/{usuario_id}:
+ * /usuarios/{usuario_id}:
  *   delete:
- *     summary: Eliminar un usuario
+ *     summary: Eliminar (desactivar) un usuario
  *     tags: [Usuarios]
  *     security:
  *       - bearerAuth: []
@@ -181,5 +205,40 @@
  *         description: Usuario eliminado correctamente
  *       404:
  *         description: Usuario no encontrado
+ */
+
+/**
+ * @swagger
+ * components:
+ *   schemas:
+ *     Usuario:
+ *       type: object
+ *       properties:
+ *         usuario_id:
+ *           type: integer
+ *           example: 3
+ *         nombre:
+ *           type: string
+ *           example: "Oscar"
+ *         apellido:
+ *           type: string
+ *           example: "Ramirez"
+ *         nombre_usuario:
+ *           type: string
+ *           example: "oscar123"
+ *         tipo_usuario:
+ *           type: integer
+ *           example: 2
+ *         activo:
+ *           type: integer
+ *           example: 1
+ *         creado:
+ *           type: string
+ *           format: date-time
+ *           example: "2025-10-19T23:41:50Z"
+ *         modificado:
+ *           type: string
+ *           format: date-time
+ *           example: "2025-10-19T23:41:50Z"
  */
 
