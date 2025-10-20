@@ -4,6 +4,8 @@
  *   get:
  *     summary: Listar servicios
  *     tags: [Servicios]
+ *     security:
+ *       - bearerAuth: []
  *     parameters:
  *       - in: query
  *         name: estado
@@ -48,6 +50,8 @@
  *   get:
  *     summary: Obtener un servicio por ID
  *     tags: [Servicios]
+ *     security:
+ *       - bearerAuth: []
  *     parameters:
  *       - in: path
  *         name: id
@@ -68,6 +72,8 @@
  *   put:
  *     summary: Modificar un servicio existente
  *     tags: [Servicios]
+ *     security:
+ *       - bearerAuth: []
  *     parameters:
  *       - in: path
  *         name: servicio_id
@@ -106,6 +112,8 @@
  *   post:
  *     summary: Crear un servicio
  *     tags: [Servicios]
+ *     security:
+ *       - bearerAuth: []
  *     requestBody:
  *       required: true
  *       content:
@@ -133,6 +141,8 @@
  *   delete:
  *     summary: Eliminar un servicio
  *     tags: [Servicios]
+ *     security:
+ *       - bearerAuth: []
  *     parameters:
  *       - in: path
  *         name: servicio_id

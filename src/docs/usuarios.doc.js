@@ -11,6 +11,8 @@
  *   get:
  *     summary: Listar usuarios
  *     tags: [Usuarios]
+ *     security:
+ *       - bearerAuth: []
  *     parameters:
  *       - in: query
  *         name: estado
@@ -61,6 +63,8 @@
  *   get:
  *     summary: Obtener un usuario por ID
  *     tags: [Usuarios]
+ *     security:
+ *       - bearerAuth: []
  *     parameters:
  *       - in: path
  *         name: id
@@ -81,6 +85,8 @@
  *   post:
  *     summary: Crear un nuevo usuario
  *     tags: [Usuarios]
+ *     security:
+ *       - bearerAuth: []
  *     requestBody:
  *       required: true
  *       content:
@@ -117,6 +123,8 @@
  *   put:
  *     summary: Modificar un usuario existente
  *     tags: [Usuarios]
+ *     security:
+ *       - bearerAuth: []
  *     parameters:
  *       - in: path
  *         name: usuario_id
@@ -159,6 +167,8 @@
  *   delete:
  *     summary: Eliminar un usuario
  *     tags: [Usuarios]
+ *     security:
+ *       - bearerAuth: []
  *     parameters:
  *       - in: path
  *         name: usuario_id

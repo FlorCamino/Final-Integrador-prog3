@@ -43,6 +43,8 @@
  *   get:
  *     summary: Listar todos los turnos activos
  *     tags: [Turnos]
+ *     security:
+ *       - bearerAuth: []
  *     responses:
  *       200:
  *         description: Lista de turnos obtenida correctamente.
@@ -65,6 +67,8 @@
  *   get:
  *     summary: Obtener un turno por su ID
  *     tags: [Turnos]
+ *     security:
+ *       - bearerAuth: []
  *     parameters:
  *       - in: path
  *         name: id
@@ -85,6 +89,8 @@
  *   post:
  *     summary: Crear un nuevo turno
  *     tags: [Turnos]
+ *     security:
+ *       - bearerAuth: []
  *     requestBody:
  *       required: true
  *       content:
@@ -119,6 +125,8 @@
  *   put:
  *     summary: Actualizar un turno existente
  *     tags: [Turnos]
+ *     security:
+ *       - bearerAuth: []
  *     parameters:
  *       - in: path
  *         name: id
@@ -143,6 +151,8 @@
  *   delete:
  *     summary: Eliminar (soft delete) un turno por su ID
  *     tags: [Turnos]
+ *     security:
+ *       - bearerAuth: []
  *     parameters:
  *       - in: path
  *         name: id
