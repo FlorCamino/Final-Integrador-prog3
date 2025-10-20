@@ -5,6 +5,7 @@ import clearCache from './middlewares/clear.cache.js';
 import v1ServiciosRoutes from './v1/routes/servicios.routes.js';
 import salonesRoutes from './v1/routes/salones.routes.js';
 import turnosRoutes from './v1/routes/turnos.routes.js';
+import comentariosRoutes from './v1/routes/comentarios.routes.js';
 
 import { swaggerSpec, swaggerUiMiddleware } from './config/swagger.js';
 
@@ -23,7 +24,7 @@ app.use('/swagger', swaggerUiMiddleware.serve, swaggerUiMiddleware.setup(swagger
 app.use('/api/v1/servicios', cache('5 minutes'), v1ServiciosRoutes);
 app.use('/api/v1/salones', cache('5 minutes'), salonesRoutes);
 app.use('/api/v1/turnos', cache('5 minutes'), turnosRoutes);
-
+app.use('/api/v1/comentarios',cache('5 minutes'), comentariosRoutes);
 
 app.use((err, req, res, next) => {
   console.error('Error inesperado:', err.stack);
