@@ -24,13 +24,13 @@ router.post('/',
     usuariosController.crearUsuario
 );
 
-router.put('/modificar/:id', 
+router.put('/:id', 
     verificarToken,
     verificarRol('administrador'),
     usuariosController.modificarUsuario
 );
 
-router.delete('/eliminar/:id', 
+router.delete('/:id', 
     verificarToken,
     verificarRol('administrador'),
     usuariosController.eliminarUsuario

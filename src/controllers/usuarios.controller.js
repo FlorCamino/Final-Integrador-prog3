@@ -1,31 +1,105 @@
-import Usuarios from '../Models/usuarios.js';
+import UsuariosService from '../services/usuarios.service.js';
 
-export default class UsuariosService {
+export default class UsuariosController {
   constructor() {
-    this.usuariosModel = new Usuarios();
+    this.usuariosService = new UsuariosService();
   }
-    buscarTodos = async ({ limit = 10, offset = 0, estado, sort, order }) => {
-    limit = parseInt(limit, 10);
-    offset = parseInt(offset, 10);
-    if (isNaN(limit) || limit <= 0) limit = 10;
-    if (isNaN(offset) || offset < 0) offset = 0;
-    const { rows } = await this.usuariosModel.buscarTodosUsuarios({ limit, offset, estado, sort, order });
-    return { data: rows };
-  }
-    buscarPorId = async (id) => {
-    const usuario = await this.usuariosModel.buscarUsuarioPorId(id);
-    return usuario;
-  }
-    actualizarUsuario = async (usuario_id, datos) => {
-    const resultado = await this.usuariosModel.modificarUsuarioPorId(usuario_id, datos);
-    return resultado;
-  }
-    agregarUsuario = async (datos) => {
-    const nuevoUsuario = await this.usuariosModel.crearUsuario(datos);
-    return nuevoUsuario;
-  }
-    borrarUsuario = async (usuario_id) => {
-    const resultado = await this.usuariosModel.eliminarUsuarioPorId(usuario_id);
-    return resultado;
-  }
+
+  obtenerUsuarios = async (req, res) => {
+    try {
+      const { limit, offset, estado, sort, order } = req.query;
+      const { data } = await this.usuariosService.buscarTodos({ limit, offset, estado, sort, order });
+      res.status(200).json({ success: true, data });
+    } catch (err) {
+      res.status(500).json({ success: false, message: err.message });
+    }
+  };
+
+  obtenerUsuarioPorId = async (req, res) => {
+    try {
+      const id = parseInt(req.params.id, 10);
+      if (isNaN(id)) return res.status(400).json({ success: false, message: 'ID no válido.' });
+
+      const usuario = await this.usuariosService.buscarPorId(id);
+      if (!usuario)
+        return res.status(404).json({ success: false, message: 'Usuario no encontrado.' });
+
+      res.status(200).json({ success: true, data: usuario });
+    } catch (error) {
+      res.status(500).json({ success: false, message: error.message });
+    }
+  };
+
+  modificarUsuario = async (req, res) => {
+    try {
+      const { id } = req.params;
+      const { nombre, apellido, nombre_usuario, password, tipo_usuario, activo } = req.body;
+
+      if (!nombre || !apellido || !nombre_usuario || !tipo_usuario) {
+        return res
+          .status(400)
+          .json({ success: false, message: 'Faltan campos obligatorios.' });
+      }
+
+      const resultado = await this.usuariosService.actualizarUsuario(id, {
+        nombre,
+        apellido,
+        nombre_usuario,
+        password,
+        tipo_usuario,
+        activo,
+      });
+
+      if (resultado.affectedRows === 0) {
+        return res
+          .status(404)
+          .json({ success: false, message: 'Usuario no encontrado.' });
+      }
+
+      res.status(200).json({ success: true, message: 'Usuario modificado correctamente.' });
+    } catch (err) {
+      res.status(500).json({ success: false, message: err.message });
+    }
+  };
+
+  crearUsuario = async (req, res) => {
+    try {
+      const { nombre, apellido, nombre_usuario, password, tipo_usuario } = req.body;
+
+      if (!nombre || !apellido || !nombre_usuario || !password || !tipo_usuario) {
+        return res
+          .status(400)
+          .json({ success: false, message: 'Faltan campos obligatorios.' });
+      }
+
+      const nuevoUsuario = await this.usuariosService.agregarUsuario({
+        nombre,
+        apellido,
+        nombre_usuario,
+        password,
+        tipo_usuario,
+      });
+
+      res.status(201).json({ success: true, data: nuevoUsuario });
+    } catch (err) {
+      res.status(500).json({ success: false, message: err.message });
+    }
+  };
+
+  eliminarUsuario = async (req, res) => {
+    try {
+      const { id } = req.params;
+      const resultado = await this.usuariosService.borrarUsuario(id);
+
+      if (resultado.affectedRows === 0) {
+        return res
+          .status(404)
+          .json({ success: false, message: 'Usuario no encontrado.' });
+      }
+
+      res.status(200).json({ success: true, message: 'Usuario eliminado correctamente.' });
+    } catch (err) {
+      res.status(500).json({ success: false, message: err.message });
+    }
+  };
 }
