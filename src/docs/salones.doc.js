@@ -4,6 +4,8 @@
  *   get:
  *     summary: Listar salones
  *     tags: [Salones]
+ *     security:
+ *       - bearerAuth: []
  *     parameters:
  *       - in: query
  *         name: estado
@@ -43,6 +45,8 @@
  *   get:
  *     summary: Obtener un salón por ID
  *     tags: [Salones]
+ *     security:
+ *       - bearerAuth: []
  *     parameters:
  *       - in: path
  *         name: id
@@ -62,6 +66,8 @@
  *   post:
  *     summary: Crear un salón
  *     tags: [Salones]
+ *     security:
+ *       - bearerAuth: []
  *     requestBody:
  *       required: true
  *       content:
@@ -88,6 +94,8 @@
  *   put:
  *     summary: Modificar un salón existente
  *     tags: [Salones]
+ *     security:
+ *       - bearerAuth: []
  *     parameters:
  *       - in: path
  *         name: salon_id
@@ -122,6 +130,8 @@
  *   delete:
  *     summary: Eliminar un salón
  *     tags: [Salones]
+ *     security:
+ *       - bearerAuth: []
  *     parameters:
  *       - in: path
  *         name: salon_id
@@ -134,5 +144,3 @@
  *       404:
  *         description: No encontrado
  */
-
-// End of salones docs

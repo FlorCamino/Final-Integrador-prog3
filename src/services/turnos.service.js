@@ -1,4 +1,4 @@
-import Turnos from '../Models/turnos.js';
+import Turnos from '../models/turnos.js';
 
 export default class TurnosService {
   constructor() {

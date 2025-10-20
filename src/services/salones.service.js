@@ -1,4 +1,4 @@
-import Salones from '../Models/salones.js';
+import Salones from '../models/salones.js';
 
 export default class SalonesService {
   constructor() {
