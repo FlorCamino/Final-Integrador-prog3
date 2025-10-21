@@ -1,6 +1,6 @@
 import express from "express";
 import { check } from "express-validator";
-import { validarCampos } from "../../middlewares/validate.js";
+// import { validarCampos } from "../../middlewares/validate.js";
 import ComentariosController from "../../controllers/Comentarios.controller.js";
 
 const router = express.Router();
@@ -14,7 +14,7 @@ router.post(
     check("reserva_id", "El ID de reserva es obligatorio").notEmpty(),
     check("usuario_id", "El ID de usuario es obligatorio").notEmpty(),
     check("comentario", "El comentario no puede estar vacío").notEmpty(),
-    validarCampos, 
+    // validarCampos, 
   ],
   (req, res) => controller.crear(req, res)
 );
