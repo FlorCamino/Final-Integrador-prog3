@@ -9,96 +9,112 @@ dotenv.config();
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-const transporter = nodemailer.createTransport({
-  service: process.env.EMAIL_SERVICE || 'gmail',
-  auth: {
-    user: process.env.EMAIL_USER,
-    pass: process.env.EMAIL_PASS,
-  },
-});
+export class NotificationService {
+  static transporter;
+  static banners = [
+    'https://i.ibb.co/hF6VRk82/banner1.jpg',
+    'https://i.ibb.co/cScgsCfD/banner2.jpg',
+    'https://i.ibb.co/CXQGNQ9/banner3.jpg',
+    'https://i.ibb.co/C3rbYrs1/banner4.jpg',
+  ];
 
-const handlebarOptions = {
-  viewEngine: {
-    extName: '.hbs',
-    partialsDir: path.resolve(__dirname, '../views/emails/partials/'),
-    layoutsDir: path.resolve(__dirname, '../views/emails/layouts/'),
-    defaultLayout: 'main.hbs',
-  },
-  viewPath: path.resolve(__dirname, '../views/emails/'),
-  extName: '.hbs',
-};
+  static initTransporter() {
+    if (NotificationService.transporter) return NotificationService.transporter;
 
-transporter.use('compile', hbs(handlebarOptions));
+    if (!process.env.EMAIL_USER || !process.env.EMAIL_PASS) {
+      console.warn('Variables de entorno de correo no configuradas');
+      return null;
+    }
 
-const banners = [
-  'https://i.ibb.co/hF6VRk82/banner1.jpg',
-  'https://i.ibb.co/cScgsCfD/banner2.jpg',
-  'https://i.ibb.co/CXQGNQ9/banner3.jpg',
-  'https://i.ibb.co/C3rbYrs1/banner4.jpg',
-];
+    const transporter = nodemailer.createTransport({
+      service: process.env.EMAIL_SERVICE || 'gmail',
+      auth: {
+        user: process.env.EMAIL_USER,
+        pass: process.env.EMAIL_PASS,
+      },
+    });
 
-export async function enviarCorreoReserva(reserva) {
-  const bannerUrl = banners[Math.floor(Math.random() * banners.length)];
+    const handlebarOptions = {
+      viewEngine: {
+        extName: '.hbs',
+        partialsDir: path.resolve(__dirname, '../views/emails/partials/'),
+        layoutsDir: path.resolve(__dirname, '../views/emails/layouts/'),
+        defaultLayout: 'main.hbs',
+      },
+      viewPath: path.resolve(__dirname, '../views/emails/'),
+      extName: '.hbs',
+    };
 
-  if (!reserva?.emailCliente) {
-    console.warn('No se pudo enviar correo: falta el campo emailCliente.');
-    return;
+    transporter.use('compile', hbs(handlebarOptions));
+    NotificationService.transporter = transporter;
+    return transporter;
   }
 
-  const mailOptions = {
-    from: `"Reservas PKES" <${process.env.EMAIL_USER}>`,
-    to: reserva.emailCliente,
-    subject: '🎉 Confirmación de tu Reserva',
-    template: 'reserva',
-    context: {
-      nombreCliente: reserva.nombreCliente || 'Cliente',
-      salon: reserva.salon || 'Sin especificar',
-      fecha: reserva.fecha || 'No definida',
-      importe: reserva.importe || 0,
-      year: new Date().getFullYear(),
-      bannerUrl,
-      port: process.env.PORT || 3000,
-    },
-  };
+  static async sendReservaCliente(reserva) {
+    const transporter = NotificationService.initTransporter();
+    if (!transporter || !reserva?.emailCliente) {
+      console.warn('No se puede enviar correo: falta emailCliente o configuración SMTP.');
+      return;
+    }
 
-  try {
-    await transporter.sendMail(mailOptions);
-    console.log(`Correo de confirmación enviado a ${reserva.emailCliente}`);
-  } catch (error) {
-    console.error('Error enviando correo de reserva:', error.message);
-  }
-}
+    const bannerUrl = NotificationService.randomBanner();
 
-export async function enviarCorreoAdministrador(reserva) {
-  const bannerUrl = banners[Math.floor(Math.random() * banners.length)];
+    const mailOptions = {
+      from: `"Reservas PKES" <${process.env.EMAIL_USER}>`,
+      to: reserva.emailCliente,
+      subject: '🎉 Confirmación de tu Reserva',
+      template: 'reserva',
+      context: {
+        nombreCliente: reserva.nombreCliente || 'Cliente',
+        salon: reserva.salon || 'Sin especificar',
+        fecha: reserva.fecha || 'No definida',
+        importe: reserva.importe || 0,
+        year: new Date().getFullYear(),
+        bannerUrl,
+      },
+    };
 
-  if (!process.env.EMAIL_USER) {
-    return;
+    await NotificationService.safeSend(transporter, mailOptions);
   }
 
-  const mailOptions = {
-    from: `"Sistema PKES" <${process.env.EMAIL_USER}>`,
-    to: process.env.EMAIL_USER,
-    subject: 'Nueva Reserva Registrada',
-    template: 'reserva.admin',
-    context: {
-      nombreCliente: reserva.nombreCliente || 'Cliente',
-      emailCliente: reserva.emailCliente || 'Sin correo',
-      salon: reserva.salon || 'Sin especificar',
-      fecha: reserva.fecha || 'No definida',
-      importeSalon: reserva.importe_salon || 0,
-      importeTotal: reserva.importe_total || 0,
-      tematica: reserva.tematica || 'Sin especificar',
-      year: new Date().getFullYear(),
-      bannerUrl,
-      port: process.env.PORT || 3000,
-    },
-  };
+  static async sendReservaAdmin(reserva) {
+    const transporter = NotificationService.initTransporter();
+    if (!transporter || !process.env.EMAIL_USER) return;
 
-  try {
-    await transporter.sendMail(mailOptions);
-    console.log(`Notificación enviada al administrador: ${process.env.EMAIL_USER}`);
-  } catch (error) {
-    console.error('Error enviando correo al administrador:', error.message);
+    const bannerUrl = NotificationService.randomBanner();
+
+    const mailOptions = {
+      from: `"Sistema PKES" <${process.env.EMAIL_USER}>`,
+      to: process.env.EMAIL_USER,
+      subject: 'Nueva Reserva Registrada',
+      template: 'reserva.admin',
+      context: {
+        nombreCliente: reserva.nombreCliente || 'Cliente',
+        emailCliente: reserva.emailCliente || 'Sin correo',
+        salon: reserva.salon || 'Sin especificar',
+        fecha: reserva.fecha || 'No definida',
+        importeSalon: reserva.importe_salon || 0,
+        importeTotal: reserva.importe_total || 0,
+        tematica: reserva.tematica || 'Sin especificar',
+        year: new Date().getFullYear(),
+        bannerUrl,
+      },
+    };
+
+    await NotificationService.safeSend(transporter, mailOptions);
+  }
+
+  static async safeSend(transporter, mailOptions) {
+    try {
+      await transporter.sendMail(mailOptions);
+      console.log(`Correo enviado correctamente a ${mailOptions.to}`);
+    } catch (error) {
+      console.error(`Error al enviar correo a ${mailOptions.to}:`, error.message);
+    }
+  }
+
+  static randomBanner() {
+    const banners = NotificationService.banners;
+    return banners[Math.floor(Math.random() * banners.length)];
   }
 }

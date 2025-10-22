@@ -1,5 +1,12 @@
 /**
  * @swagger
+ * tags:
+ *   name: Salones
+ *   description: API para la gestión de salones de eventos.
+ */
+
+/**
+ * @swagger
  * /salones:
  *   get:
  *     summary: Listar salones
@@ -11,19 +18,21 @@
  *         name: estado
  *         schema:
  *           type: integer
- *         description: "1 activo, 0 inactivo"
+ *         description: "1 = activo, 0 = inactivo"
  *         example: 1
  *       - in: query
  *         name: sort
  *         schema:
  *           type: string
  *           enum: [titulo, importe, capacidad, creado, modificado]
+ *         description: Campo por el cual ordenar los resultados
  *       - in: query
  *         name: order
  *         schema:
  *           type: string
  *           enum: [asc, desc]
  *           default: asc
+ *         description: Orden ascendente o descendente
  *       - in: query
  *         name: limit
  *         schema:
@@ -36,7 +45,7 @@
  *           default: 0
  *     responses:
  *       200:
- *         description: Lista de salones
+ *         description: Lista de salones obtenida correctamente
  */
 
 /**
@@ -55,16 +64,16 @@
  *           type: integer
  *     responses:
  *       200:
- *         description: Salón encontrado
+ *         description: Salón encontrado correctamente
  *       404:
- *         description: No encontrado
+ *         description: No se encontró el salón
  */
 
 /**
  * @swagger
  * /salones:
  *   post:
- *     summary: Crear un salón
+ *     summary: Crear un nuevo salón
  *     tags: [Salones]
  *     security:
  *       - bearerAuth: []
@@ -72,15 +81,13 @@
  *       required: true
  *       content:
  *         application/json:
- *           schema:
- *             type: object
- *             properties:
- *               titulo: { type: string }
- *               direccion: { type: string }
- *               latitud: { type: number }
- *               longitud: { type: number }
- *               capacidad: { type: integer }
- *               importe: { type: number }
+ *           example:
+ *             titulo: "Salón PKES Premium"
+ *             direccion: "Av. Siempre Viva 123"
+ *             latitud: -31.42
+ *             longitud: -64.18
+ *             capacidad: 120
+ *             importe: 250000
  *     responses:
  *       201:
  *         description: Salón creado correctamente
@@ -90,7 +97,7 @@
 
 /**
  * @swagger
- * /salones/modificar/{salon_id}:
+ * /salones/{salon_id}:
  *   put:
  *     summary: Modificar un salón existente
  *     tags: [Salones]
@@ -106,29 +113,27 @@
  *       required: true
  *       content:
  *         application/json:
- *           schema:
- *             type: object
- *             properties:
- *               titulo: { type: string }
- *               direccion: { type: string }
- *               latitud: { type: number }
- *               longitud: { type: number }
- *               capacidad: { type: integer }
- *               importe: { type: number }
+ *           example:
+ *             titulo: "Salón PKES Kids"
+ *             direccion: "Calle Principal 456"
+ *             latitud: -31.43
+ *             longitud: -64.19
+ *             capacidad: 100
+ *             importe: 180000
  *     responses:
  *       200:
  *         description: Salón modificado correctamente
  *       400:
  *         description: Datos inválidos
  *       404:
- *         description: No encontrado
+ *         description: No se encontró el salón
  */
 
 /**
  * @swagger
- * /salones/eliminar/{salon_id}:
+ * /salones/{salon_id}:
  *   delete:
- *     summary: Eliminar un salón
+ *     summary: Eliminar (soft delete) un salón
  *     tags: [Salones]
  *     security:
  *       - bearerAuth: []
@@ -142,5 +147,5 @@
  *       200:
  *         description: Salón eliminado correctamente
  *       404:
- *         description: No encontrado
+ *         description: No se encontró el salón
  */

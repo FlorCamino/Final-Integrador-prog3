@@ -6,9 +6,16 @@ dotenv.config();
 
 const PORT = process.env.PORT || 4000;
 
-await initDatabase();
+(async () => {
+  try {
+    await initDatabase();
 
-app.listen(PORT, () => {
-  console.log(`Servidor en http://localhost:${PORT}`);
-  console.log(`Swagger docs en http://localhost:${PORT}/swagger`);
-});
+    app.listen(PORT, () => {
+      console.log(`Servidor iniciado en http://localhost:${PORT}`);
+      console.log(`Swagger disponible en http://localhost:${PORT}/swagger`);
+    });
+  } catch (error) {
+    console.error('Error al iniciar el servidor', error.message);
+    process.exit(1);
+  }
+})();

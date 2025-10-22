@@ -1,48 +1,39 @@
-import bcrypt from 'bcryptjs';
-import conexion from '../config/db.js';
-import { generateToken } from '../utils/jwt.js';
-import { roles } from '../config/roles.js';
+import AuthService from '../services/auth.service.js';
+import { ResponseBuilder } from '../utils/responseBuilder.js';
+import { ErrorResponse } from '../utils/ErrorResponse.js';
 
 export class AuthController {
-  static async login(req, res) {
-    const { nombre_usuario, contrasenia } = req.body;
-
-    try {
-      const conn = await conexion();
-
-      const [rows] = await conn.query(
-        'SELECT * FROM usuarios WHERE nombre_usuario = ? AND activo = 1',
-        [nombre_usuario]
-      );
-
-      if (rows.length === 0)
-        return res.status(401).json({ mensaje: 'Usuario no encontrado' });
-
-      const usuario = rows[0];
-      const passwordOk = await bcrypt.compare(contrasenia, usuario.contrasenia);
-      
-      if (!passwordOk)
-        return res.status(401).json({ mensaje: 'Contraseña incorrecta' });
-
-      const rol = roles[usuario.tipo_usuario] || 'desconocido';
-      const token = generateToken({
-        id: usuario.usuario_id,
-        nombre_usuario: usuario.nombre_usuario,
-        rol,
-      });
-
-      return res.json({
-        mensaje: 'Inicio de sesión exitoso',
-        token,
-        usuario: {
-          id: usuario.usuario_id,
-          nombre: usuario.nombre,
-          rol,
-        },
-      });
-    } catch (error) {
-      console.error('Error en login:', error);
-      return res.status(500).json({ error: 'Error interno', detalle: error.message });
-    }
+  constructor() {
+    this.authService = new AuthService();
   }
+
+  login = async (req, res) => {
+    try {
+      const { nombre_usuario, contrasenia } = req.body;
+
+      if (!nombre_usuario || !contrasenia) {
+        throw new ErrorResponse('Nombre de usuario y contraseña son requeridos', 400);
+      }
+
+      const resultado = await this.authService.login(nombre_usuario, contrasenia);
+
+      return ResponseBuilder.success(res, resultado, 'Inicio de sesión exitoso');
+    } catch (error) {
+      return ResponseBuilder.handleError(res, error);
+    }
+  };
+
+  validarToken = async (req, res) => {
+    try {
+      const authHeader = req.headers['authorization'];
+      const token = authHeader && authHeader.split(' ')[1];
+
+      if (!token) throw new ErrorResponse('Token no proporcionado', 401);
+
+      const decoded = await this.authService.validarToken(token);
+      return ResponseBuilder.success(res, decoded, 'Token válido');
+    } catch (error) {
+      return ResponseBuilder.handleError(res, error);
+    }
+  };
 }

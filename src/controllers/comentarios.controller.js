@@ -1,4 +1,6 @@
-import ComentariosService from "../services/comentarios.service.js";
+import ComentariosService from '../services/comentarios.service.js';
+import { ResponseBuilder } from '../utils/responseBuilder.js';
+import { ErrorResponse } from '../utils/errorResponse.js';
 
 export default class ComentariosController {
   constructor() {
@@ -8,37 +10,63 @@ export default class ComentariosController {
   async obtenerPorReserva(req, res) {
     try {
       const { reserva_id } = req.params;
+
+      if (!reserva_id || isNaN(reserva_id)) {
+        throw new ErrorResponse('El ID de reserva no es válido', 400);
+      }
+
       const comentarios = await this.comentariosService.obtenerPorReserva(reserva_id);
-      return res.json({ success: true, data: comentarios });
+
+      if (!comentarios || comentarios.length === 0) {
+        return ResponseBuilder.success(res, [], 'No hay comentarios para esta reserva');
+      }
+
+      return ResponseBuilder.success(res, comentarios, 'Comentarios obtenidos correctamente');
     } catch (error) {
-      console.error("❌ Error en obtenerPorReserva:", error);
-      return res.status(500).json({ success: false, message: error.message });
+      console.error('Error en obtenerPorReserva:', error);
+      return ResponseBuilder.handleError(res, error);
     }
   }
 
   async crear(req, res) {
     try {
-      const payload = { ...req.body };
-      if (req.usuario && req.usuario.id) {
-        payload.usuario_id = req.usuario.id;
+      const { reserva_id, usuario_id, comentario, calificacion } = req.body;
+
+      if (!reserva_id || !usuario_id || !comentario) {
+        throw new ErrorResponse('Los campos reserva_id, usuario_id y comentario son obligatorios', 400);
       }
 
-      const comentario = await this.comentariosService.crear(payload);
-      return res.status(201).json({ success: true, data: comentario });
+      const nuevoComentario = await this.comentariosService.crear({
+        reserva_id,
+        usuario_id,
+        comentario,
+        calificacion: calificacion ?? null,
+      });
+
+      return ResponseBuilder.success(res, nuevoComentario, 'Comentario creado correctamente', 201);
     } catch (error) {
-      console.error("❌ Error en crear comentario:", error);
-      return res.status(500).json({ success: false, message: error.message });
+      console.error('Error en crear comentario:', error);
+      return ResponseBuilder.handleError(res, error);
     }
   }
 
   async eliminar(req, res) {
     try {
       const { comentario_id } = req.params;
-      await this.comentariosService.eliminar(comentario_id);
-      return res.json({ success: true, message: "Comentario eliminado" });
+
+      if (!comentario_id || isNaN(comentario_id)) {
+        throw new ErrorResponse('El ID de comentario no es válido', 400);
+      }
+
+      const resultado = await this.comentariosService.eliminar(comentario_id);
+      if (resultado.affectedRows === 0) {
+        throw new ErrorResponse('Comentario no encontrado', 404);
+      }
+
+      return ResponseBuilder.success(res, null, 'Comentario eliminado correctamente');
     } catch (error) {
-      console.error("❌ Error en eliminar comentario:", error);
-      return res.status(500).json({ success: false, message: error.message });
+      console.error('Error en eliminar comentario:', error);
+      return ResponseBuilder.handleError(res, error);
     }
   }
 }

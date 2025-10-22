@@ -1,10 +1,9 @@
-import conexion from "../config/db.js";
+import e from 'express';
+import { ejecutarConsulta } from '../config/db.js';
 import bcrypt from "bcrypt";
 
 export default class Usuarios {
   async buscarTodosUsuarios({ limit = 10, offset = 0, estado, sort, order } = {}) {
-    const conn = await conexion();
-    try {
       let query = `
         SELECT usuario_id, nombre, apellido, nombre_usuario, tipo_usuario, activo, creado, modificado
         FROM usuarios
@@ -28,38 +27,22 @@ export default class Usuarios {
       query += ` ORDER BY ${sortField} ${direction} LIMIT ? OFFSET ?`;
       params.push(Number(limit), Number(offset));
 
-      const [rows] = await conn.query(query, params);
+      const [rows] = await ejecutarConsulta(query, params);
       return rows;
-    } finally {
-      await conn.end();
-    }
   }
 
   async buscarUsuarioPorId(usuario_id) {
-    const conn = await conexion();
-    try {
-      const [rows] = await conn.query(
+      const [rows] = await ejecutarConsulta(
         `SELECT usuario_id, nombre, apellido, nombre_usuario, tipo_usuario, activo, creado, modificado
          FROM usuarios WHERE usuario_id = ?`,
         [usuario_id]
       );
       return rows[0] || null;
-    } finally {
-      await conn.end();
-    }
   }
 
   async crearUsuario({ nombre, apellido, nombre_usuario, password, tipo_usuario }) {
-    const conn = await conexion();
-    try {
-      const [existing] = await conn.query("SELECT usuario_id FROM usuarios WHERE nombre_usuario = ?", [nombre_usuario]);
-      if (existing && existing.length > 0) {
-        const err = new Error('Usuario existente');
-        err.code = 'USER_EXISTS';
-        throw err;
-      }
       const hashedPassword = await bcrypt.hash(password, 10);
-      const [result] = await conn.query(
+      const [result] = await ejecutarConsulta(
         `INSERT INTO usuarios (nombre, apellido, nombre_usuario, contrasenia, tipo_usuario, activo, creado, modificado)
          VALUES (?, ?, ?, ?, ?, 1, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)`,
         [nombre, apellido, nombre_usuario, hashedPassword, tipo_usuario]
@@ -73,14 +56,9 @@ export default class Usuarios {
         tipo_usuario,
         activo: 1,
       };
-    } finally {
-      await conn.end();
-    }
   }
 
   async modificarUsuarioPorId(usuario_id, { nombre, apellido, nombre_usuario, password, tipo_usuario, activo }) {
-    const conn = await conexion();
-    try {
       const updates = [];
       const params = [];
 
@@ -119,34 +97,21 @@ export default class Usuarios {
       `;
       params.push(usuario_id);
 
-      const [result] = await conn.query(query, params);
+      const [result] = await ejecutarConsulta(query, params);
       return result;
-    } finally {
-      await conn.end();
-    }
   }
 
   async eliminarUsuarioPorId(usuario_id) {
-    const conn = await conexion();
-    try {
-      const [result] = await conn.query(
+      const [result] = await ejecutarConsulta(
         "UPDATE usuarios SET activo = 0, modificado = CURRENT_TIMESTAMP WHERE usuario_id = ?",
         [usuario_id]
       );
       return result;
-    } finally {
-      await conn.end();
-    }
   }
 
   async buscarUsuarioPorNombreUsuario(nombre_usuario) {
-    const conn = await conexion();
-    try {
-      const [rows] = await conn.query("SELECT * FROM usuarios WHERE nombre_usuario = ?", [nombre_usuario]);
-      return rows[0] || null;
-    } finally {
-      await conn.end();
-    }
+    const [rows] = await ejecutarConsulta("SELECT * FROM usuarios WHERE nombre_usuario = ?", [nombre_usuario]);
+    return rows[0] || null;
   }
 
   async validarCredenciales(nombre_usuario, password) {

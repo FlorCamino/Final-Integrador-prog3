@@ -1,5 +1,12 @@
 /**
  * @swagger
+ * tags:
+ *   name: Servicios
+ *   description: API para la gestión de servicios disponibles.
+ */
+
+/**
+ * @swagger
  * /servicios:
  *   get:
  *     summary: Listar servicios
@@ -11,14 +18,14 @@
  *         name: estado
  *         schema:
  *           type: integer
- *         description: "1 activo, 0 inactivo"
+ *         description: "1 = activo, 0 = inactivo"
  *         example: 1
  *       - in: query
  *         name: sort
  *         schema:
  *           type: string
  *           enum: [importe, descripcion, creado, modificado]
- *         description: "Campo para ordenar"
+ *         description: Campo por el cual ordenar los resultados
  *         example: importe
  *       - in: query
  *         name: order
@@ -26,22 +33,24 @@
  *           type: string
  *           enum: [asc, desc]
  *           default: asc
- *         description: "Dirección de orden"
+ *         description: Dirección del orden
  *       - in: query
  *         name: limit
  *         schema:
  *           type: integer
  *           default: 10
+ *         description: Cantidad máxima de resultados a devolver
  *         example: 5
  *       - in: query
  *         name: offset
  *         schema:
  *           type: integer
  *           default: 0
+ *         description: Cantidad de resultados a omitir (para paginación)
  *         example: 0
  *     responses:
  *       200:
- *         description: Lista de servicios
+ *         description: Lista de servicios obtenida correctamente
  */
 
 /**
@@ -61,14 +70,36 @@
  *         example: 12
  *     responses:
  *       200:
- *         description: Servicio encontrado
+ *         description: Servicio encontrado correctamente
  *       404:
- *         description: No encontrado
+ *         description: Servicio no encontrado
  */
 
 /**
  * @swagger
- * /servicios/modificar/{servicio_id}:
+ * /servicios:
+ *   post:
+ *     summary: Crear un nuevo servicio
+ *     tags: [Servicios]
+ *     security:
+ *       - bearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           example:
+ *             descripcion: "Servicio de inflable infantil"
+ *             importe: 12500
+ *     responses:
+ *       201:
+ *         description: Servicio creado correctamente
+ *       400:
+ *         description: Datos inválidos
+ */
+
+/**
+ * @swagger
+ * /servicios/{servicio_id}:
  *   put:
  *     summary: Modificar un servicio existente
  *     tags: [Servicios]
@@ -86,15 +117,9 @@
  *       required: true
  *       content:
  *         application/json:
- *           schema:
- *             type: object
- *             properties:
- *               descripcion:
- *                 type: string
- *                 example: "Servicio de animación infantil"
- *               importe:
- *                 type: number
- *                 example: 15000
+ *           example:
+ *             descripcion: "Servicio de animación infantil"
+ *             importe: 15000
  *     responses:
  *       200:
  *         description: Servicio modificado correctamente
@@ -108,38 +133,9 @@
 
 /**
  * @swagger
- * /servicios:
- *   post:
- *     summary: Crear un servicio
- *     tags: [Servicios]
- *     security:
- *       - bearerAuth: []
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             type: object
- *             properties:
- *               descripcion:
- *                 type: string
- *               importe:
- *                 type: number
- *           example:
- *             descripcion: "Servicio de inflable infantil"
- *             importe: 12500
- *     responses:
- *       201:
- *         description: Servicio creado correctamente
- *       400:
- *         description: Datos inválidos
- */
-
-/**
- * @swagger
- * /servicios/eliminar/{servicio_id}:
+ * /servicios/{servicio_id}:
  *   delete:
- *     summary: Eliminar un servicio
+ *     summary: Eliminar (soft delete) un servicio
  *     tags: [Servicios]
  *     security:
  *       - bearerAuth: []

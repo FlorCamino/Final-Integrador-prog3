@@ -1,4 +1,6 @@
 import UsuariosService from '../services/usuarios.service.js';
+import { ResponseBuilder } from '../utils/responseBuilder.js';
+import { ErrorResponse } from '../utils/errorResponse.js';
 
 export default class UsuariosController {
   constructor() {
@@ -9,24 +11,45 @@ export default class UsuariosController {
     try {
       const { limit, offset, estado, sort, order } = req.query;
       const { data } = await this.usuariosService.buscarTodos({ limit, offset, estado, sort, order });
-      res.status(200).json({ success: true, data });
-    } catch (err) {
-      res.status(500).json({ success: false, message: err.message });
+      return ResponseBuilder.success(res, data, 'Listado de usuarios obtenido correctamente');
+    } catch (error) {
+      return ResponseBuilder.handleError(res, error);
     }
   };
 
   obtenerUsuarioPorId = async (req, res) => {
     try {
       const id = parseInt(req.params.id, 10);
-      if (isNaN(id)) return res.status(400).json({ success: false, message: 'ID no válido.' });
+      if (isNaN(id)) throw new ErrorResponse('ID no válido', 400);
 
       const usuario = await this.usuariosService.buscarPorId(id);
-      if (!usuario)
-        return res.status(404).json({ success: false, message: 'Usuario no encontrado.' });
+      if (!usuario) throw new ErrorResponse('Usuario no encontrado', 404);
 
-      res.status(200).json({ success: true, data: usuario });
+      return ResponseBuilder.success(res, usuario, 'Usuario obtenido correctamente');
     } catch (error) {
-      res.status(500).json({ success: false, message: error.message });
+      return ResponseBuilder.handleError(res, error);
+    }
+  };
+
+  crearUsuario = async (req, res) => {
+    try {
+      const { nombre, apellido, nombre_usuario, password, tipo_usuario } = req.body;
+
+      if (!nombre || !apellido || !nombre_usuario || !password || !tipo_usuario) {
+        throw new ErrorResponse('Todos los campos son obligatorios', 400);
+      }
+
+      const nuevoUsuario = await this.usuariosService.agregarUsuario({
+        nombre,
+        apellido,
+        nombre_usuario,
+        password,
+        tipo_usuario,
+      });
+
+      return ResponseBuilder.success(res, nuevoUsuario, 'Usuario creado correctamente', 201);
+    } catch (error) {
+      return ResponseBuilder.handleError(res, error);
     }
   };
 
@@ -34,7 +57,9 @@ export default class UsuariosController {
     try {
       const { id } = req.params;
 
-      const { nombre, apellido, nombre_usuario, contrasenia, tipo_usuario, activo } = req.body;
+      if (!nombre || !apellido || !nombre_usuario || !tipo_usuario) {
+        throw new ErrorResponse('Faltan campos obligatorios', 400);
+      }
 
       const datosActualizar = {
         ...(nombre !== undefined && { nombre }),
@@ -48,62 +73,28 @@ export default class UsuariosController {
       const resultado = await this.usuariosService.actualizarUsuario(id, datosActualizar);
 
       if (resultado.affectedRows === 0) {
-        return res
-          .status(404)
-          .json({ success: false, message: 'Usuario no encontrado.' });
+        throw new ErrorResponse('Usuario no encontrado', 404);
       }
 
-      res.status(200).json({ success: true, message: 'Usuario modificado correctamente.' });
-    } catch (err) {
-      if (err && err.code === 'ER_DUP_ENTRY') {
-        return res.status(409).json({ success: false, message: 'Nombre de usuario ya existe.' });
-      }
-      res.status(500).json({ success: false, message: err.message });
-    }
-  };
-
-  crearUsuario = async (req, res) => {
-    try {
-
-      const { nombre, apellido, nombre_usuario, contrasenia, tipo_usuario } = req.body;
-
-      if (!nombre || !apellido || !nombre_usuario || !contrasenia || !tipo_usuario) {
-        return res
-          .status(400)
-          .json({ success: false, message: 'Faltan campos obligatorios.' });
-      }
-
-      const nuevoUsuario = await this.usuariosService.agregarUsuario({
-        nombre,
-        apellido,
-        nombre_usuario,
-        password: contrasenia,
-        tipo_usuario,
-      });
-
-      res.status(201).json({ success: true, data: nuevoUsuario });
-    } catch (err) {
-      if (err.code === 'USER_EXISTS') {
-        return res.status(409).json({ success: false, message: 'Nombre de usuario ya existe.' });
-      }
-      res.status(500).json({ success: false, message: err.message });
+      return ResponseBuilder.success(res, null, 'Usuario modificado correctamente');
+    } catch (error) {
+      return ResponseBuilder.handleError(res, error);
     }
   };
 
   eliminarUsuario = async (req, res) => {
     try {
       const { id } = req.params;
-      const resultado = await this.usuariosService.borrarUsuario(id);
+      if (isNaN(id)) throw new ErrorResponse('ID no válido', 400);
 
+      const resultado = await this.usuariosService.borrarUsuario(id);
       if (resultado.affectedRows === 0) {
-        return res
-          .status(404)
-          .json({ success: false, message: 'Usuario no encontrado.' });
+        throw new ErrorResponse('Usuario no encontrado', 404);
       }
 
-      res.status(200).json({ success: true, message: 'Usuario eliminado correctamente.' });
-    } catch (err) {
-      res.status(500).json({ success: false, message: err.message });
+      return ResponseBuilder.success(res, null, 'Usuario eliminado correctamente');
+    } catch (error) {
+      return ResponseBuilder.handleError(res, error);
     }
   };
 }

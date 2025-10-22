@@ -1,9 +1,9 @@
-import conexion from '../config/db.js'; 
+import { ejecutarConsulta } from '../config/db.js';
 
 export default class Servicio {
 
   buscarTodosServicios = async ({ limit, offset, estado, sort, order }) => {
-  const conn = await conexion();
+  
   let baseQuery = 'FROM servicios WHERE 1=1';
     const params = [];
     if (estado !== undefined) {
@@ -18,55 +18,27 @@ export default class Servicio {
     if (sortField) query += ` ORDER BY ${sortField} ${direction}`;
     query += ' LIMIT ? OFFSET ?';
     params.push(limit, offset);
-    const [rows] = await conn.query(query, params);
-    await conn.end();
+    const [rows] = await ejecutarConsulta(query, params);
     return { rows };
   }
 
   buscarServicioPorId = async (id) => {
-    const conn = await conexion();
-    const [rows] = await conn.query('SELECT * FROM servicios WHERE servicio_id = ?', [id]);
-    await conn.end();
+    const [rows] = await ejecutarConsulta('SELECT * FROM servicios WHERE servicio_id = ?', [id]);
     return rows.length > 0 ? rows[0] : null;
   }
 
 
-  modificarServicioPorId = async (servicio_id, datos) => {
-    const conn = await conexion();
-    const fields = [];
-    const params = [];
-    if (datos.descripcion !== undefined) {
-      fields.push('descripcion = ?');
-      params.push(datos.descripcion);
-    }
-    if (datos.importe !== undefined) {
-      fields.push('importe = ?');
-      params.push(datos.importe);
-    }
-    if (datos.activo !== undefined) {
-      fields.push('activo = ?');
-      params.push(datos.activo);
-    }
-
-    if (fields.length === 0) {
-      await conn.end();
-      return { affectedRows: 0 };
-    }
-
-    const query = `UPDATE servicios SET ${fields.join(', ')} WHERE servicio_id = ?`;
-    params.push(servicio_id);
-    const [result] = await conn.query(query, params);
-    await conn.end();
+  modificarServicioPorId = async (servicio_id, { descripcion, importe }) => {
+    const query = 'UPDATE servicios SET descripcion = ?, importe = ? WHERE servicio_id = ?';
+    const [result] = await ejecutarConsulta(query, [descripcion, importe, servicio_id]);
     return result;
   };
 
   crearServicio = async ({ descripcion, importe }) => {
-    const conn = await conexion();
-    const [result] = await conn.query(
+    const [result] = await ejecutarConsulta(
       `INSERT INTO servicios (descripcion, importe, activo) VALUES (?, ?, 1)`,
       [descripcion, importe]
     );
-    await conn.end();
     return {
       servicio_id: result.insertId,
       descripcion,
@@ -76,10 +48,8 @@ export default class Servicio {
   }
 
   eliminarServicioPorId = async (servicio_id) => {
-    const conn = await conexion();
     const query = 'UPDATE servicios SET activo= 0 WHERE servicio_id = ?';
-    const [result] = await conn.query(query, [servicio_id]);
-    await conn.end();
+    const [result] = await ejecutarConsulta(query, [servicio_id]);
     return result;
   }
 }
