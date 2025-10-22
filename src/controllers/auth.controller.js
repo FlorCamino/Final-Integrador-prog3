@@ -1,6 +1,6 @@
 import AuthService from '../services/auth.service.js';
 import { ResponseBuilder } from '../utils/responseBuilder.js';
-import { ErrorResponse } from '../utils/ErrorResponse.js';
+import { ErrorResponse } from '../utils/errorResponse.js';
 
 export class AuthController {
   constructor() {

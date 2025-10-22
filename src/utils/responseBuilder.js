@@ -1,4 +1,4 @@
-import { ErrorResponse } from './ErrorResponse.js';
+import { ErrorResponse } from './errorResponse.js';
 
 export class ResponseBuilder {
   static success(res, data, message = 'Operación exitosa', statusCode = 200) {

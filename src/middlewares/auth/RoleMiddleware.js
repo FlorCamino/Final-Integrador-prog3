@@ -1,5 +1,5 @@
 import { ResponseBuilder } from '../../utils/responseBuilder.js';
-import { ErrorResponse } from '../../utils/ErrorResponse.js';
+import { ErrorResponse } from '../../utils/errorResponse.js';
 import { obtenerNombreRol } from '../../enums/roles.js';
 
 export class RoleMiddleware {

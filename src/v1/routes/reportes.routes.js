@@ -14,4 +14,10 @@ router.get(
   controller.generarExcel
 );
 
+router.get(
+  '/reservas/csv',
+  [JWTMiddleware.verificar, RoleMiddleware.verificar(ROLES.ADMINISTRADOR)],
+  controller.generarCSV
+);
+
 export default router;

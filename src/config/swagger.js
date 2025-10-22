@@ -41,7 +41,9 @@ const swaggerOptions = {
   ],
 };
 
-const swaggerSpec = swaggerJSDoc(swaggerOptions);
+export const swaggerSpec = swaggerJSDoc(swaggerOptions);
+
+export const swaggerUiMiddleware = swaggerUi;
 
 export function setupSwagger(app) {
   app.use('/swagger', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
