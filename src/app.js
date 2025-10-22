@@ -10,6 +10,7 @@ import turnosRoutes from './v1/routes/turnos.routes.js';
 import comentariosRoutes from './v1/routes/comentarios.routes.js';
 import authRoutes from './v1/routes/auth.routes.js';
 import usuariosRoutes from './v1/routes/usuarios.routes.js';
+import reportesRoutes from './v1/routes/reportes.routes.js';
 
 const app = express();
 const cache = apicache.middleware;
@@ -26,6 +27,7 @@ app.use('/api/v1/turnos', cache('5 minutes'), turnosRoutes);
 app.use('/api/v1/comentarios', cache('5 minutes'), comentariosRoutes);
 app.use('/api/v1/auth', authRoutes);
 app.use('/api/v1/usuarios', cache('5 minutes'), usuariosRoutes);
+app.use('/api/v1/reportes', reportesRoutes);
 
 app.use((req, res) => {
   res.status(404).json({ success: false, message: 'Ruta no encontrada' });

@@ -1,0 +1,36 @@
+import { ExcelBuilder } from '../utils/excelBuilder.js';
+import ReservasService from '../services/reservas.service.js';
+import { ResponseBuilder } from '../utils/responseBuilder.js';
+import { ErrorResponse } from '../utils/errorResponse.js';
+
+export default class ReportesController {
+  constructor() {
+    this.reservasService = new ReservasService();
+  }
+
+  generarExcel = async (req, res) => {
+    try {
+      const { desde, hasta } = req.query;
+
+      if (!desde || !hasta) {
+        throw new ErrorResponse('Debe proporcionar un rango de fechas válido (desde y hasta)', 400);
+      }
+
+      const data = await this.reservasService.generarReporte(desde, hasta);
+
+      if (!data || data.length === 0) {
+        throw new ErrorResponse('No se encontraron reservas en el rango seleccionado', 404);
+      }
+
+      const buffer = await ExcelBuilder.generarReporteReservas(data);
+      const nombreArchivo = `reporte_reservas_${Date.now()}.xlsx`;
+
+      res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+      res.setHeader('Content-Disposition', `attachment; filename="${nombreArchivo}"`);
+      res.send(buffer);
+    } catch (error) {
+      console.error('Error al generar reporte:', error);
+      return ResponseBuilder.handleError(res, error);
+    }
+  };
+}
