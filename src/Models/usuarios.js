@@ -52,6 +52,12 @@ export default class Usuarios {
   async crearUsuario({ nombre, apellido, nombre_usuario, password, tipo_usuario }) {
     const conn = await conexion();
     try {
+      const [existing] = await conn.query("SELECT usuario_id FROM usuarios WHERE nombre_usuario = ?", [nombre_usuario]);
+      if (existing && existing.length > 0) {
+        const err = new Error('Usuario existente');
+        err.code = 'USER_EXISTS';
+        throw err;
+      }
       const hashedPassword = await bcrypt.hash(password, 10);
       const [result] = await conn.query(
         `INSERT INTO usuarios (nombre, apellido, nombre_usuario, contrasenia, tipo_usuario, activo, creado, modificado)

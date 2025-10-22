@@ -17,20 +17,23 @@ export default class Salones {
       }
     }
 
-    query += ' LIMIT ? OFFSET ?';
-    params.push(limit, offset);
+    if (limit !== undefined && offset !== undefined) {
+      query += ' LIMIT ? OFFSET ?';
+      params.push(parseInt(limit), parseInt(offset));
+    }
 
-  const conn = await conexion();
-  const [rows] = await conn.query(query, params);
-  await conn.end();
-  return { rows };
+    const conn = await conexion();
+    const [rows] = await conn.query(query, params);
+    await conn.end();
+    return { rows };
   }
 
+
   async buscarSalonPorId(id) {
-  const conn = await conexion();
-  const [rows] = await conn.query('SELECT * FROM salones WHERE salon_id = ?', [id]);
-  await conn.end();
-  return rows[0];
+    const conn = await conexion();
+    const [rows] = await conn.query('SELECT * FROM salones WHERE salon_id = ?', [id]);
+    await conn.end();
+    return rows[0];
   }
 
   async crearSalon({ titulo, direccion, latitud, longitud, capacidad, importe }) {
@@ -49,8 +52,16 @@ export default class Salones {
     const valores = [];
 
     for (const [key, value] of Object.entries(datos)) {
-      campos.push(`${key} = ?`);
-      valores.push(value);
+      // 🔹 ignoramos undefined o null
+      if (value !== undefined && value !== null) {
+        campos.push(`${key} = ?`);
+        valores.push(value);
+      }
+    }
+
+    // 🔹 si no se enviaron campos válidos, no hacemos nada
+    if (campos.length === 0) {
+      return { affectedRows: 0, message: 'No se enviaron campos para actualizar.' };
     }
 
     valores.push(salon_id);
@@ -65,9 +76,9 @@ export default class Salones {
   }
 
   async eliminarSalonPorId(salon_id) {
-  const conn = await conexion();
-  const [result] = await conn.query('UPDATE salones SET activo = 0 WHERE salon_id = ?', [salon_id]);
-  await conn.end();
-  return result;
+    const conn = await conexion();
+    const [result] = await conn.query('UPDATE salones SET activo = 0 WHERE salon_id = ?', [salon_id]);
+    await conn.end();
+    return result;
   }
 }

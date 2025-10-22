@@ -2,6 +2,7 @@ import express from 'express';
 import { verificarToken } from '../../middlewares/auth.js';
 import { verificarRol } from '../../middlewares/role.js';
 import SalonesController from '../../controllers/salones.controller.js';
+import { validarCreacionSalon, validarActualizacionSalon } from '../../middlewares/salones.validator.js';
 
 const salonesController = new SalonesController();
 const router = express.Router();
@@ -21,12 +22,14 @@ router.get('/:id',
 router.post('/', 
     verificarToken,
     verificarRol('administrador', 'empleado'),
+    validarCreacionSalon,
     salonesController.crearSalon
 );
 
 router.put('/modificar/:salon_id', 
     verificarToken,
     verificarRol('administrador', 'empleado'),
+    validarActualizacionSalon,
     salonesController.modificarSalon
 );
 

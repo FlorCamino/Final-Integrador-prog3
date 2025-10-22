@@ -2,6 +2,7 @@ import express from 'express';
 import { verificarToken } from '../../middlewares/auth.js';
 import { verificarRol } from '../../middlewares/role.js';
 import ServiciosController from '../../controllers/servicios.controller.js';
+import { validarCreacionServicio, validarActualizacionServicio } from '../../middlewares/servicios.validator.js';
 
 const serviciosController = new ServiciosController();
 
@@ -21,13 +22,13 @@ router.get('/:id',
 
 router.put('/modificar/:servicio_id', 
     verificarToken,
-    verificarRol('administrador', 'empleado'),
+    verificarRol('administrador', 'empleado'), validarActualizacionServicio,
     serviciosController.modificarServicio
 );
 
 router.post('/', 
     verificarToken,
-    verificarRol('administrador', 'empleado'),
+    verificarRol('administrador', 'empleado'), validarCreacionServicio,
     serviciosController.crearServicio
 );
 

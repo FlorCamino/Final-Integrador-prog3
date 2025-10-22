@@ -18,7 +18,12 @@ export default class ComentariosController {
 
   async crear(req, res) {
     try {
-      const comentario = await this.comentariosService.crear(req.body);
+      const payload = { ...req.body };
+      if (req.usuario && req.usuario.id) {
+        payload.usuario_id = req.usuario.id;
+      }
+
+      const comentario = await this.comentariosService.crear(payload);
       return res.status(201).json({ success: true, data: comentario });
     } catch (error) {
       console.error("❌ Error en crear comentario:", error);

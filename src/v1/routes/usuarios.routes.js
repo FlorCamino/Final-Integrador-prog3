@@ -2,6 +2,7 @@ import express from 'express';
 import { verificarToken } from '../../middlewares/auth.js';
 import { verificarRol } from '../../middlewares/role.js';
 import UsuariosController from '../../controllers/usuarios.controller.js';
+import { validarCreacionUsuario, validarActualizacionUsuario } from '../../middlewares/usuarios.validator.js';
 
 const usuariosController = new UsuariosController();
 const router = express.Router();
@@ -20,13 +21,13 @@ router.get('/:id',
 
 router.post('/', 
     verificarToken,
-    verificarRol('administrador'),
+    verificarRol('administrador'), validarCreacionUsuario,
     usuariosController.crearUsuario
 );
 
 router.put('/:id', 
     verificarToken,
-    verificarRol('administrador'),
+    verificarRol('administrador'), validarActualizacionUsuario,
     usuariosController.modificarUsuario
 );
 

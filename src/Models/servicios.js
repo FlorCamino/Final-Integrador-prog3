@@ -31,10 +31,31 @@ export default class Servicio {
   }
 
 
-  modificarServicioPorId = async (servicio_id, { descripcion, importe }) => {
+  modificarServicioPorId = async (servicio_id, datos) => {
     const conn = await conexion();
-    const query = 'UPDATE servicios SET descripcion = ?, importe = ? WHERE servicio_id = ?';
-    const [result] = await conn.query(query, [descripcion, importe, servicio_id]);
+    const fields = [];
+    const params = [];
+    if (datos.descripcion !== undefined) {
+      fields.push('descripcion = ?');
+      params.push(datos.descripcion);
+    }
+    if (datos.importe !== undefined) {
+      fields.push('importe = ?');
+      params.push(datos.importe);
+    }
+    if (datos.activo !== undefined) {
+      fields.push('activo = ?');
+      params.push(datos.activo);
+    }
+
+    if (fields.length === 0) {
+      await conn.end();
+      return { affectedRows: 0 };
+    }
+
+    const query = `UPDATE servicios SET ${fields.join(', ')} WHERE servicio_id = ?`;
+    params.push(servicio_id);
+    const [result] = await conn.query(query, params);
     await conn.end();
     return result;
   };

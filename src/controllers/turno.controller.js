@@ -49,14 +49,20 @@ export default class TurnosController {
 
   modificarTurno = async (req, res) => {
     try {
-      const { turno_id } = req.params;
-      const { orden, hora_desde, hora_hasta } = req.body;
+  const turnoId = req.params.id || req.params.turno_id;
+  const { orden, hora_desde, hora_hasta, activo } = req.body;
 
-      if (!orden || !hora_desde || !hora_hasta) {
-        return res.status(400).json({ success: false, message: 'Faltan campos obligatorios.' });
-      }
+  const datosActualizar = {};
+  if (orden !== undefined) datosActualizar.orden = orden;
+  if (hora_desde !== undefined) datosActualizar.hora_desde = hora_desde;
+  if (hora_hasta !== undefined) datosActualizar.hora_hasta = hora_hasta;
+  if (activo !== undefined) datosActualizar.activo = activo;
 
-      const resultado = await this.turnosService.actualizarTurno(turno_id, { orden, hora_desde, hora_hasta });
+  if (Object.keys(datosActualizar).length === 0) {
+    return res.status(400).json({ success: false, message: 'No hay campos para actualizar.' });
+  }
+
+  const resultado = await this.turnosService.actualizarTurno(turnoId, datosActualizar);
 
       if (resultado.affectedRows === 0) {
         return res.status(404).json({ success: false, message: 'Turno no encontrado.' });

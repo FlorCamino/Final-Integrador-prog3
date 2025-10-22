@@ -35,11 +35,18 @@ export default class ServiciosController {
   modificarServicio = async (req, res) => {
     try {
       const { servicio_id } = req.params;
-      const { descripcion, importe } = req.body;
-      if (!descripcion || !importe) {
-        return res.status(400).json({ success: false, message: 'Por favor, completa todos los campos' })
+      const { descripcion, importe, activo } = req.body;
+      const datosActualizar = {
+        ...(descripcion !== undefined && { descripcion }),
+        ...(importe !== undefined && { importe }),
+        ...(activo !== undefined && { activo }),
+      };
+
+      if (Object.keys(datosActualizar).length === 0) {
+        return res.status(400).json({ success: false, message: 'No hay campos para actualizar.' });
       }
-      const resultado = await this.serviciosService.actualizarServicio(servicio_id, { descripcion, importe });
+
+      const resultado = await this.serviciosService.actualizarServicio(servicio_id, datosActualizar);
       if (resultado.affectedRows === 0) {
         return res.status(404).json({ success: false, message: 'Servicio no encontrado' })
       }

@@ -1,21 +1,21 @@
 import express from "express";
-import { check } from "express-validator";
-// import { validarCampos } from "../../middlewares/validate.js";
 import ComentariosController from "../../controllers/Comentarios.controller.js";
+import { validarCreacionComentario, validarReservaIdParam } from "../../middlewares/comentarios.validator.js";
+import { verificarToken } from '../../middlewares/auth.js';
+import { verificarRol } from '../../middlewares/role.js';
+import { attachUsuarioId } from '../../middlewares/attachUsuarioId.js';
 
 const router = express.Router();
 const controller = new ComentariosController();
 
-router.get("/:reserva_id", (req, res) => controller.obtenerPorReserva(req, res));
+router.get("/:reserva_id", validarReservaIdParam, (req, res) => controller.obtenerPorReserva(req, res));
 
 router.post(
   "/",
-  [
-    check("reserva_id", "El ID de reserva es obligatorio").notEmpty(),
-    check("usuario_id", "El ID de usuario es obligatorio").notEmpty(),
-    check("comentario", "El comentario no puede estar vacío").notEmpty(),
-    // validarCampos, 
-  ],
+  verificarToken,
+  verificarRol('administrador', 'empleado'),
+  attachUsuarioId,
+  validarCreacionComentario,
   (req, res) => controller.crear(req, res)
 );
 

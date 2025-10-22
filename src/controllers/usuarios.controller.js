@@ -33,22 +33,19 @@ export default class UsuariosController {
   modificarUsuario = async (req, res) => {
     try {
       const { id } = req.params;
-      const { nombre, apellido, nombre_usuario, password, tipo_usuario, activo } = req.body;
 
-      if (!nombre || !apellido || !nombre_usuario || !tipo_usuario) {
-        return res
-          .status(400)
-          .json({ success: false, message: 'Faltan campos obligatorios.' });
-      }
+      const { nombre, apellido, nombre_usuario, contrasenia, tipo_usuario, activo } = req.body;
 
-      const resultado = await this.usuariosService.actualizarUsuario(id, {
-        nombre,
-        apellido,
-        nombre_usuario,
-        password,
-        tipo_usuario,
-        activo,
-      });
+      const datosActualizar = {
+        ...(nombre !== undefined && { nombre }),
+        ...(apellido !== undefined && { apellido }),
+        ...(nombre_usuario !== undefined && { nombre_usuario }),
+        ...(contrasenia !== undefined && { password: contrasenia }),
+        ...(tipo_usuario !== undefined && { tipo_usuario }),
+        ...(activo !== undefined && { activo }),
+      };
+
+      const resultado = await this.usuariosService.actualizarUsuario(id, datosActualizar);
 
       if (resultado.affectedRows === 0) {
         return res
@@ -58,15 +55,19 @@ export default class UsuariosController {
 
       res.status(200).json({ success: true, message: 'Usuario modificado correctamente.' });
     } catch (err) {
+      if (err && err.code === 'ER_DUP_ENTRY') {
+        return res.status(409).json({ success: false, message: 'Nombre de usuario ya existe.' });
+      }
       res.status(500).json({ success: false, message: err.message });
     }
   };
 
   crearUsuario = async (req, res) => {
     try {
-      const { nombre, apellido, nombre_usuario, password, tipo_usuario } = req.body;
 
-      if (!nombre || !apellido || !nombre_usuario || !password || !tipo_usuario) {
+      const { nombre, apellido, nombre_usuario, contrasenia, tipo_usuario } = req.body;
+
+      if (!nombre || !apellido || !nombre_usuario || !contrasenia || !tipo_usuario) {
         return res
           .status(400)
           .json({ success: false, message: 'Faltan campos obligatorios.' });
@@ -76,12 +77,15 @@ export default class UsuariosController {
         nombre,
         apellido,
         nombre_usuario,
-        password,
+        password: contrasenia,
         tipo_usuario,
       });
 
       res.status(201).json({ success: true, data: nuevoUsuario });
     } catch (err) {
+      if (err.code === 'USER_EXISTS') {
+        return res.status(409).json({ success: false, message: 'Nombre de usuario ya existe.' });
+      }
       res.status(500).json({ success: false, message: err.message });
     }
   };

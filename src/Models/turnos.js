@@ -48,13 +48,19 @@ export default class Turnos {
     };
   }
 
-  async modificarTurnoPorId(turno_id, { orden, hora_desde, hora_hasta }) {
+  async modificarTurnoPorId(turno_id, { orden, hora_desde, hora_hasta, activo }) {
     const conn = await conexion();
-    const query = `
-      UPDATE turnos 
-      SET orden = ?, hora_desde = ?, hora_hasta = ?, modificado = CURRENT_TIMESTAMP 
-      WHERE turno_id = ?`;
-    const [result] = await conn.query(query, [orden, hora_desde, hora_hasta, turno_id]);
+    const [result] = await conn.query(
+      `UPDATE turnos 
+     SET 
+       orden = COALESCE(?, orden),
+       hora_desde = COALESCE(?, hora_desde),
+       hora_hasta = COALESCE(?, hora_hasta),
+       activo = COALESCE(?, activo),
+       modificado = CURRENT_TIMESTAMP
+     WHERE turno_id = ?`,
+      [orden, hora_desde, hora_hasta, activo, turno_id]
+    );
     await conn.end();
     return result;
   }

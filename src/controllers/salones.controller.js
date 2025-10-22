@@ -33,11 +33,6 @@ export default class SalonesController {
     try {
       const { salon_id } = req.params;
       const { titulo, direccion, latitud, longitud, capacidad, importe } = req.body;
-
-      if (!titulo || !direccion || !importe) {
-        return res.status(400).json({ success: false, message: 'Faltan campos obligatorios.' });
-      }
-
       const resultado = await this.salonesService.actualizarSalon(salon_id, {
         titulo,
         direccion,
@@ -56,6 +51,7 @@ export default class SalonesController {
       res.status(500).json({ success: false, message: err.message });
     }
   };
+
 
   crearSalon = async (req, res) => {
     try {
