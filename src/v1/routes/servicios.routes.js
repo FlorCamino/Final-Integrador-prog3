@@ -7,6 +7,7 @@ import { FieldsValidator } from '../../middlewares/validators/FieldsValidator.js
 import { ROLES } from '../../enums/roles.js';
 
 import ServiciosController from '../../controllers/servicios.controller.js';
+import { validarCreacionServicio, validarActualizacionServicio } from '../../middlewares/servicios.validator.js';
 
 const router = express.Router();
 const controller = new ServiciosController();

@@ -7,6 +7,7 @@ import { FieldsValidator } from '../../middlewares/validators/FieldsValidator.js
 import { ROLES  } from '../../enums/roles.js';
 
 import TurnosController from '../../controllers/turno.controller.js';
+import { validarCreacionTurno, validarActualizacionTurno } from '../../middlewares/turnos.validator.js';
 
 const router = express.Router();
 const controller = new TurnosController();

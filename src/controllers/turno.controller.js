@@ -54,8 +54,8 @@ export default class TurnosController {
 
   modificarTurno = async (req, res) => {
     try {
-      const { turno_id } = req.params;
-      const { orden, hora_desde, hora_hasta } = req.body;
+  const turnoId = req.params.id || req.params.turno_id;
+  const { orden, hora_desde, hora_hasta, activo } = req.body;
 
       if (!orden || !hora_desde || !hora_hasta) {
         throw new ErrorResponse('Los campos orden, hora_desde y hora_hasta son obligatorios', 400);

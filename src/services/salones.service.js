@@ -5,15 +5,17 @@ export default class SalonesService {
     this.salonModel = new Salones();
   }
 
-  buscarTodos = async ({ limit = 10, offset = 0, estado, sort, order }) => {
-    limit = parseInt(limit, 10);
-    offset = parseInt(offset, 10);
-    if (isNaN(limit) || limit <= 0) limit = 10;
-    if (isNaN(offset) || offset < 0) offset = 0;
+  buscarTodos = async ({ limit, offset, estado, sort, order }) => {
+    limit = limit !== undefined ? parseInt(limit, 10) : undefined;
+    offset = offset !== undefined ? parseInt(offset, 10) : undefined;
+
+    if (limit !== undefined && (isNaN(limit) || limit <= 0)) limit = undefined;
+    if (offset !== undefined && (isNaN(offset) || offset < 0)) offset = 0;
 
     const { rows } = await this.salonModel.buscarTodosSalones({ limit, offset, estado, sort, order });
     return { data: rows };
   };
+
 
   buscarPorId = async (id) => {
     const salon = await this.salonModel.buscarSalonPorId(id);

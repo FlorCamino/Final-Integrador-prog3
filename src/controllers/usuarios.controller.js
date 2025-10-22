@@ -56,20 +56,21 @@ export default class UsuariosController {
   modificarUsuario = async (req, res) => {
     try {
       const { id } = req.params;
-      const { nombre, apellido, nombre_usuario, password, tipo_usuario, activo } = req.body;
 
       if (!nombre || !apellido || !nombre_usuario || !tipo_usuario) {
         throw new ErrorResponse('Faltan campos obligatorios', 400);
       }
 
-      const resultado = await this.usuariosService.actualizarUsuario(id, {
-        nombre,
-        apellido,
-        nombre_usuario,
-        password,
-        tipo_usuario,
-        activo,
-      });
+      const datosActualizar = {
+        ...(nombre !== undefined && { nombre }),
+        ...(apellido !== undefined && { apellido }),
+        ...(nombre_usuario !== undefined && { nombre_usuario }),
+        ...(contrasenia !== undefined && { password: contrasenia }),
+        ...(tipo_usuario !== undefined && { tipo_usuario }),
+        ...(activo !== undefined && { activo }),
+      };
+
+      const resultado = await this.usuariosService.actualizarUsuario(id, datosActualizar);
 
       if (resultado.affectedRows === 0) {
         throw new ErrorResponse('Usuario no encontrado', 404);

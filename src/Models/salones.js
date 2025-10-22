@@ -17,12 +17,15 @@ export default class Salones {
       }
     }
 
-    query += ' LIMIT ? OFFSET ?';
-    params.push(limit, offset);
+    if (limit !== undefined && offset !== undefined) {
+      query += ' LIMIT ? OFFSET ?';
+      params.push(parseInt(limit), parseInt(offset));
+    }
 
   const [rows] = await ejecutarConsulta(query, params);
   return { rows };
   }
+
 
   async buscarSalonPorId(id) {
   const [rows] = await ejecutarConsulta('SELECT * FROM salones WHERE salon_id = ?', [id]);
@@ -43,8 +46,14 @@ export default class Salones {
     const valores = [];
 
     for (const [key, value] of Object.entries(datos)) {
-      campos.push(`${key} = ?`);
-      valores.push(value);
+      if (value !== undefined && value !== null) {
+        campos.push(`${key} = ?`);
+        valores.push(value);
+      }
+    }
+
+    if (campos.length === 0) {
+      return { affectedRows: 0, message: 'No se enviaron campos para actualizar.' };
     }
 
     valores.push(salon_id);
