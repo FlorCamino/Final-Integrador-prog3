@@ -1,4 +1,4 @@
-import conexion from '../config/db.js';
+import { ejecutarConsulta } from '../config/db.js';
 
 export default class Salones {
   async buscarTodosSalones({ limit, offset, estado, sort, order }) {
@@ -20,27 +20,21 @@ export default class Salones {
     query += ' LIMIT ? OFFSET ?';
     params.push(limit, offset);
 
-  const conn = await conexion();
-  const [rows] = await conn.query(query, params);
-  await conn.end();
+  const [rows] = await ejecutarConsulta(query, params);
   return { rows };
   }
 
   async buscarSalonPorId(id) {
-  const conn = await conexion();
-  const [rows] = await conn.query('SELECT * FROM salones WHERE salon_id = ?', [id]);
-  await conn.end();
+  const [rows] = await ejecutarConsulta('SELECT * FROM salones WHERE salon_id = ?', [id]);
   return rows[0];
   }
 
   async crearSalon({ titulo, direccion, latitud, longitud, capacidad, importe }) {
-    const conn = await conexion();
-    const [result] = await conn.query(
+    const [result] = await ejecutarConsulta(
       `INSERT INTO salones (titulo, direccion, latitud, longitud, capacidad, importe, activo)
        VALUES (?, ?, ?, ?, ?, ?, 1)`,
       [titulo, direccion, latitud, longitud, capacidad, importe]
     );
-    await conn.end();
     return { salon_id: result.insertId, titulo, direccion, latitud, longitud, capacidad, importe, activo: 1 };
   }
 
@@ -55,19 +49,15 @@ export default class Salones {
 
     valores.push(salon_id);
 
-    const conn = await conexion();
-    const [result] = await conn.query(
+    const [result] = await ejecutarConsulta(
       `UPDATE salones SET ${campos.join(', ')}, modificado = CURRENT_TIMESTAMP WHERE salon_id = ?`,
       valores
     );
-    await conn.end();
     return result;
   }
 
   async eliminarSalonPorId(salon_id) {
-  const conn = await conexion();
-  const [result] = await conn.query('UPDATE salones SET activo = 0 WHERE salon_id = ?', [salon_id]);
-  await conn.end();
+  const [result] = await ejecutarConsulta('UPDATE salones SET activo = 0 WHERE salon_id = ?', [salon_id]);
   return result;
   }
 }

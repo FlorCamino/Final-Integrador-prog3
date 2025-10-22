@@ -6,8 +6,6 @@ import { fileURLToPath } from 'url';
 
 dotenv.config();
 
-const PORT = process.env.PORT || 4000;
-
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
@@ -15,13 +13,14 @@ const swaggerOptions = {
   definition: {
     openapi: '3.0.0',
     info: {
-      title: 'API para Reservas de Salones para Eventos',
+      title: 'API REST – Gestión de Reservas de Salones',
       version: '1.0.0',
-      description: '',
+      description: 'Documentación de la API del proyecto integrador de Programación III (UNER)',
     },
     servers: [
       {
-        url: `http://localhost:${PORT}/api/v1`,
+        url: `http://localhost:${process.env.PORT || 4000}/api/v1`,
+        description: 'Servidor local',
       },
     ],
     components: {
@@ -30,16 +29,11 @@ const swaggerOptions = {
           type: 'http',
           scheme: 'bearer',
           bearerFormat: 'JWT',
-          description:
-            'Token JWT obtenido tras el inicio de sesión. Debe ser incluido en el encabezado de autorización de las solicitudes protegidas.',
+          description: 'Token JWT obtenido tras el inicio de sesión',
         },
       },
     },
-    security: [
-      {
-        bearerAuth: [],
-      },
-    ],
+    security: [{ bearerAuth: [] }],
   },
   apis: [
     path.join(__dirname, '../docs/*.js'),
@@ -47,5 +41,8 @@ const swaggerOptions = {
   ],
 };
 
-export const swaggerSpec = swaggerJSDoc(swaggerOptions);
-export const swaggerUiMiddleware = swaggerUi;
+const swaggerSpec = swaggerJSDoc(swaggerOptions);
+
+export function setupSwagger(app) {
+  app.use('/swagger', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
+}

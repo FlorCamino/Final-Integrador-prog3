@@ -1,49 +1,54 @@
 import TurnosService from '../services/turnos.service.js';
+import { ResponseBuilder } from '../utils/responseBuilder.js';
+import { ErrorResponse } from '../utils/errorResponse.js';
 
 export default class TurnosController {
   constructor() {
     this.turnosService = new TurnosService();
   }
 
+
   obtenerTurnos = async (req, res) => {
     try {
       const { limit, offset, estado, sort, order } = req.query;
-      const { rows } = await this.turnosService.buscarTodos({ limit, offset, estado, sort, order });
-      res.json({ success: true, data: rows });
-    } catch (err) {
-      res.status(500).json({ success: false, message: err.message });
+      const { data } = await this.turnosService.buscarTodos({ limit, offset, estado, sort, order });
+      return ResponseBuilder.success(res, data, 'Listado de turnos obtenido correctamente');
+    } catch (error) {
+      return ResponseBuilder.handleError(res, error);
     }
   };
 
   obtenerTurnoPorId = async (req, res) => {
     try {
       const id = parseInt(req.params.id, 10);
-      if (isNaN(id)) {
-        return res.status(400).json({ success: false, message: 'ID no válido.' });
-      }
+      if (isNaN(id)) throw new ErrorResponse('ID no válido', 400);
 
       const turno = await this.turnosService.buscarPorId(id);
-      if (!turno) {
-        return res.status(404).json({ success: false, message: 'Turno no encontrado.' });
-      }
+      if (!turno) throw new ErrorResponse('Turno no encontrado', 404);
 
-      res.status(200).json({ success: true, data: turno });
+      return ResponseBuilder.success(res, turno, 'Turno obtenido correctamente');
     } catch (error) {
-      res.status(500).json({ success: false, message: error.message });
+      return ResponseBuilder.handleError(res, error);
     }
   };
 
   crearTurno = async (req, res) => {
     try {
       const { orden, hora_desde, hora_hasta } = req.body;
+
       if (!orden || !hora_desde || !hora_hasta) {
-        return res.status(400).json({ success: false, message: 'Faltan campos obligatorios.' });
+        throw new ErrorResponse('Los campos orden, hora_desde y hora_hasta son obligatorios', 400);
       }
 
-      const nuevoTurno = await this.turnosService.agregarTurno({ orden, hora_desde, hora_hasta });
-      res.status(201).json({ success: true, data: nuevoTurno });
-    } catch (err) {
-      res.status(400).json({ success: false, message: err.message });
+      const nuevoTurno = await this.turnosService.agregarTurno({
+        orden,
+        hora_desde,
+        hora_hasta,
+      });
+
+      return ResponseBuilder.success(res, nuevoTurno, 'Turno creado correctamente', 201);
+    } catch (error) {
+      return ResponseBuilder.handleError(res, error);
     }
   };
 
@@ -53,33 +58,38 @@ export default class TurnosController {
       const { orden, hora_desde, hora_hasta } = req.body;
 
       if (!orden || !hora_desde || !hora_hasta) {
-        return res.status(400).json({ success: false, message: 'Faltan campos obligatorios.' });
+        throw new ErrorResponse('Los campos orden, hora_desde y hora_hasta son obligatorios', 400);
       }
 
-      const resultado = await this.turnosService.actualizarTurno(turno_id, { orden, hora_desde, hora_hasta });
+      const resultado = await this.turnosService.actualizarTurno(turno_id, {
+        orden,
+        hora_desde,
+        hora_hasta,
+      });
 
       if (resultado.affectedRows === 0) {
-        return res.status(404).json({ success: false, message: 'Turno no encontrado.' });
+        throw new ErrorResponse('Turno no encontrado', 404);
       }
 
-      res.json({ success: true, message: 'Turno modificado correctamente.' });
-    } catch (err) {
-      res.status(500).json({ success: false, message: err.message });
+      return ResponseBuilder.success(res, null, 'Turno modificado correctamente');
+    } catch (error) {
+      return ResponseBuilder.handleError(res, error);
     }
   };
 
   eliminarTurno = async (req, res) => {
     try {
       const { turno_id } = req.params;
-      const resultado = await this.turnosService.borrarTurno(turno_id);
+      if (isNaN(turno_id)) throw new ErrorResponse('ID no válido', 400);
 
+      const resultado = await this.turnosService.borrarTurno(turno_id);
       if (resultado.affectedRows === 0) {
-        return res.status(404).json({ success: false, message: 'Turno no encontrado.' });
+        throw new ErrorResponse('Turno no encontrado', 404);
       }
 
-      res.json({ success: true, message: 'Turno eliminado correctamente.' });
-    } catch (err) {
-      res.status(500).json({ success: false, message: err.message });
+      return ResponseBuilder.success(res, null, 'Turno eliminado correctamente');
+    } catch (error) {
+      return ResponseBuilder.handleError(res, error);
     }
   };
 }
