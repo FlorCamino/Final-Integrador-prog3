@@ -73,3 +73,40 @@
  *       500:
  *         description: Error interno del servidor
  */
+
+/**
+ * @swagger
+ * /reportes/reservas/pdf:
+ *   get:
+ *     summary: Generar reporte de reservas en formato PDF (solo administradores)
+ *     tags: [Reportes]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: query
+ *         name: desde
+ *         schema:
+ *           type: string
+ *           format: date
+ *         description: Fecha inicial del rango (YYYY-MM-DD)
+ *         example: 2025-10-01
+ *       - in: query
+ *         name: hasta
+ *         schema:
+ *           type: string
+ *           format: date
+ *         description: Fecha final del rango (YYYY-MM-DD)
+ *         example: 2025-10-31
+ *     responses:
+ *       200:
+ *         description: Archivo PDF generado correctamente
+ *         content:
+ *           application/pdf:
+ *             schema:
+ *               type: string
+ *               format: binary
+ *       404:
+ *         description: No hay reservas para exportar
+ *       500:
+ *         description: Error interno del servidor
+ */

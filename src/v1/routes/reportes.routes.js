@@ -14,10 +14,18 @@ router.get(
   controller.generarExcel
 );
 
+
 router.get(
   '/reservas/csv',
   [JWTMiddleware.verificar, RoleMiddleware.verificar(ROLES.ADMINISTRADOR)],
   controller.generarCSV
+);
+
+
+router.get(
+  '/reservas/pdf',
+  [JWTMiddleware.verificar, RoleMiddleware.verificar(ROLES.ADMINISTRADOR)],
+  controller.generarPDF
 );
 
 export default router;

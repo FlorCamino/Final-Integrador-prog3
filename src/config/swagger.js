@@ -38,6 +38,7 @@ const swaggerOptions = {
   apis: [
     path.join(__dirname, '../docs/*.js'),
     path.join(__dirname, '../v1/routes/*.js'),
+    path.join(__dirname, '../docs/reportes.doc.js'),
   ],
 };
 
