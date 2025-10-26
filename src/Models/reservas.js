@@ -11,7 +11,7 @@ export default class Reservas {
         r.tematica,
         s.titulo AS salon,
         r.importe_salon,
-        se.descripcion AS descripcion_servicio,
+        GROUP_CONCAT(DISTINCT se.descripcion ORDER BY se.descripcion SEPARATOR ', ') AS descripcion_servicio,
         COALESCE(SUM(se.importe), 0) AS importe_servicios,
         (r.importe_salon + COALESCE(SUM(se.importe), 0)) AS costo_total
       FROM reservas r

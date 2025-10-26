@@ -13,6 +13,7 @@
  *     tags: [Reportes]
  *     security:
  *       - bearerAuth: []
+		*     description: Rol requerido: Administrador.
  *     parameters:
  *       - in: query
  *         name: desde
@@ -41,10 +42,11 @@
  * @swagger
  * /reportes/reservas/csv:
  *   get:
- *     summary: Generar reporte de reservas en formato CSV (solo administradores)
+		*     summary: Generar reporte de reservas en formato CSV
  *     tags: [Reportes]
  *     security:
  *       - bearerAuth: []
+		*     description: Rol requerido: Administrador.
  *     parameters:
  *       - in: query
  *         name: desde
@@ -78,10 +80,11 @@
  * @swagger
  * /reportes/reservas/pdf:
  *   get:
- *     summary: Generar reporte de reservas en formato PDF (solo administradores)
+		*     summary: Generar reporte de reservas en formato PDF
  *     tags: [Reportes]
  *     security:
  *       - bearerAuth: []
+		*     description: Rol requerido: Administrador.
  *     parameters:
  *       - in: query
  *         name: desde

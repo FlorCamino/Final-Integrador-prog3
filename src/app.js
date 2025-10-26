@@ -17,6 +17,7 @@ import reportesRoutes from './v1/routes/reportes.routes.js';
 
 
 import { swaggerSpec, swaggerUiMiddleware } from './config/swagger.js';
+import { ResponseBuilder } from './utils/responseBuilder.js';
 
 const app = express();
 app.use(express.json());
@@ -29,7 +30,6 @@ const logFile = path.join(logDir, 'access.log');
 if (!fs.existsSync(logDir)) {
   fs.mkdirSync(logDir);
 }
-
 const accessLogStream = fs.createWriteStream(logFile, { flags: 'a' });
 app.use(morgan('combined', { stream: accessLogStream }));
 app.use(morgan('dev'));
@@ -51,8 +51,7 @@ app.use('/api/v1/reportes', cache('5 minutes'), reportesRoutes);
 
 
 app.use((err, req, res, next) => {
-  console.error('Error inesperado:', err.stack);
-  res.status(500).json({ success: false, message: 'Error interno del servidor' });
+  return ResponseBuilder.handleError(res, err);
 });
 
 export default app;

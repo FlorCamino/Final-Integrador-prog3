@@ -13,6 +13,7 @@
  *     tags: [Servicios]
  *     security:
  *       - bearerAuth: []
+ *     description: Roles permitidos: Administrador, Empleado y Cliente.
  *     parameters:
  *       - in: query
  *         name: estado
@@ -61,6 +62,7 @@
  *     tags: [Servicios]
  *     security:
  *       - bearerAuth: []
+ *     description: Roles permitidos: Administrador, Empleado y Cliente.
  *     parameters:
  *       - in: path
  *         name: id
@@ -83,6 +85,7 @@
  *     tags: [Servicios]
  *     security:
  *       - bearerAuth: []
+ *     description: Roles permitidos: Administrador y Empleado.
  *     requestBody:
  *       required: true
  *       content:
@@ -95,6 +98,8 @@
  *         description: Servicio creado correctamente
  *       400:
  *         description: Datos inválidos
+ *       403:
+ *         description: Rol no autorizado
  */
 
 /**
@@ -105,6 +110,7 @@
  *     tags: [Servicios]
  *     security:
  *       - bearerAuth: []
+ *     description: Roles permitidos: Administrador y Empleado.
  *     parameters:
  *       - in: path
  *         name: servicio_id
@@ -127,6 +133,8 @@
  *         description: Datos inválidos o incompletos
  *       404:
  *         description: Servicio no encontrado
+ *       403:
+ *         description: Rol no autorizado
  *       500:
  *         description: Error en el servidor
  */
@@ -139,6 +147,7 @@
  *     tags: [Servicios]
  *     security:
  *       - bearerAuth: []
+ *     description: Roles permitidos: Administrador y Empleado.
  *     parameters:
  *       - in: path
  *         name: servicio_id
@@ -151,4 +160,6 @@
  *         description: Servicio eliminado correctamente
  *       404:
  *         description: Servicio no encontrado
+ *       403:
+ *         description: Rol no autorizado
  */

@@ -1,4 +1,5 @@
 import AuthModel from '../models/auth.js';
+import bcrypt from 'bcryptjs';
 import { JWTHelper } from '../utils/jwt.js';
 import { ErrorResponse } from '../utils/errorResponse.js';
 import { obtenerNombreRol } from '../enums/roles.js';

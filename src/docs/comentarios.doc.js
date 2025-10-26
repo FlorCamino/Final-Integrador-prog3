@@ -11,6 +11,9 @@
  *   get:
  *     summary: Obtener comentarios por ID de reserva
  *     tags: [Comentarios]
+		*     security:
+		*       - bearerAuth: []
+		*     description: Roles permitidos: Administrador y Empleado.
  *     parameters:
  *       - in: path
  *         name: reserva_id
@@ -28,6 +31,9 @@
  *   post:
  *     summary: Crear un nuevo comentario
  *     tags: [Comentarios]
+		*     security:
+		*       - bearerAuth: []
+		*     description: Roles permitidos: Administrador y Empleado.
  *     requestBody:
  *       required: true
  *       content:
@@ -41,6 +47,8 @@
  *         description: Comentario creado exitosamente.
  *       400:
  *         description: Datos inválidos.
+			*       403:
+			*         description: Rol no autorizado.
  */
 
 /**
@@ -49,6 +57,9 @@
  *   delete:
  *     summary: Eliminar (soft delete) un comentario
  *     tags: [Comentarios]
+		*     security:
+		*       - bearerAuth: []
+		*     description: Rol requerido: Administrador.
  *     parameters:
  *       - in: path
  *         name: comentario_id
@@ -58,4 +69,6 @@
  *     responses:
  *       200:
  *         description: Comentario eliminado correctamente.
+			*       403:
+			*         description: Rol no autorizado.
  */

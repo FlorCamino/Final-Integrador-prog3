@@ -43,11 +43,32 @@ export default class Turnos {
   }
 
   async modificarTurnoPorId(turno_id, { orden, hora_desde, hora_hasta }) {
+    const campos = [];
+    const valores = [];
+
+    if (orden !== undefined) {
+      campos.push('orden = ?');
+      valores.push(orden);
+    }
+    if (hora_desde !== undefined) {
+      campos.push('hora_desde = ?');
+      valores.push(hora_desde);
+    }
+    if (hora_hasta !== undefined) {
+      campos.push('hora_hasta = ?');
+      valores.push(hora_hasta);
+    }
+
+    if (campos.length === 0) {
+      return { affectedRows: 0 };
+    }
+
     const query = `
       UPDATE turnos 
-      SET orden = ?, hora_desde = ?, hora_hasta = ?, modificado = CURRENT_TIMESTAMP 
+      SET ${campos.join(', ')}, modificado = CURRENT_TIMESTAMP 
       WHERE turno_id = ?`;
-    const [result] = await ejecutarConsulta(query, [orden, hora_desde, hora_hasta, turno_id]);
+    valores.push(turno_id);
+    const [result] = await ejecutarConsulta(query, valores);
     return result;
   }
 

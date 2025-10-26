@@ -54,14 +54,22 @@ export default class TurnosController {
 
   modificarTurno = async (req, res) => {
     try {
-  const turnoId = req.params.id || req.params.turno_id;
-  const { orden, hora_desde, hora_hasta, activo } = req.body;
+      const turnoId = req.params.id || req.params.turno_id;
+      const { orden, hora_desde, hora_hasta } = req.body;
 
-      if (!orden || !hora_desde || !hora_hasta) {
-        throw new ErrorResponse('Los campos orden, hora_desde y hora_hasta son obligatorios', 400);
+      if (!turnoId || isNaN(parseInt(turnoId, 10))) {
+        throw new ErrorResponse('ID no válido', 400);
       }
 
-      const resultado = await this.turnosService.actualizarTurno(turno_id, {
+      if (
+        orden === undefined &&
+        hora_desde === undefined &&
+        hora_hasta === undefined
+      ) {
+        throw new ErrorResponse('Debe enviar al menos un campo para actualizar', 400);
+      }
+
+      const resultado = await this.turnosService.actualizarTurno(parseInt(turnoId, 10), {
         orden,
         hora_desde,
         hora_hasta,
@@ -79,10 +87,10 @@ export default class TurnosController {
 
   eliminarTurno = async (req, res) => {
     try {
-      const { turno_id } = req.params;
-      if (isNaN(turno_id)) throw new ErrorResponse('ID no válido', 400);
+      const id = req.params.id || req.params.turno_id;
+      if (!id || isNaN(parseInt(id, 10))) throw new ErrorResponse('ID no válido', 400);
 
-      const resultado = await this.turnosService.borrarTurno(turno_id);
+      const resultado = await this.turnosService.borrarTurno(parseInt(id, 10));
       if (resultado.affectedRows === 0) {
         throw new ErrorResponse('Turno no encontrado', 404);
       }

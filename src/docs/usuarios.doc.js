@@ -13,6 +13,7 @@
  *     tags: [Usuarios]
  *     security:
  *       - bearerAuth: []
+ *     description: Roles permitidos: Administrador y Empleado.
  *     parameters:
  *       - in: query
  *         name: estado
@@ -78,6 +79,7 @@
  *     tags: [Usuarios]
  *     security:
  *       - bearerAuth: []
+ *     description: Roles permitidos: Administrador y Empleado.
  *     parameters:
  *       - in: path
  *         name: id
@@ -109,6 +111,7 @@
  *     tags: [Usuarios]
  *     security:
  *       - bearerAuth: []
+ *     description: Rol requerido: Administrador.
  *     requestBody:
  *       required: true
  *       content:
@@ -124,6 +127,8 @@
  *         description: Usuario creado correctamente
  *       400:
  *         description: Datos inválidos o faltantes
+ *       403:
+ *         description: Rol no autorizado
  */
 
 /**
@@ -134,6 +139,7 @@
  *     tags: [Usuarios]
  *     security:
  *       - bearerAuth: []
+ *     description: Rol requerido: Administrador.
  *     parameters:
  *       - in: path
  *         name: usuario_id
@@ -160,6 +166,8 @@
  *         description: Datos inválidos
  *       404:
  *         description: Usuario no encontrado
+ *       403:
+ *         description: Rol no autorizado
  */
 
 /**
@@ -170,6 +178,7 @@
  *     tags: [Usuarios]
  *     security:
  *       - bearerAuth: []
+ *     description: Rol requerido: Administrador.
  *     parameters:
  *       - in: path
  *         name: usuario_id
@@ -182,4 +191,6 @@
  *         description: Usuario eliminado correctamente
  *       404:
  *         description: Usuario no encontrado
+ *       403:
+ *         description: Rol no autorizado
  */

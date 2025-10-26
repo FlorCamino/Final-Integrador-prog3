@@ -13,6 +13,7 @@
  *     tags: [Salones]
  *     security:
  *       - bearerAuth: []
+ *     description: Roles permitidos: Administrador, Empleado y Cliente.
  *     parameters:
  *       - in: query
  *         name: estado
@@ -56,6 +57,7 @@
  *     tags: [Salones]
  *     security:
  *       - bearerAuth: []
+ *     description: Roles permitidos: Administrador, Empleado y Cliente.
  *     parameters:
  *       - in: path
  *         name: id
@@ -77,6 +79,7 @@
  *     tags: [Salones]
  *     security:
  *       - bearerAuth: []
+ *     description: Roles permitidos: Administrador y Empleado.
  *     requestBody:
  *       required: true
  *       content:
@@ -93,6 +96,8 @@
  *         description: Salón creado correctamente
  *       400:
  *         description: Datos inválidos
+ *       403:
+ *         description: Rol no autorizado
  */
 
 /**
@@ -103,6 +108,7 @@
  *     tags: [Salones]
  *     security:
  *       - bearerAuth: []
+ *     description: Roles permitidos: Administrador y Empleado.
  *     parameters:
  *       - in: path
  *         name: salon_id
@@ -127,6 +133,8 @@
  *         description: Datos inválidos
  *       404:
  *         description: No se encontró el salón
+ *       403:
+ *         description: Rol no autorizado
  */
 
 /**
@@ -137,6 +145,7 @@
  *     tags: [Salones]
  *     security:
  *       - bearerAuth: []
+ *     description: Roles permitidos: Administrador y Empleado.
  *     parameters:
  *       - in: path
  *         name: salon_id
@@ -148,4 +157,6 @@
  *         description: Salón eliminado correctamente
  *       404:
  *         description: No se encontró el salón
+ *       403:
+ *         description: Rol no autorizado
  */

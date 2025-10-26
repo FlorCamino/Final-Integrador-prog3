@@ -33,9 +33,11 @@ export default class UsuariosController {
 
   crearUsuario = async (req, res) => {
     try {
-      const { nombre, apellido, nombre_usuario, password, tipo_usuario } = req.body;
+      const { nombre, apellido, nombre_usuario, contrasenia, password, tipo_usuario } = req.body;
 
-      if (!nombre || !apellido || !nombre_usuario || !password || !tipo_usuario) {
+      const finalPassword = contrasenia ?? password;
+
+      if (!nombre || !apellido || !nombre_usuario || !finalPassword || !tipo_usuario) {
         throw new ErrorResponse('Todos los campos son obligatorios', 400);
       }
 
@@ -43,7 +45,7 @@ export default class UsuariosController {
         nombre,
         apellido,
         nombre_usuario,
-        password,
+        password: finalPassword,
         tipo_usuario,
       });
 
@@ -56,9 +58,28 @@ export default class UsuariosController {
   modificarUsuario = async (req, res) => {
     try {
       const { id } = req.params;
+      const {
+        nombre,
+        apellido,
+        nombre_usuario,
+        contrasenia,
+        tipo_usuario,
+        activo,
+      } = req.body;
 
-      if (!nombre || !apellido || !nombre_usuario || !tipo_usuario) {
-        throw new ErrorResponse('Faltan campos obligatorios', 400);
+      if (!id || isNaN(parseInt(id, 10))) {
+        throw new ErrorResponse('ID no válido', 400);
+      }
+
+      if (
+        nombre === undefined &&
+        apellido === undefined &&
+        nombre_usuario === undefined &&
+        contrasenia === undefined &&
+        tipo_usuario === undefined &&
+        activo === undefined
+      ) {
+        throw new ErrorResponse('Debe enviar al menos un campo para actualizar', 400);
       }
 
       const datosActualizar = {

@@ -13,6 +13,7 @@
  *     tags: [Turnos]
  *     security:
  *       - bearerAuth: []
+ *     description: Roles permitidos: Administrador, Empleado y Cliente.
  *     responses:
  *       200:
  *         description: Lista de turnos obtenida correctamente
@@ -41,6 +42,7 @@
  *     tags: [Turnos]
  *     security:
  *       - bearerAuth: []
+ *     description: Roles permitidos: Administrador, Empleado y Cliente.
  *     parameters:
  *       - in: path
  *         name: id
@@ -72,6 +74,7 @@
  *     tags: [Turnos]
  *     security:
  *       - bearerAuth: []
+ *     description: Roles permitidos: Administrador y Empleado.
  *     requestBody:
  *       required: true
  *       content:
@@ -83,6 +86,8 @@
  *     responses:
  *       201:
  *         description: Turno creado exitosamente
+ *       403:
+ *         description: Rol no autorizado
  */
 
 /**
@@ -93,6 +98,7 @@
  *     tags: [Turnos]
  *     security:
  *       - bearerAuth: []
+ *     description: Roles permitidos: Administrador y Empleado.
  *     parameters:
  *       - in: path
  *         name: id
@@ -117,6 +123,8 @@
  *         description: Datos inválidos o incompletos
  *       404:
  *         description: Turno no encontrado
+ *       403:
+ *         description: Rol no autorizado
  */
 
 /**
@@ -127,6 +135,7 @@
  *     tags: [Turnos]
  *     security:
  *       - bearerAuth: []
+ *     description: Roles permitidos: Administrador y Empleado.
  *     parameters:
  *       - in: path
  *         name: id
@@ -140,4 +149,6 @@
  *         description: Turno eliminado correctamente
  *       404:
  *         description: Turno no encontrado
+ *       403:
+ *         description: Rol no autorizado
  */
