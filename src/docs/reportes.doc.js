@@ -7,7 +7,7 @@
 
 /**
  * @swagger
- * /reportes/reservas:
+ * /reportes/reservas/excel:
  *   get:
  *     summary: Generar reporte de reservas en formato Excel
  *     tags: [Reportes]

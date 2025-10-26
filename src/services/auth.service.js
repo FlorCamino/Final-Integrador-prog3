@@ -1,4 +1,3 @@
-import bcrypt from 'bcryptjs';
 import AuthModel from '../models/auth.js';
 import { JWTHelper } from '../utils/jwt.js';
 import { ErrorResponse } from '../utils/errorResponse.js';

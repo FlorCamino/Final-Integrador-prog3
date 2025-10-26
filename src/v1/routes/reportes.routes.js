@@ -1,31 +1,37 @@
 import express from 'express';
-import { JWTMiddleware } from '../../middlewares/auth/JWTMiddleware.js';
-import { RoleMiddleware } from '../../middlewares/auth/RoleMiddleware.js';
+import passport from 'passport';
 import { ROLES } from '../../enums/roles.js';
+import { RoleCheck } from '../../middlewares/auth/roleCheck.js';
 import ReportesController from '../../controllers/reportes.controller.js';
 
 const router = express.Router();
 const controller = new ReportesController();
 
-
 router.get(
-  '/reservas',
-  [JWTMiddleware.verificar, RoleMiddleware.verificar(ROLES.ADMINISTRADOR, ROLES.EMPLEADO)],
-  controller.generarExcel
+  '/reservas/excel',
+  [
+    passport.authenticate('jwt', { session: false }),
+    RoleCheck.verificarRoles([ROLES.ADMINISTRADOR, ROLES.EMPLEADO]),
+  ],
+  (req, res, next) => controller.generarExcel(req, res, next)
 );
-
 
 router.get(
   '/reservas/csv',
-  [JWTMiddleware.verificar, RoleMiddleware.verificar(ROLES.ADMINISTRADOR)],
-  controller.generarCSV
+  [
+    passport.authenticate('jwt', { session: false }),
+    RoleCheck.verificarRoles([ROLES.ADMINISTRADOR, ROLES.EMPLEADO]),
+  ],
+  (req, res, next) => controller.generarCSV(req, res, next)
 );
-
 
 router.get(
   '/reservas/pdf',
-  [JWTMiddleware.verificar, RoleMiddleware.verificar(ROLES.ADMINISTRADOR)],
-  controller.generarPDF
+  [
+    passport.authenticate('jwt', { session: false }),
+    RoleCheck.verificarRoles([ROLES.ADMINISTRADOR, ROLES.EMPLEADO]),
+  ],
+  (req, res, next) => controller.generarPDF(req, res, next)
 );
 
 export default router;
