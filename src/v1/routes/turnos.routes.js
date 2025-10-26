@@ -69,7 +69,7 @@ router.delete(
   '/:id',
   [
     passport.authenticate('jwt', { session: false }),
-    RoleCheck.verificarRoles([ROLES.ADMINISTRADOR]),
+    RoleCheck.verificarRoles([ROLES.ADMINISTRADOR, ROLES.EMPLEADO]),
     check('id', 'El ID del turno debe ser un número válido').isInt(),
     FieldsValidator.validate,
   ],

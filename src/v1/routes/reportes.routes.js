@@ -11,7 +11,7 @@ router.get(
   '/reservas/excel',
   [
     passport.authenticate('jwt', { session: false }),
-    RoleCheck.verificarRoles([ROLES.ADMINISTRADOR, ROLES.EMPLEADO]),
+    RoleCheck.verificarRoles([ROLES.ADMINISTRADOR]),
   ],
   (req, res, next) => controller.generarExcel(req, res, next)
 );
@@ -20,7 +20,7 @@ router.get(
   '/reservas/csv',
   [
     passport.authenticate('jwt', { session: false }),
-    RoleCheck.verificarRoles([ROLES.ADMINISTRADOR, ROLES.EMPLEADO]),
+    RoleCheck.verificarRoles([ROLES.ADMINISTRADOR]),
   ],
   (req, res, next) => controller.generarCSV(req, res, next)
 );
@@ -29,7 +29,7 @@ router.get(
   '/reservas/pdf',
   [
     passport.authenticate('jwt', { session: false }),
-    RoleCheck.verificarRoles([ROLES.ADMINISTRADOR, ROLES.EMPLEADO]),
+    RoleCheck.verificarRoles([ROLES.ADMINISTRADOR]),
   ],
   (req, res, next) => controller.generarPDF(req, res, next)
 );

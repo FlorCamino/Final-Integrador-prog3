@@ -62,7 +62,7 @@ router.delete(
   '/:salon_id',
   [
     passport.authenticate('jwt', { session: false }),
-    RoleCheck.verificarRoles([ROLES.ADMINISTRADOR]),
+    RoleCheck.verificarRoles([ROLES.ADMINISTRADOR, ROLES.EMPLEADO]),
     check('salon_id', 'El ID del salón debe ser un número válido').isInt(),
     FieldsValidator.validate,
   ],

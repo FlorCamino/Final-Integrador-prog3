@@ -43,7 +43,7 @@ router.delete(
   '/:comentario_id',
   [
     passport.authenticate('jwt', { session: false }),
-    RoleCheck.verificarRoles([ROLES.ADMINISTRADOR, ROLES.EMPLEADO]),
+    RoleCheck.verificarRoles([ROLES.ADMINISTRADOR]),
     check('comentario_id', 'El ID del comentario debe ser válido').isInt(),
     FieldsValidator.validate,
   ],

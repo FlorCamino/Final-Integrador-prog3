@@ -1,7 +1,6 @@
 import jwt from 'jsonwebtoken';
-import dotenv from 'dotenv';
 
-dotenv.config();
+process.loadEnvFile();
 
 export class JWTHelper {
   static generar(payload) {
