@@ -57,7 +57,7 @@ router.delete(
   '/:servicio_id',
   [
     passport.authenticate('jwt', { session: false }),
-    RoleCheck.verificarRoles([ROLES.ADMINISTRADOR]),
+    RoleCheck.verificarRoles([ROLES.ADMINISTRADOR, ROLES.EMPLEADO]),
     check('servicio_id', 'El ID del servicio debe ser un número válido').isInt(),
     FieldsValidator.validate,
   ],

@@ -3,6 +3,8 @@ import { Strategy as JwtStrategy, ExtractJwt } from 'passport-jwt';
 import bcrypt from 'bcryptjs';
 import UsuariosService from '../services/usuarios.service.js';
 
+process.loadEnvFile();
+
 const usuariosService = new UsuariosService();
 
 export const estrategia = new LocalStrategy(

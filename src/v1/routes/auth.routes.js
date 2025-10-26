@@ -4,12 +4,13 @@ import jwt from 'jsonwebtoken';
 import { ResponseBuilder } from '../../utils/responseBuilder.js';
 import { ErrorResponse } from '../../utils/errorResponse.js';
 
+process.loadEnvFile();
 const router = express.Router();
 
 router.post('/login', (req, res, next) => {
   passport.authenticate('local', { session: false }, (err, usuario, info) => {
     if (err) {
-      console.error('❌ Error en autenticación:', err);
+      console.error('Error en autenticación:', err);
       return next(new ErrorResponse('Error en el servidor durante la autenticación', 500));
     }
 

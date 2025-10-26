@@ -14,7 +14,7 @@ router.get(
   '/',
   [
     passport.authenticate('jwt', { session: false }),
-    RoleCheck.verificarRoles([ROLES.ADMINISTRADOR]),
+    RoleCheck.verificarRoles([ROLES.ADMINISTRADOR, ROLES.EMPLEADO]),
   ],
   (req, res, next) => controller.obtenerUsuarios(req, res, next)
 );
