@@ -1,13 +1,11 @@
 import express from 'express';
+import passport from 'passport';
 import { check } from 'express-validator';
 
-import { JWTMiddleware } from '../../middlewares/auth/JWTMiddleware.js';
-import { RoleMiddleware } from '../../middlewares/auth/RoleMiddleware.js';
 import { FieldsValidator } from '../../middlewares/validators/FieldsValidator.js';
-import { ROLES  } from '../../enums/roles.js';
-
+import { RoleCheck } from '../../middlewares/auth/roleCheck.js';
+import { ROLES } from '../../enums/roles.js';
 import UsuariosController from '../../controllers/usuarios.controller.js';
-import { validarCreacionUsuario, validarActualizacionUsuario } from '../../middlewares/usuarios.validator.js';
 
 const router = express.Router();
 const controller = new UsuariosController();
@@ -15,28 +13,28 @@ const controller = new UsuariosController();
 router.get(
   '/',
   [
-    JWTMiddleware.verificar,
-    RoleMiddleware.verificar(ROLES.ADMINISTRADOR, ROLES.EMPLEADO),
+    passport.authenticate('jwt', { session: false }),
+    RoleCheck.verificarRoles([ROLES.ADMINISTRADOR]),
   ],
-  (req, res) => controller.obtenerUsuarios(req, res)
+  (req, res, next) => controller.obtenerUsuarios(req, res, next)
 );
 
 router.get(
   '/:id',
   [
-    JWTMiddleware.verificar,
-    RoleMiddleware.verificar(ROLES.ADMINISTRADOR, ROLES.EMPLEADO),
+    passport.authenticate('jwt', { session: false }),
+    RoleCheck.verificarRoles([ROLES.ADMINISTRADOR, ROLES.EMPLEADO]),
     check('id', 'El ID debe ser un número válido').isInt(),
     FieldsValidator.validate,
   ],
-  (req, res) => controller.obtenerUsuarioPorId(req, res)
+  (req, res, next) => controller.obtenerUsuarioPorId(req, res, next)
 );
 
 router.post(
   '/',
   [
-    JWTMiddleware.verificar,
-    RoleMiddleware.verificar(ROLES.ADMINISTRADOR),
+    passport.authenticate('jwt', { session: false }),
+    RoleCheck.verificarRoles([ROLES.ADMINISTRADOR]),
     check('nombre', 'El nombre es obligatorio').notEmpty(),
     check('apellido', 'El apellido es obligatorio').notEmpty(),
     check('nombre_usuario', 'El nombre de usuario es obligatorio').notEmpty(),
@@ -49,14 +47,14 @@ router.post(
       .withMessage('El celular debe tener entre 7 y 20 caracteres'),
     FieldsValidator.validate,
   ],
-  (req, res) => controller.crearUsuario(req, res)
+  (req, res, next) => controller.crearUsuario(req, res, next)
 );
 
 router.put(
   '/:id',
   [
-    JWTMiddleware.verificar,
-    RoleMiddleware.verificar(ROLES.ADMINISTRADOR),
+    passport.authenticate('jwt', { session: false }),
+    RoleCheck.verificarRoles([ROLES.ADMINISTRADOR]),
     check('id', 'El ID debe ser un número válido').isInt(),
     check('nombre').optional().notEmpty(),
     check('apellido').optional().notEmpty(),
@@ -66,18 +64,18 @@ router.put(
     check('celular').optional().isString(),
     FieldsValidator.validate,
   ],
-  (req, res) => controller.modificarUsuario(req, res)
+  (req, res, next) => controller.modificarUsuario(req, res, next)
 );
 
 router.delete(
   '/:id',
   [
-    JWTMiddleware.verificar,
-    RoleMiddleware.verificar(ROLES.ADMINISTRADOR),
+    passport.authenticate('jwt', { session: false }),
+    RoleCheck.verificarRoles([ROLES.ADMINISTRADOR]),
     check('id', 'El ID debe ser un número válido').isInt(),
     FieldsValidator.validate,
   ],
-  (req, res) => controller.eliminarUsuario(req, res)
+  (req, res, next) => controller.eliminarUsuario(req, res, next)
 );
 
 export default router;

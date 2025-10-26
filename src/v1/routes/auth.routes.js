@@ -1,25 +1,38 @@
 import express from 'express';
-import { body } from 'express-validator';
-import { AuthController } from '../../controllers/auth.controller.js';
-import { FieldsValidator } from '../../middlewares/validators/FieldsValidator.js';
+import passport from 'passport';
+import jwt from 'jsonwebtoken';
+import { ResponseBuilder } from '../../utils/responseBuilder.js';
+import { ErrorResponse } from '../../utils/errorResponse.js';
 
 const router = express.Router();
-const controller = new AuthController();
 
-router.post(
-  '/login',
-  [
-    body('nombre_usuario')
-      .notEmpty()
-      .withMessage('El nombre de usuario es obligatorio'),
-    body('contrasenia')
-      .notEmpty()
-      .withMessage('La contraseña es obligatoria'),
-    FieldsValidator.validate,
-  ],
-  (req, res) => controller.login(req, res)
-);
+router.post('/login', (req, res, next) => {
+  passport.authenticate('local', { session: false }, (err, usuario, info) => {
+    if (err) {
+      console.error('❌ Error en autenticación:', err);
+      return next(new ErrorResponse('Error en el servidor durante la autenticación', 500));
+    }
 
-router.get('/validar', (req, res) => controller.validarToken(req, res));
+    if (!usuario) {
+      return next(new ErrorResponse(info?.message || 'Credenciales inválidas', 401));
+    }
+
+    const payload = {
+      usuario_id: usuario.usuario_id,
+      tipo_usuario: usuario.tipo_usuario,
+    };
+
+    const token = jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: '1h' });
+
+    return ResponseBuilder.success(res, {
+      token,
+      usuario: {
+        usuario_id: usuario.usuario_id,
+        nombre_usuario: usuario.nombre_usuario,
+        tipo_usuario: usuario.tipo_usuario,
+      },
+    }, 'Login exitoso');
+  })(req, res, next);
+});
 
 export default router;
