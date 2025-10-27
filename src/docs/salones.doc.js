@@ -13,7 +13,7 @@
  *     tags: [Salones]
  *     security:
  *       - bearerAuth: []
- *     description: Roles permitidos: Administrador, Empleado y Cliente.
+*     description: "Roles permitidos: Administrador, Empleado y Cliente."
  *     parameters:
  *       - in: query
  *         name: estado
@@ -57,7 +57,7 @@
  *     tags: [Salones]
  *     security:
  *       - bearerAuth: []
- *     description: Roles permitidos: Administrador, Empleado y Cliente.
+*     description: "Roles permitidos: Administrador, Empleado y Cliente."
  *     parameters:
  *       - in: path
  *         name: id
@@ -79,7 +79,7 @@
  *     tags: [Salones]
  *     security:
  *       - bearerAuth: []
- *     description: Roles permitidos: Administrador y Empleado.
+*     description: "Roles permitidos: Administrador y Empleado."
  *     requestBody:
  *       required: true
  *       content:
@@ -108,7 +108,7 @@
  *     tags: [Salones]
  *     security:
  *       - bearerAuth: []
- *     description: Roles permitidos: Administrador y Empleado.
+*     description: "Roles permitidos: Administrador y Empleado."
  *     parameters:
  *       - in: path
  *         name: salon_id
@@ -145,7 +145,7 @@
  *     tags: [Salones]
  *     security:
  *       - bearerAuth: []
- *     description: Roles permitidos: Administrador y Empleado.
+*     description: "Roles permitidos: Administrador y Empleado."
  *     parameters:
  *       - in: path
  *         name: salon_id

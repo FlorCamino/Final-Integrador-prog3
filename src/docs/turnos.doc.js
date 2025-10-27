@@ -13,7 +13,7 @@
  *     tags: [Turnos]
  *     security:
  *       - bearerAuth: []
- *     description: Roles permitidos: Administrador, Empleado y Cliente.
+*     description: "Roles permitidos: Administrador, Empleado y Cliente."
  *     responses:
  *       200:
  *         description: Lista de turnos obtenida correctamente
@@ -42,7 +42,7 @@
  *     tags: [Turnos]
  *     security:
  *       - bearerAuth: []
- *     description: Roles permitidos: Administrador, Empleado y Cliente.
+*     description: "Roles permitidos: Administrador, Empleado y Cliente."
  *     parameters:
  *       - in: path
  *         name: id
@@ -74,7 +74,7 @@
  *     tags: [Turnos]
  *     security:
  *       - bearerAuth: []
- *     description: Roles permitidos: Administrador y Empleado.
+*     description: "Roles permitidos: Administrador y Empleado."
  *     requestBody:
  *       required: true
  *       content:
@@ -98,7 +98,7 @@
  *     tags: [Turnos]
  *     security:
  *       - bearerAuth: []
- *     description: Roles permitidos: Administrador y Empleado.
+*     description: "Roles permitidos: Administrador y Empleado."
  *     parameters:
  *       - in: path
  *         name: id
@@ -135,7 +135,7 @@
  *     tags: [Turnos]
  *     security:
  *       - bearerAuth: []
- *     description: Roles permitidos: Administrador y Empleado.
+*     description: "Roles permitidos: Administrador y Empleado."
  *     parameters:
  *       - in: path
  *         name: id

@@ -13,7 +13,7 @@
  *     tags: [Comentarios]
 		*     security:
 		*       - bearerAuth: []
-		*     description: Roles permitidos: Administrador y Empleado.
+		*     description: "Roles permitidos: Administrador y Empleado."
  *     parameters:
  *       - in: path
  *         name: reserva_id
@@ -33,7 +33,7 @@
  *     tags: [Comentarios]
 		*     security:
 		*       - bearerAuth: []
-		*     description: Roles permitidos: Administrador y Empleado.
+		*     description: "Roles permitidos: Administrador y Empleado."
  *     requestBody:
  *       required: true
  *       content:
@@ -59,7 +59,7 @@
  *     tags: [Comentarios]
 		*     security:
 		*       - bearerAuth: []
-		*     description: Rol requerido: Administrador.
+		*     description: "Rol requerido: Administrador."
  *     parameters:
  *       - in: path
  *         name: comentario_id

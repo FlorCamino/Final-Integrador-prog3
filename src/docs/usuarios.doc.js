@@ -13,7 +13,7 @@
  *     tags: [Usuarios]
  *     security:
  *       - bearerAuth: []
- *     description: Roles permitidos: Administrador y Empleado.
+*     description: "Roles permitidos: Administrador y Empleado."
  *     parameters:
  *       - in: query
  *         name: estado
@@ -79,7 +79,7 @@
  *     tags: [Usuarios]
  *     security:
  *       - bearerAuth: []
- *     description: Roles permitidos: Administrador y Empleado.
+*     description: "Roles permitidos: Administrador y Empleado."
  *     parameters:
  *       - in: path
  *         name: id
@@ -111,7 +111,7 @@
  *     tags: [Usuarios]
  *     security:
  *       - bearerAuth: []
- *     description: Rol requerido: Administrador.
+*     description: "Rol requerido: Administrador."
  *     requestBody:
  *       required: true
  *       content:
@@ -139,7 +139,7 @@
  *     tags: [Usuarios]
  *     security:
  *       - bearerAuth: []
- *     description: Rol requerido: Administrador.
+*     description: "Rol requerido: Administrador."
  *     parameters:
  *       - in: path
  *         name: usuario_id
@@ -178,7 +178,7 @@
  *     tags: [Usuarios]
  *     security:
  *       - bearerAuth: []
- *     description: Rol requerido: Administrador.
+*     description: "Rol requerido: Administrador."
  *     parameters:
  *       - in: path
  *         name: usuario_id

@@ -13,7 +13,7 @@
  *     tags: [Reportes]
  *     security:
  *       - bearerAuth: []
-		*     description: Rol requerido: Administrador.
+		*     description: "Rol requerido: Administrador."
  *     parameters:
  *       - in: query
  *         name: desde
@@ -46,7 +46,7 @@
  *     tags: [Reportes]
  *     security:
  *       - bearerAuth: []
-		*     description: Rol requerido: Administrador.
+		*     description: "Rol requerido: Administrador."
  *     parameters:
  *       - in: query
  *         name: desde
@@ -84,7 +84,7 @@
  *     tags: [Reportes]
  *     security:
  *       - bearerAuth: []
-		*     description: Rol requerido: Administrador.
+		*     description: "Rol requerido: Administrador."
  *     parameters:
  *       - in: query
  *         name: desde

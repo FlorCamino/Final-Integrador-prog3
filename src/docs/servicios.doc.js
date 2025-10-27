@@ -13,7 +13,7 @@
  *     tags: [Servicios]
  *     security:
  *       - bearerAuth: []
- *     description: Roles permitidos: Administrador, Empleado y Cliente.
+*     description: "Roles permitidos: Administrador, Empleado y Cliente."
  *     parameters:
  *       - in: query
  *         name: estado
@@ -62,7 +62,7 @@
  *     tags: [Servicios]
  *     security:
  *       - bearerAuth: []
- *     description: Roles permitidos: Administrador, Empleado y Cliente.
+*     description: "Roles permitidos: Administrador, Empleado y Cliente."
  *     parameters:
  *       - in: path
  *         name: id
@@ -85,7 +85,7 @@
  *     tags: [Servicios]
  *     security:
  *       - bearerAuth: []
- *     description: Roles permitidos: Administrador y Empleado.
+*     description: "Roles permitidos: Administrador y Empleado."
  *     requestBody:
  *       required: true
  *       content:
@@ -110,7 +110,7 @@
  *     tags: [Servicios]
  *     security:
  *       - bearerAuth: []
- *     description: Roles permitidos: Administrador y Empleado.
+*     description: "Roles permitidos: Administrador y Empleado."
  *     parameters:
  *       - in: path
  *         name: servicio_id
@@ -147,7 +147,7 @@
  *     tags: [Servicios]
  *     security:
  *       - bearerAuth: []
- *     description: Roles permitidos: Administrador y Empleado.
+*     description: "Roles permitidos: Administrador y Empleado."
  *     parameters:
  *       - in: path
  *         name: servicio_id
