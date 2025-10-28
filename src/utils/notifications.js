@@ -49,7 +49,7 @@ export class NotificationService {
     return transporter;
   }
 
-  static async sendReservaCliente(reserva) {
+  static async enviarCorreoReserva(reserva) {
     const transporter = NotificationService.initTransporter();
     if (!transporter || !reserva?.emailCliente) {
       console.warn('No se puede enviar correo: falta emailCliente o configuración SMTP.');
@@ -76,7 +76,7 @@ export class NotificationService {
     await NotificationService.safeSend(transporter, mailOptions);
   }
 
-  static async sendReservaAdmin(reserva) {
+  static async enviarCorreoAdministrador(reserva) {
     const transporter = NotificationService.initTransporter();
     if (!transporter || !process.env.EMAIL_USER) return;
 
