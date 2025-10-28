@@ -15,6 +15,7 @@ import comentariosRoutes from './v1/routes/comentarios.routes.js';
 import authRoutes from './v1/routes/auth.routes.js';
 import usuariosRoutes from './v1/routes/usuarios.routes.js';
 import reportesRoutes from './v1/routes/reportes.routes.js'; 
+import informesRoutes from './v1/routes/informes.routes.js';
 
 
 import { swaggerSpec, swaggerUiMiddleware } from './config/swagger.js';
@@ -50,6 +51,7 @@ app.use('/api/v1/comentarios', cache('5 minutes'), comentariosRoutes);
 app.use('/api/v1/auth', authRoutes);
 app.use('/api/v1/usuarios', cache('5 minutes'), usuariosRoutes);
 app.use('/api/v1/reportes', cache('5 minutes'), reportesRoutes); 
+app.use('/api/v1/informes', cache('5 minutes'), informesRoutes);
 
 
 app.use((err, req, res, next) => {
