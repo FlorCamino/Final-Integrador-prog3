@@ -7,7 +7,7 @@
 
 /**
  * @swagger
- * /api/v1/informes/estadisticas:
+ * /informes/estadisticas:
  *   get:
  *     summary: Obtiene informe general del sistema
  *     tags: [Informes]

@@ -98,7 +98,49 @@ export async function initDatabase() {
       }
     }
 
-    console.log('Usuarios agregados correctamente.');
+    console.log('Usuarios agregados o actualizados correctamente.');
+
+    const dropSP = `DROP PROCEDURE IF EXISTS sp_informe_general;`;
+    await pool.query(dropSP);
+
+    const createSP = `
+      CREATE PROCEDURE sp_informe_general()
+      BEGIN
+          SELECT 
+              salon_id,
+              COUNT(*) AS total_reservas,
+              SUM(importe_total) AS ingresos
+          FROM reservas
+          GROUP BY salon_id;
+
+          SELECT 
+              usuario_id,
+              COUNT(*) AS total_reservas,
+              SUM(importe_total) AS total_pagado
+          FROM reservas
+          GROUP BY usuario_id;
+
+          SELECT 
+              COUNT(*) AS total_reservas,
+              SUM(importe_total) AS ingresos_totales
+          FROM reservas;
+
+          SELECT 
+              tipo_usuario,
+              COUNT(*) AS total_usuarios
+          FROM usuarios
+          GROUP BY tipo_usuario;
+          
+          SELECT 
+              reserva_id,
+              COUNT(*) AS total_comentarios
+          FROM comentarios_reservas
+          GROUP BY reserva_id;
+      END;
+    `;
+    await pool.query(createSP);
+    console.log('Stored Procedure sp_informe_general creado o actualizado correctamente.');
+
   } catch (error) {
     console.error('Error al inicializar la base de datos:', error.message);
     throw error;
