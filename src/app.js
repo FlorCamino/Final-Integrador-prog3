@@ -5,7 +5,9 @@ import fs from 'fs';
 import path from 'path';
 import passport from 'passport';
 import { estrategia, validacion } from './config/passport.js';
+
 import { CacheMiddleware } from './middlewares/cache/CacheMiddleware.js';
+import { GetCache } from './middlewares/cache/GetCacheMiddleware.js';
 
 import serviciosRoutes from './v1/routes/servicios.routes.js';
 import salonesRoutes from './v1/routes/salones.routes.js';
@@ -43,15 +45,15 @@ passport.use(estrategia);
 passport.use(validacion);
 app.use(passport.initialize());
 
-app.use('/api/v1/servicios', cache('5 minutes'), serviciosRoutes);
-app.use('/api/v1/salones', cache('5 minutes'), salonesRoutes);
-app.use('/api/v1/turnos', cache('5 minutes'), turnosRoutes);
-app.use('/api/v1/reservas', cache('5 minutes'), reservasRoutes);
-app.use('/api/v1/comentarios', cache('5 minutes'), comentariosRoutes);
+app.use('/api/v1/servicios', GetCache('5 minutes'), serviciosRoutes);
+app.use('/api/v1/salones', GetCache('5 minutes'), salonesRoutes);
+app.use('/api/v1/turnos', GetCache('5 minutes'), turnosRoutes);
+app.use('/api/v1/reservas', GetCache('5 minutes'), reservasRoutes);
+app.use('/api/v1/comentarios', GetCache('5 minutes'), comentariosRoutes);
 app.use('/api/v1/auth', authRoutes);
-app.use('/api/v1/usuarios', cache('5 minutes'), usuariosRoutes);
-app.use('/api/v1/reportes', cache('5 minutes'), reportesRoutes); 
-app.use('/api/v1/informes', cache('5 minutes'), informesRoutes);
+app.use('/api/v1/usuarios', GetCache('5 minutes'), usuariosRoutes);
+app.use('/api/v1/reportes', GetCache('5 minutes'), reportesRoutes); 
+app.use('/api/v1/informes', GetCache('5 minutes'), informesRoutes);
 
 
 app.use((err, req, res, next) => {
