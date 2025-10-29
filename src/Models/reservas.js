@@ -71,23 +71,55 @@ export default class Reservas {
     return result;
   };
 
-  crearReserva = async ({fecha_reserva, salon_id, usuario_id, turno_id, foto_cumpleaniero, tematica, importe_salon, importe_total}) => {
+  crearReserva = async ({
+    fecha_reserva,
+    salon_id,
+    usuario_id,
+    turno_id,
+    foto_cumpleaniero,
+    tematica,
+    importe_salon,
+    importe_total
+  }) => {
     const [result] = await ejecutarConsulta(
-      `INSERT INTO reservas (fecha_reserva, salon_id, usuario_id, turno_id, foto_cumpleaniero, tematica, importe_salon, importe_total, activo) VALUES (?, ?, ?, ?, ?, ?, ?, ?, 1)`,
+      `INSERT INTO reservas 
+        (fecha_reserva, salon_id, usuario_id, turno_id, foto_cumpleaniero, tematica, importe_salon, importe_total, activo)
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?, 1)`,
       [fecha_reserva, salon_id, usuario_id, turno_id, foto_cumpleaniero, tematica, importe_salon, importe_total]
     );
 
+    const reserva_id = result.insertId;
+
+    const [rows] = await ejecutarConsulta(
+      `SELECT 
+          r.reserva_id,
+          r.fecha_reserva,
+          r.salon_id,
+          r.usuario_id,
+          r.turno_id,
+          r.foto_cumpleaniero,
+          r.tematica,
+          r.importe_salon,
+          r.importe_total,
+          r.activo,
+          u.nombre AS nombreCliente,
+          u.apellido AS apellidoCliente,
+          u.nombre_usuario AS emailCliente,
+          s.titulo AS salon
+      FROM reservas r
+      JOIN usuarios u ON r.usuario_id = u.usuario_id
+      JOIN salones s ON r.salon_id = s.salon_id
+      WHERE r.reserva_id = ?`,
+      [reserva_id]
+    );
+
+    const reservaCompleta = rows[0] ?? null;
+
     return {
-      reserva_id: result.insertId,
-      fecha_reserva,
-      salon_id,
-      usuario_id,
-      turno_id,
-      foto_cumpleaniero,
-      tematica,
-      importe_salon,
-      importe_total,
-      activo: 1
+      ...reservaCompleta,
+      nombreCliente: reservaCompleta
+        ? `${reservaCompleta.nombreCliente} ${reservaCompleta.apellidoCliente}`
+        : 'Cliente',
     };
   };
 
