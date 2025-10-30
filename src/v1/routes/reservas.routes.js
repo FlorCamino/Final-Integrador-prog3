@@ -1,10 +1,10 @@
 import express from 'express';
 import passport from 'passport';
 
-import { FieldsValidator } from '../../middlewares/validators/FieldsValidator.js';
+import { FieldsValidator } from '../../middlewares/validators/campos.validator.js';
 import { validarCreacionReserva, validarActualizacionReserva, validarReservaIdParam } from '../../middlewares/validators/reservas.validator.js';
-import { RoleCheck } from '../../middlewares/auth/roleCheck.js';
-import { ROLES  } from '../../enums/roles.js';
+import { RoleCheck } from '../../middlewares/auth/RoleMiddleware.js';
+import { ROLES  } from '../../constants/roles.js';
 
 import ReservasController from '../../controllers/reservas.controller.js';
 

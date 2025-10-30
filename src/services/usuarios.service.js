@@ -5,7 +5,7 @@ export default class UsuariosService {
     this.usuarioModel = new Usuarios();
   }
 
-  async buscarTodos({ limit = 10, offset = 0, estado, sort, order }) {
+  buscarTodos = async ({ limit = 10, offset = 0, estado, sort, order }) => {
     limit = parseInt(limit, 10);
     offset = parseInt(offset, 10);
     if (isNaN(limit) || limit <= 0) limit = 10;
@@ -15,23 +15,23 @@ export default class UsuariosService {
     return { data: rows };
   }
 
-  async buscarPorId(id) {
+  buscarPorId = async (id) => {
     return await this.usuarioModel.buscarUsuarioPorId(id);
   }
 
-  async buscarPorNombreUsuario(nombre_usuario) {
+  buscarPorNombreUsuario = async (nombre_usuario) => {
     return await this.usuarioModel.buscarUsuarioPorNombreUsuario(nombre_usuario);
   }
 
-  async actualizarUsuario(usuario_id, datos) {
+  actualizarUsuario = async (usuario_id, datos) => {
     return await this.usuarioModel.modificarUsuarioPorId(usuario_id, datos);
   }
 
-  async agregarUsuario(datos) {
+  agregarUsuario = async (datos) => {
     return await this.usuarioModel.crearUsuario(datos);
   }
 
-  async borrarUsuario(usuario_id) {
+  borrarUsuario = async (usuario_id) => {
     return await this.usuarioModel.eliminarUsuarioPorId(usuario_id);
   }
 }

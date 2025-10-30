@@ -7,7 +7,7 @@ export default class ComentariosController {
     this.comentariosService = new ComentariosService();
   }
 
-  async obtenerPorReserva(req, res) {
+  obtenerPorReserva = async (req, res) =>{
     try {
       const { reserva_id } = req.params;
 
@@ -28,7 +28,7 @@ export default class ComentariosController {
     }
   }
 
-  async crear(req, res) {
+  crearComentario = async (req, res) =>{
     try {
       const { reserva_id, usuario_id, comentario, calificacion } = req.body;
 
@@ -50,7 +50,7 @@ export default class ComentariosController {
     }
   }
 
-  async eliminar(req, res) {
+  eliminarComentario = async (req, res) => {
     try {
       const { comentario_id } = req.params;
 

@@ -11,11 +11,28 @@ const pool = mysql.createPool({
   waitForConnections: true,
   connectionLimit: 10,
   queueLimit: 0,
+  timezone: 'Z',
 });
 
+
+(async () => {
+  try {
+    const connection = await pool.getConnection();
+    console.log('Conexión a la base de datos MySQL establecida correctamente.');
+    connection.release();
+  } catch (error) {
+    console.error('Error al conectar con la base de datos MySQL:', error.message);
+  }
+})();
+
 export async function ejecutarConsulta(query, params = []) {
-  const [rows, fields] = await pool.query(query, params);
-  return [rows, fields];
+  try {
+    const [rows, fields] = await pool.query(query, params);
+    return [rows, fields];
+  } catch (error) {
+    console.error('Error en ejecutarConsulta:', error.message);
+    throw error;
+  }
 }
 
 export function obtenerPool() {

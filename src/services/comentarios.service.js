@@ -5,15 +5,15 @@ export default class ComentariosService {
     this.model = new Comentarios();
   }
 
-  async obtenerPorReserva(reserva_id) {
+  obtenerPorReserva = async (reserva_id) => {
     return await this.model.obtenerPorReserva(reserva_id);
   }
 
-  async crear(data) {
+  crear = async (data) => {
     return await this.model.crear(data);
   }
 
-  async eliminar(comentario_id) {
+  eliminar = async (comentario_id) =>{
     return await this.model.eliminar(comentario_id);
   }
 }

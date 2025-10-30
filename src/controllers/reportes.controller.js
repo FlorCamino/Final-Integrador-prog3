@@ -1,6 +1,6 @@
-import { ExcelBuilder } from '../utils/excelBuilder.js';
-import { CSVBuilder } from '../utils/csv.js';
-import { PDFBuilder } from '../utils/pdfBuilder.js';
+import { ExcelBuilder } from '../utils/builders/excelBuilder.js';
+import { CSVBuilder } from '../utils/builders/csvBuilder.js';
+import { PDFBuilder } from '../utils/builders/pdfBuilder.js';
 import ReservasService from '../services/reservas.service.js';
 import { ResponseBuilder } from '../utils/responseBuilder.js';
 import { ErrorResponse } from '../utils/errorResponse.js';

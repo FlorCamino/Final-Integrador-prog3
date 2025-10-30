@@ -113,3 +113,49 @@
  *       500:
  *         description: Error interno del servidor
  */
+
+/**
+ * @swagger
+ * /reportes/informes/excel:
+ *   get:
+ *     summary: Generar informe estadístico en formato Excel
+ *     tags: [Reportes]
+ *     security:
+ *       - bearerAuth: []
+ *     description: >
+ *       Genera un informe estadístico completo del sistema (reservas, usuarios, servicios y comentarios)
+ *       utilizando **procedimientos almacenados (Stored Procedures)** con filtros opcionales por rango de fechas.  
+ *       El resultado se exporta en formato **Excel (.xlsx)**.  
+ *       <br><br>**Rol requerido:** `Administrador`.
+ *     parameters:
+ *       - in: query
+ *         name: desde
+ *         schema:
+ *           type: string
+ *           format: date
+ *         description: Fecha inicial del rango (formato `YYYY-MM-DD`). Si no se especifica, se incluyen todos los registros disponibles.
+ *         example: 2025-10-01
+ *       - in: query
+ *         name: hasta
+ *         schema:
+ *           type: string
+ *           format: date
+ *         description: Fecha final del rango (formato `YYYY-MM-DD`). Si no se especifica, se incluyen todos los registros hasta la fecha actual.
+ *         example: 2025-10-31
+ *     responses:
+ *       200:
+ *         description: Archivo Excel generado correctamente.
+ *         content:
+ *           application/vnd.openxmlformats-officedocument.spreadsheetml.sheet:
+ *             schema:
+ *               type: string
+ *               format: binary
+ *       400:
+ *         description: Parámetros de fecha inválidos o rango incorrecto.
+ *       403:
+ *         description: Acceso denegado. Solo el rol **Administrador** puede generar informes.
+ *       404:
+ *         description: No hay datos disponibles para el rango de fechas especificado.
+ *       500:
+ *         description: Error interno del servidor al generar el informe.
+ */

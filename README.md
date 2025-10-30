@@ -25,7 +25,6 @@ Incluye autenticación y autorización con **JWT**, control de roles (`Administr
 
 - Login con **JWT**.
 - Autorización por **rol** usando middlewares.
-- Validación automática de token (`/auth/validar`).
 
 ### Administración
 
@@ -47,8 +46,8 @@ Incluye autenticación y autorización con **JWT**, control de roles (`Administr
 
 ### Reportes y estadísticas
 
-- Generación de informes **PDF / CSV**.
-- Consultas estadísticas mediante **stored procedures**.
+- Generación de informes **PDF / CSV / Excel**.
+- Consultas estadísticas mediante **Procedimientos almacenados**.
 
 ### Documentación
 
@@ -70,6 +69,7 @@ FINAL-INTEGRADOR-PROG3/
 │  ├─ config/                     # Configuración global
 │  │   ├─ db.js                   # Pool de conexiones MySQL (mysql2/promise)
 │  │   ├─ initDB.js               # Creación inicial de tablas extras
+│  │   ├─ passport.js             # Configuración de la autenticación de usuarios
 │  │   └─ swagger.js              # Configuración Swagger
 │  │
 │  ├─ controllers/                # Lógica de capa Controller (HTTP)
@@ -80,17 +80,16 @@ FINAL-INTEGRADOR-PROG3/
 │  │   ├─ usuarios.controller.js
 │  │   └─ reservas.controller.js
 │  │
-│  ├─ enums/                      # Enumeraciones globales
+│  ├─ constants/                  # Enumeraciones globales
 │  │   └─ roles.js                # Enumeración de roles (1=Admin, 2=Empleado, 3=Cliente)
 │  │
 │  ├─ middlewares/                # Middlewares reutilizables
 │  │   ├─ auth/
-│  │   │   ├─ JWTMiddleware.js
 │  │   │   └─ RoleMiddleware.js
 │  │   ├─ cache/
 │  │   │   └─ CacheMiddleware.js          # Limpia caché de apicache en operaciones POST/PUT/DELETE │
 │  │   └─ validators/
-│  │       └─ FieldsValidator.js       # Maneja resultados de express-validator
+│  │       └─ campos.validator.js       # Maneja resultados de express-validator
 │  │
 │  ├─ models/                     # Acceso a datos (consultas SQL)
 │  │   ├─ servicios.js
@@ -114,11 +113,16 @@ FINAL-INTEGRADOR-PROG3/
 │  │   ├─ usuarios.service.js
 │  │   └─ reservas.service.js
 │  │
-│  ├─ utils/                      # Utilidades globales
-│  │   ├─ jwt.js                  # Generación/verificación de JWT
-│  │   ├─ notifications.js        # Envío de correos con nodemailer + handlebars
-│  │   ├─ responseBuilder.js      # Formato unificado de respuestas
-│  │   └─ errorResponse.js        # Excepciones personalizadas
+│  ├─ utils/                           # Funciones y clases auxiliares del proyecto
+│  │   ├─ builders/                    # Generación de reportes en distintos formatos (CSV, Excel, PDF)
+│  │   │   ├─ csvBuilder.js            # Genera reportes de reservas en formato CSV
+│  │   │   ├─ excelBuilder.js          # Genera reportes e informes estadísticos en Excel (ExcelJS, estilos, moneda regional)
+│  │   │   └─ pdfBuilder.js            # Crea reportes en PDF con diseño institucional
+│  │   │
+│  │   ├─ jwt.js                       # Generación y validación de tokens JWT para autenticación
+│  │   ├─ notifications.js             # Envío de correos (Nodemailer)
+│  │   ├─ responseBuilder.js           # Respuestas HTTP estandarizadas para la API
+│  │   └─ errorResponse.js             # Clase personalizada para manejo de errores
 │  │
 │  ├─ docs/                       # Documentación Swagger modular
 │  │   └─ auth.docs.js
@@ -135,47 +139,3 @@ FINAL-INTEGRADOR-PROG3/
 └─ README.md
 
 ```
-
----
-
-## Instalación y configuración
-
-1. **Clonar el repositorio**
-
-   ```
-   git clone https://github.com/FlorCamino/Final-Integrador-prog3
-   cd Final-Integrador-prog3
-   ```
-
-````
-
-2. **Instalar dependencias**
-
-   ```
-   npm install
-   ```
-
-3. **Configurar variables de entorno**
-
-   ```
-   cp .env.example .env
-   ```
-
-4. **Iniciar el servidor**
-
-   ```
-   npm run start
-   ```
-
-   El servidor estará disponible en:
-      [http://localhost:4000](http://localhost:4000)
-
----
-
-## Documentación interactiva
-
-Swagger disponible en:
-   [http://localhost:4000/swagger](http://localhost:4000/swagger)
-
-
-````

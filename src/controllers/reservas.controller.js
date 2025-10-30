@@ -1,5 +1,5 @@
 import ReservasService from '../services/reservas.service.js';
-import { ROLES } from '../enums/roles.js';
+import { ROLES } from '../constants/roles.js';
 import { NotificationService } from '../utils/notifications.js';
 import { ResponseBuilder } from '../utils/responseBuilder.js';
 import { ErrorResponse } from '../utils/errorResponse.js';
@@ -117,7 +117,7 @@ export default class ReservasController {
   eliminarReserva = async (req, res) => {
     try {
       const { reserva_id } = req.params;
-      if (isNaN(reserva_id)) throw new ErrorResponse('ID no válido', 404);
+      if (isNaN(reserva_id)) throw new ErrorResponse('ID no válido', 400);
 
       const resultado = await this.reservasService.borrarReserva(reserva_id);
       if (resultado.affectedRows === 0) {

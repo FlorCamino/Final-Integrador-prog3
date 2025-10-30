@@ -1,9 +1,9 @@
 import express from 'express';
 import passport from 'passport';
-import { FieldsValidator } from '../../middlewares/validators/FieldsValidator.js';
+import { FieldsValidator } from '../../middlewares/validators/campos.validator.js';
 import { validarCreacionUsuario, validarActualizacionUsuario } from '../../middlewares/validators/usuarios.validator.js';
-import { RoleCheck } from '../../middlewares/auth/roleCheck.js';
-import { ROLES } from '../../enums/roles.js';
+import { RoleCheck } from '../../middlewares/auth/RoleMiddleware.js';
+import { ROLES } from '../../constants/roles.js';
 import UsuariosController from '../../controllers/usuarios.controller.js';
 
 const router = express.Router();
