@@ -1,0 +1,35 @@
+===================================================
+   INSTRUCTIVO DE USO - FINAL INTEGRADOR PROG3
+===================================================
+
+1️⃣ INSTALACIÓN Y CONFIGURACIÓN
+
+1. Clonar el repositorio:
+   git clone https://github.com/FlorCamino/Final-Integrador-prog3
+   cd Final-Integrador-prog3
+
+2. Instalar dependencias:
+   npm install
+
+3. Configurar variables de entorno:
+   cp .env.example .env
+
+4. Iniciar el servidor:
+   npm run start
+
+Servidor disponible en:
+   http://localhost:4000
+Swagger UI:
+   http://localhost:4000/swagger
+
+------------------------------------------
+2️⃣ INFORMACIÓN IMPORTANTE
+
+✅ Los usuarios base se crean automáticamente al iniciar la base de datos:
+   - Administrador → admin@correo.com / 123456
+   - Empleado → empleado@correo.com / 123456
+   - Cliente → cliente@correo.com / 123456
+
+✅ Swagger ya está configurado con estos usuarios para facilitar las pruebas.
+   Solo es necesario autenticarse en /auth/login y usar el token generado.
+

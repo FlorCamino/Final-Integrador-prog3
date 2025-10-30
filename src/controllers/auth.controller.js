@@ -11,7 +11,7 @@ export class AuthController {
     try {
       const { nombre_usuario, contrasenia } = req.body;
 
-      if (!nombre_usuario || !contrasenia) {
+      if (!nombre_usuario?.trim() || !contrasenia?.trim()) {
         throw new ErrorResponse('Nombre de usuario y contraseña son requeridos', 400);
       }
 
@@ -26,7 +26,7 @@ export class AuthController {
   validarToken = async (req, res) => {
     try {
       const authHeader = req.headers['authorization'];
-      const token = authHeader && authHeader.split(' ')[1];
+      const token = authHeader?.split(' ')[1];
 
       if (!token) throw new ErrorResponse('Token no proporcionado', 401);
 

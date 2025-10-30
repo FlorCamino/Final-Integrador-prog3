@@ -1,4 +1,4 @@
-import { ROLES } from '../enums/roles.js';
+import { ROLES } from '../constants/roles.js';
 import Reservas from '../Models/reservas.js';
 import ReservasServicios from '../Models/reservas_servicios.js';
 
