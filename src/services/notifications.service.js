@@ -2,6 +2,7 @@ import nodemailer from 'nodemailer';
 import hbs from 'nodemailer-express-handlebars';
 import path from 'path';
 import { fileURLToPath } from 'url';
+import Usuarios from '../models/usuarios.js';
 
 process.loadEnvFile();
 
@@ -49,6 +50,15 @@ export class NotificationService {
     return transporter;
   }
 
+  static async obtenerEmailsAdministradores() {
+    try {
+      return await Usuarios.obtenerAdministradoresActivos();
+    } catch (error) {
+      console.error('Error al obtener correos de administradores:', error.message);
+      return [];
+    }
+  }
+
   static async enviarCorreoReserva(reserva) {
     const transporter = NotificationService.initTransporter();
     if (!transporter || !reserva?.emailCliente) {
@@ -67,7 +77,7 @@ export class NotificationService {
         nombreCliente: reserva.nombreCliente || 'Cliente',
         salon: reserva.salon || 'Sin especificar',
         fecha: reserva.fecha || 'No definida',
-        importe: reserva.importe || 0,
+        importe: reserva.importe_total || 0,
         year: new Date().getFullYear(),
         bannerUrl,
       },
@@ -78,14 +88,19 @@ export class NotificationService {
 
   static async enviarCorreoAdministrador(reserva) {
     const transporter = NotificationService.initTransporter();
-    if (!transporter || !process.env.EMAIL_USER) return;
+    const adminEmails = await NotificationService.obtenerEmailsAdministradores();
+
+    if (!transporter || adminEmails.length === 0) {
+      console.warn('No hay administradores activos con correo configurado.');
+      return;
+    }
 
     const bannerUrl = NotificationService.randomBanner();
 
     const mailOptions = {
       from: `"Sistema PKES" <${process.env.EMAIL_USER}>`,
-      to: process.env.EMAIL_USER,
-      subject: 'Nueva Reserva Registrada',
+      to: adminEmails.join(','),
+      subject: '📩 Nueva Reserva Registrada',
       template: 'reserva.admin',
       context: {
         nombreCliente: reserva.nombreCliente || 'Cliente',
