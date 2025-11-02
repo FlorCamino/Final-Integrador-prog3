@@ -120,7 +120,7 @@
  *             nombre: "Lucas"
  *             apellido: "Pérez"
  *             nombre_usuario: "lucasp"
- *             password: "123456"
+ *             contrasenia: "123456"
  *             tipo_usuario: 3
  *     responses:
  *       201:
@@ -156,7 +156,7 @@
  *             nombre: "Camila"
  *             apellido: "Rojas"
  *             nombre_usuario: "camilar_mod"
- *             password: "nuevaClave2025"
+ *             contrasenia: "nuevaClave2025"
  *             tipo_usuario: 2
  *             activo: 1
  *     responses:

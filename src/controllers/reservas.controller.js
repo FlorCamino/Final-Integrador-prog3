@@ -1,6 +1,6 @@
 import ReservasService from '../services/reservas.service.js';
 import { ROLES } from '../constants/roles.js';
-import { NotificationService } from '../utils/notifications.js';
+import { NotificationService } from '../services/notifications.service.js';
 import { ResponseBuilder } from '../utils/responseBuilder.js';
 import { ErrorResponse } from '../utils/errorResponse.js';
 

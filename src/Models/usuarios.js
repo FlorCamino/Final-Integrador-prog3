@@ -117,4 +117,13 @@ export default class Usuarios {
     );
     return rows[0] || null;
   }
+
+  static async obtenerAdministradoresActivos() {
+    const [rows] = await ejecutarConsulta(
+      `SELECT nombre_usuario AS email 
+       FROM usuarios 
+       WHERE tipo_usuario = 1 AND activo = 1`
+    );
+    return rows.map(r => r.email).filter(Boolean);
+  }
 }
