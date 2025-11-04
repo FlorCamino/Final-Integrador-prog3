@@ -1,8 +1,8 @@
 import express from 'express';
-import passport from 'passport';
 import { validarReservaIdParam, validarCreacionComentario, validarComentarioIdParam } from '../../middlewares/validators/comentarios.validator.js';
 import { ROLES } from '../../constants/roles.js';
 import { RoleCheck } from '../../middlewares/auth/RoleMiddleware.js';
+import { GetCache } from '../../middlewares/cache/GetCacheMiddleware.js';
 import ComentariosController from '../../controllers/comentarios.controller.js';
 
 const router = express.Router();
@@ -11,8 +11,8 @@ const controller = new ComentariosController();
 router.get(
   '/:reserva_id',
   [
-    passport.authenticate('jwt', { session: false }),
     RoleCheck.verificarRoles([ROLES.ADMINISTRADOR, ROLES.EMPLEADO]),
+    GetCache('1 minutes'),
     ...validarReservaIdParam,
   ],
   (req, res) => controller.obtenerPorReserva(req, res)
@@ -21,7 +21,6 @@ router.get(
 router.post(
   '/',
   [
-    passport.authenticate('jwt', { session: false }),
     RoleCheck.verificarRoles([ROLES.ADMINISTRADOR, ROLES.EMPLEADO]),
     ...validarCreacionComentario,
   ],
@@ -31,7 +30,6 @@ router.post(
 router.delete(
   '/:comentario_id',
   [
-    passport.authenticate('jwt', { session: false }),
     RoleCheck.verificarRoles([ROLES.ADMINISTRADOR]),
     ...validarComentarioIdParam,
   ],

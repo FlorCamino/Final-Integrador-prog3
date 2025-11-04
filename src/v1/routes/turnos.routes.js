@@ -1,8 +1,8 @@
 import express from 'express';
-import passport from 'passport';
 import { FieldsValidator } from '../../middlewares/validators/campos.validator.js';
 import { validarCreacionTurno, validarActualizacionTurno } from '../../middlewares/validators/turnos.validator.js';
 import { RoleCheck } from '../../middlewares/auth/RoleMiddleware.js';
+import { GetCache } from '../../middlewares/cache/GetCacheMiddleware.js';
 import { ROLES } from '../../constants/roles.js';
 import TurnosController from '../../controllers/turno.controller.js';
 
@@ -11,16 +11,16 @@ const controller = new TurnosController();
 
 router.get('/', 
   [
-    passport.authenticate('jwt', { session: false }),
-    RoleCheck.verificarRoles([ROLES.ADMINISTRADOR, ROLES.EMPLEADO, ROLES.CLIENTE])
+    RoleCheck.verificarRoles([ROLES.ADMINISTRADOR, ROLES.EMPLEADO, ROLES.CLIENTE]),
+    GetCache('1 minutes'),
   ],
   (req, res, next) => controller.obtenerTurnos(req, res, next));
 
 router.get(
   '/:id',
   [
-    passport.authenticate('jwt', { session: false }),
     RoleCheck.verificarRoles([ROLES.ADMINISTRADOR, ROLES.EMPLEADO, ROLES.CLIENTE]),
+    GetCache('1 minutes'),
     ...validarActualizacionTurno.slice(0, 1),
     FieldsValidator.validate,
   ],
@@ -30,7 +30,6 @@ router.get(
 router.post(
   '/',
   [
-    passport.authenticate('jwt', { session: false }),
     RoleCheck.verificarRoles([ROLES.ADMINISTRADOR, ROLES.EMPLEADO]),
     ...validarCreacionTurno,
   ],
@@ -40,7 +39,6 @@ router.post(
 router.put(
   '/:id',
   [
-    passport.authenticate('jwt', { session: false }),
     RoleCheck.verificarRoles([ROLES.ADMINISTRADOR, ROLES.EMPLEADO]),
     ...validarActualizacionTurno,
   ],
@@ -50,7 +48,6 @@ router.put(
 router.delete(
   '/:id',
   [
-    passport.authenticate('jwt', { session: false }),
     RoleCheck.verificarRoles([ROLES.ADMINISTRADOR, ROLES.EMPLEADO]),
     ...validarActualizacionTurno.slice(0, 1),
     FieldsValidator.validate,

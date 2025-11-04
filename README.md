@@ -69,8 +69,8 @@ FINAL-INTEGRADOR-PROG3/
 │  ├─ config/                     # Configuración global
 │  │   ├─ db.js                   # Pool de conexiones MySQL (mysql2/promise)
 │  │   ├─ initDB.js               # Creación inicial de tablas extras
-│  │   ├─ passport.js             # Configuración de la autenticación de usuarios
-│  │   └─ swagger.js              # Configuración Swagger
+│  │   ├─ passportConfig.js             # Configuración de la autenticación de usuarios
+│  │   └─ swaggerConfig.js              # Configuración Swagger
 │  │
 │  ├─ controllers/                # Lógica de capa Controller (HTTP)
 │  │   ├─ auth.controller.js

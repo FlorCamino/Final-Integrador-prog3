@@ -1,6 +1,4 @@
-import apicache from 'apicache';
-
-const cache = apicache.middleware;
+import cache from '../../config/cacheConfig.js';
 
 export const GetCache = (duration = '5 minutes') => {
   return (req, res, next) => {

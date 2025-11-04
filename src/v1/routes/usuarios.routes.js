@@ -1,8 +1,8 @@
 import express from 'express';
-import passport from 'passport';
 import { FieldsValidator } from '../../middlewares/validators/campos.validator.js';
 import { validarCreacionUsuario, validarActualizacionUsuario } from '../../middlewares/validators/usuarios.validator.js';
 import { RoleCheck } from '../../middlewares/auth/RoleMiddleware.js';
+import { GetCache } from '../../middlewares/cache/GetCacheMiddleware.js';
 import { ROLES } from '../../constants/roles.js';
 import UsuariosController from '../../controllers/usuarios.controller.js';
 
@@ -12,8 +12,8 @@ const controller = new UsuariosController();
 router.get(
   '/',
   [
-    passport.authenticate('jwt', { session: false }),
     RoleCheck.verificarRoles([ROLES.ADMINISTRADOR, ROLES.EMPLEADO]),
+    GetCache('1 minutes'),
   ],
   (req, res, next) => controller.obtenerUsuarios(req, res, next)
 );
@@ -21,8 +21,8 @@ router.get(
 router.get(
   '/:id',
   [
-    passport.authenticate('jwt', { session: false }),
     RoleCheck.verificarRoles([ROLES.ADMINISTRADOR, ROLES.EMPLEADO]),
+    GetCache('1 minutes'),
     validarActualizacionUsuario[0],
     FieldsValidator.validate,
   ],
@@ -32,7 +32,6 @@ router.get(
 router.post(
   '/',
   [
-    passport.authenticate('jwt', { session: false }),
     RoleCheck.verificarRoles([ROLES.ADMINISTRADOR]),
     ...validarCreacionUsuario,
   ],
@@ -42,7 +41,6 @@ router.post(
 router.put(
   '/:id',
   [
-    passport.authenticate('jwt', { session: false }),
     RoleCheck.verificarRoles([ROLES.ADMINISTRADOR]),
     ...validarActualizacionUsuario,
   ],
@@ -52,7 +50,6 @@ router.put(
 router.delete(
   '/:id',
   [
-    passport.authenticate('jwt', { session: false }),
     RoleCheck.verificarRoles([ROLES.ADMINISTRADOR]),
     validarActualizacionUsuario[0],
     FieldsValidator.validate,
