@@ -1,11 +1,19 @@
-import dotenv from 'dotenv';
 import app from './app.js';
+import { initDatabase } from './config/initDB.js';
 
-dotenv.config();
-
+process.loadEnvFile();
 const PORT = process.env.PORT || 4000;
 
-app.listen(PORT, () => {
-  console.log(`Servidor en http://localhost:${PORT}`);
-  console.log(`Swagger docs en http://localhost:${PORT}/swagger`);
-});
+(async () => {
+  try {
+    await initDatabase();
+
+    app.listen(PORT, () => {
+      console.log(`Servidor iniciado en: http://localhost:${PORT}`);
+      console.log(`Documentación Swagger: http://localhost:${PORT}/swagger`);
+    });
+  } catch (error) {
+    console.error('Error al iniciar el servidor:', error.message);
+    process.exit(1);
+  }
+})();

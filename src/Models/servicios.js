@@ -1,9 +1,10 @@
-import { conexion } from '../config/db.js';
+import { ejecutarConsulta } from '../config/db.js';
 
 export default class Servicio {
 
   buscarTodosServicios = async ({ limit, offset, estado, sort, order }) => {
-    let baseQuery = 'FROM servicios WHERE 1=1';
+  
+  let baseQuery = 'FROM servicios WHERE 1=1';
     const params = [];
     if (estado !== undefined) {
       baseQuery += ' AND activo = ?';
@@ -17,24 +18,24 @@ export default class Servicio {
     if (sortField) query += ` ORDER BY ${sortField} ${direction}`;
     query += ' LIMIT ? OFFSET ?';
     params.push(limit, offset);
-    const [rows] = await conexion.query(query, params);
+    const [rows] = await ejecutarConsulta(query, params);
     return { rows };
   }
 
   buscarServicioPorId = async (id) => {
-    const [rows] = await conexion.query('SELECT * FROM servicios WHERE servicio_id = ?', [id]);
+    const [rows] = await ejecutarConsulta('SELECT * FROM servicios WHERE servicio_id = ?', [id]);
     return rows.length > 0 ? rows[0] : null;
   }
 
 
   modificarServicioPorId = async (servicio_id, { descripcion, importe }) => {
     const query = 'UPDATE servicios SET descripcion = ?, importe = ? WHERE servicio_id = ?';
-    const [result] = await conexion.query(query, [descripcion, importe, servicio_id]);
+    const [result] = await ejecutarConsulta(query, [descripcion, importe, servicio_id]);
     return result;
   };
 
   crearServicio = async ({ descripcion, importe }) => {
-    const [result] = await conexion.query(
+    const [result] = await ejecutarConsulta(
       `INSERT INTO servicios (descripcion, importe, activo) VALUES (?, ?, 1)`,
       [descripcion, importe]
     );
@@ -48,7 +49,7 @@ export default class Servicio {
 
   eliminarServicioPorId = async (servicio_id) => {
     const query = 'UPDATE servicios SET activo= 0 WHERE servicio_id = ?';
-    const [result] = await conexion.query(query, [servicio_id]);
+    const [result] = await ejecutarConsulta(query, [servicio_id]);
     return result;
   }
 }
