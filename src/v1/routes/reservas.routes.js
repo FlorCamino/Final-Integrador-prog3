@@ -1,9 +1,9 @@
 import express from 'express';
-import passport from 'passport';
 
 import { FieldsValidator } from '../../middlewares/validators/campos.validator.js';
 import { validarCreacionReserva, validarActualizacionReserva, validarReservaIdParam } from '../../middlewares/validators/reservas.validator.js';
 import { RoleCheck } from '../../middlewares/auth/RoleMiddleware.js';
+import { GetCache } from '../../middlewares/cache/GetCacheMiddleware.js';
 import { ROLES  } from '../../constants/roles.js';
 
 import ReservasController from '../../controllers/reservas.controller.js';
@@ -14,8 +14,8 @@ const controller = new ReservasController();
 router.get(
     '/',
     [
-        passport.authenticate('jwt', { session: false }),
-        RoleCheck.verificarRoles([ROLES.ADMINISTRADOR, ROLES.EMPLEADO, ROLES.CLIENTE])
+        RoleCheck.verificarRoles([ROLES.ADMINISTRADOR, ROLES.EMPLEADO, ROLES.CLIENTE]),
+        GetCache('1 minutes')
     ],
     (req, res, next) => controller.obtenerReservas(req, res, next)
 );
@@ -23,8 +23,8 @@ router.get(
 router.get(
     '/:id',
     [
-        passport.authenticate('jwt', { session: false }),
         RoleCheck.verificarRoles([ROLES.ADMINISTRADOR, ROLES.EMPLEADO, ROLES.CLIENTE]),
+        GetCache('1 minutes'),
         ...validarReservaIdParam,
         FieldsValidator.validate,
     ],
@@ -34,7 +34,6 @@ router.get(
 router.post(
     '/',
     [
-        passport.authenticate('jwt', { session: false }),
         RoleCheck.verificarRoles([ROLES.ADMINISTRADOR, ROLES.CLIENTE]),
         ...validarCreacionReserva,
     ],
@@ -44,7 +43,6 @@ router.post(
 router.put(
     '/:reserva_id',
     [
-        passport.authenticate('jwt', { session: false }),
         RoleCheck.verificarRoles([ROLES.ADMINISTRADOR]),
         ...validarActualizacionReserva,
     ],
@@ -54,7 +52,6 @@ router.put(
 router.delete (
     '/:reserva_id',
     [
-        passport.authenticate('jwt', { session: false }),
         RoleCheck.verificarRoles([ROLES.ADMINISTRADOR]),
         ...validarReservaIdParam,
         FieldsValidator.validate,
