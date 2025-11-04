@@ -3,11 +3,9 @@ import passport from 'passport';
 import { ROLES } from '../../constants/roles.js';
 import { RoleCheck } from '../../middlewares/auth/RoleMiddleware.js';
 import ReportesController from '../../controllers/reportes.controller.js';
-import InformesController from '../../controllers/informes.controller.js';
 
 const router = express.Router();
 const reportesController = new ReportesController();
-const informesController = new InformesController();
 
 router.get(
   '/reservas/excel',
@@ -31,10 +29,10 @@ router.get(
 );
 
 router.get(
-  '/informes/excel',
+  '/reservas/pdf/:id',
   passport.authenticate('jwt', { session: false }),
   RoleCheck.verificarRoles([ROLES.ADMINISTRADOR]),
-  (req, res, next) => informesController.exportarInformeExcel(req, res, next)
+  (req, res, next) => reportesController.generarPDFIndividual(req, res, next)
 );
 
 export default router;

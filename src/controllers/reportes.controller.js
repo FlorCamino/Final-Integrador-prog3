@@ -90,4 +90,30 @@ export default class ReportesController {
       return ResponseBuilder.handleError(res, error);
     }
   };
+
+  generarPDFIndividual = async (req, res) => {
+    try {
+      const { id } = req.params;
+
+      if (!id) {
+        throw new ErrorResponse('Debe proporcionar un ID de reserva válido', 400);
+      }
+
+      const reserva = await this.reservasService.obtenerReservaDetalladaPorId(id);
+
+      if (!reserva) {
+        throw new ErrorResponse('Reserva no encontrada', 404);
+      }
+
+      const pdfBuffer = await PDFBuilder.generarComprobanteReserva(reserva);
+      const nombreArchivo = `comprobante_reserva_${id}.pdf`;
+
+      res.setHeader('Content-Type', 'application/pdf');
+      res.setHeader('Content-Disposition', `attachment; filename="${nombreArchivo}"`);
+      res.status(200).send(pdfBuffer);
+    } catch (error) {
+      console.error('Error al generar comprobante PDF:', error);
+      return ResponseBuilder.handleError(res, error);
+    }
+  };
 }

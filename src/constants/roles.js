@@ -4,11 +4,11 @@ export const ROLES = {
   CLIENTE: 3,
 };
 
-export const roles = {
+export const ROLES_NOMBRES = Object.freeze({
   [ROLES.ADMINISTRADOR]: 'administrador',
   [ROLES.EMPLEADO]: 'empleado',
   [ROLES.CLIENTE]: 'cliente',
-};
+});
 
 export function obtenerNombreRol(tipoUsuario) {
   return roles[tipoUsuario] || 'desconocido';

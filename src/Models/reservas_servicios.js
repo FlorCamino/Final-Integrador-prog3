@@ -1,32 +1,91 @@
-import { ejecutarConsulta, obtenerPool } from '../config/db.js';
+import { obtenerPool } from '../config/db.js';
 
 export default class ReservasServicios {
-    crearReservaConServicios = async(reserva_id, servicios) => {
-            for (const servicio of servicios) {
-                const sql = `INSERT INTO reservas_servicios (reserva_id, servicio_id, importe) VALUES (?,?,?);`;
-                await ejecutarConsulta(sql, [reserva_id, servicio.servicio_id, servicio.importe]);
-            }
-        return true;
-    }
 
-    agregarServiciosDeReserva = async (reserva_id, nuevosServicios) => {
-        for (const servicio of nuevosServicios) {
-            const sql = 'INSERT INTO reservas_servicios (reserva_id, servicio_id, importe) VALUES (?, ?, ?)';
-            await ejecutarConsulta(sql, [reserva_id, servicio.servicio_id, servicio.importe]);
-        }
+  async crearReservaConServicios(reserva_id, servicios, conn = null) {
+    const connection = conn || (await obtenerPool().getConnection());
+    try {
+      for (const servicio of servicios) {
+        const sql = `
+          INSERT INTO reservas_servicios (reserva_id, servicio_id, importe, activo)
+          VALUES (?, ?, ?, 1);
+        `;
+        await connection.query(sql, [reserva_id, servicio.servicio_id, servicio.importe]);
+      }
+      if (!conn) connection.release();
+      return true;
+    } catch (err) {
+      if (!conn) connection.release();
+      throw err;
     }
+  }
 
-    modificarServiciosDeReserva = async (reserva_id, serviciosModificados) => {
-        for (const servicio of serviciosModificados) {
-            const sql = 'UPDATE reservas_servicios SET importe = ? WHERE reserva_id = ? AND servicio_id = ?';
-            await ejecutarConsulta(sql, [servicio.importe, reserva_id, servicio.servicio_id]);
-        }
+  async agregarServiciosDeReserva(reserva_id, nuevosServicios, conn = null) {
+    const connection = conn || (await obtenerPool().getConnection());
+    try {
+      for (const servicio of nuevosServicios) {
+        const sql = `
+          INSERT INTO reservas_servicios (reserva_id, servicio_id, importe, activo)
+          VALUES (?, ?, ?, 1);
+        `;
+        await connection.query(sql, [reserva_id, servicio.servicio_id, servicio.importe]);
+      }
+      if (!conn) connection.release();
+    } catch (err) {
+      if (!conn) connection.release();
+      throw err;
     }
+  }
 
-    eliminarServiciosDeReserva = async(reserva_id, serviciosEliminados) => {
-        for (const servicio of serviciosEliminados) {
-        const sql = 'DELETE FROM reservas_servicios WHERE reserva_id = ? AND servicio_id = ?';
-        await ejecutarConsulta(sql, [reserva_id, servicio.servicio_id]);
-        }
+  async modificarServiciosDeReserva(reserva_id, serviciosModificados, conn = null) {
+    const connection = conn || (await obtenerPool().getConnection());
+    try {
+      for (const servicio of serviciosModificados) {
+        const sql = `
+          UPDATE reservas_servicios 
+          SET importe = ?, modificado = CURRENT_TIMESTAMP
+          WHERE reserva_id = ? AND servicio_id = ? AND activo = 1;
+        `;
+        await connection.query(sql, [servicio.importe, reserva_id, servicio.servicio_id]);
+      }
+      if (!conn) connection.release();
+    } catch (err) {
+      if (!conn) connection.release();
+      throw err;
     }
+  }
+
+  async eliminarServiciosDeReserva(reserva_id, serviciosEliminados, conn = null) {
+    const connection = conn || (await obtenerPool().getConnection());
+    try {
+      for (const servicio of serviciosEliminados) {
+        const sql = `
+          UPDATE reservas_servicios
+          SET activo = 0, modificado = CURRENT_TIMESTAMP
+          WHERE reserva_id = ? AND servicio_id = ?;
+        `;
+        await connection.query(sql, [reserva_id, servicio.servicio_id]);
+      }
+      if (!conn) connection.release();
+    } catch (err) {
+      if (!conn) connection.release();
+      throw err;
+    }
+  }
+
+  async desactivarPorReserva(reserva_id, conn = null) {
+    const connection = conn || (await obtenerPool().getConnection());
+    try {
+      const sql = `
+        UPDATE reservas_servicios 
+        SET activo = 0, modificado = CURRENT_TIMESTAMP
+        WHERE reserva_id = ?;
+      `;
+      await connection.query(sql, [reserva_id]);
+      if (!conn) connection.release();
+    } catch (err) {
+      if (!conn) connection.release();
+      throw err;
+    }
+  }
 }
