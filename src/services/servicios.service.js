@@ -1,4 +1,4 @@
-import Servicios from '../Models/servicios.js';
+import Servicios from '../models/servicios.js';
 
 export default class ServiciosService {
   constructor() {
