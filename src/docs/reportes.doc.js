@@ -2,7 +2,7 @@
  * @swagger
  * tags:
  *   name: Reportes
- *   description: API generación de reportes de tipo PDF - CSV - EXCEL.
+ *   description: Endpoints para generar reportes de reservas en formato PDF, CSV o Excel.
  */
 
 /**
@@ -13,7 +13,8 @@
  *     tags: [Reportes]
  *     security:
  *       - bearerAuth: []
-		*     description: "Rol requerido: Administrador."
+ *     description: Genera un reporte general de reservas en formato Excel.  
+ *       **Rol requerido:** Administrador.
  *     parameters:
  *       - in: query
  *         name: desde
@@ -32,6 +33,11 @@
  *     responses:
  *       200:
  *         description: Archivo Excel generado correctamente
+ *         content:
+ *           application/vnd.openxmlformats-officedocument.spreadsheetml.sheet:
+ *             schema:
+ *               type: string
+ *               format: binary
  *       404:
  *         description: No hay reservas para exportar
  *       500:
@@ -42,11 +48,12 @@
  * @swagger
  * /reportes/reservas/csv:
  *   get:
-		*     summary: Generar reporte de reservas en formato CSV
+ *     summary: Generar reporte de reservas en formato CSV
  *     tags: [Reportes]
  *     security:
  *       - bearerAuth: []
-		*     description: "Rol requerido: Administrador."
+ *     description: Genera un reporte general de reservas en formato CSV.  
+ *       **Rol requerido:** Administrador.
  *     parameters:
  *       - in: query
  *         name: desde
@@ -80,11 +87,12 @@
  * @swagger
  * /reportes/reservas/pdf:
  *   get:
-		*     summary: Generar reporte de reservas en formato PDF
+ *     summary: Generar reporte de reservas en formato PDF
  *     tags: [Reportes]
  *     security:
  *       - bearerAuth: []
-		*     description: "Rol requerido: Administrador."
+ *     description: Genera un reporte general de reservas en formato PDF.  
+ *       **Rol requerido:** Administrador.
  *     parameters:
  *       - in: query
  *         name: desde
@@ -116,46 +124,32 @@
 
 /**
  * @swagger
- * /reportes/informes/excel:
+ * /reportes/reservas/pdf/{id}:
  *   get:
- *     summary: Generar informe estadístico en formato Excel
+ *     summary: Generar comprobante PDF de una reserva individual
  *     tags: [Reportes]
  *     security:
  *       - bearerAuth: []
- *     description: >
- *       Genera un informe estadístico completo del sistema (reservas, usuarios, servicios y comentarios)
- *       utilizando **procedimientos almacenados (Stored Procedures)** con filtros opcionales por rango de fechas.  
- *       El resultado se exporta en formato **Excel (.xlsx)**.  
- *       <br><br>**Rol requerido:** `Administrador`.
+ *     description: Genera un comprobante PDF detallado de una reserva específica.  
+ *       **Rol requerido:** Administrador.
  *     parameters:
- *       - in: query
- *         name: desde
+ *       - in: path
+ *         name: id
+ *         required: true
  *         schema:
- *           type: string
- *           format: date
- *         description: Fecha inicial del rango (formato `YYYY-MM-DD`). Si no se especifica, se incluyen todos los registros disponibles.
- *         example: 2025-10-01
- *       - in: query
- *         name: hasta
- *         schema:
- *           type: string
- *           format: date
- *         description: Fecha final del rango (formato `YYYY-MM-DD`). Si no se especifica, se incluyen todos los registros hasta la fecha actual.
- *         example: 2025-10-31
+ *           type: integer
+ *         description: ID de la reserva a exportar
+ *         example: 87
  *     responses:
  *       200:
- *         description: Archivo Excel generado correctamente.
+ *         description: Comprobante PDF generado correctamente
  *         content:
- *           application/vnd.openxmlformats-officedocument.spreadsheetml.sheet:
+ *           application/pdf:
  *             schema:
  *               type: string
  *               format: binary
- *       400:
- *         description: Parámetros de fecha inválidos o rango incorrecto.
- *       403:
- *         description: Acceso denegado. Solo el rol **Administrador** puede generar informes.
  *       404:
- *         description: No hay datos disponibles para el rango de fechas especificado.
+ *         description: Reserva no encontrada
  *       500:
- *         description: Error interno del servidor al generar el informe.
+ *         description: Error interno del servidor
  */

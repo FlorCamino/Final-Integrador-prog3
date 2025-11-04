@@ -26,9 +26,9 @@ Swagger UI:
 2️⃣ INFORMACIÓN IMPORTANTE
 
 ✅ Los usuarios base se crean automáticamente al iniciar la base de datos:
-   - Administrador → admin@correo.com / 123456
-   - Empleado → empleado@correo.com / 123456
-   - Cliente → cliente@correo.com / 123456
+   - Administrador → admin@correo.com / admin123
+   - Empleado → empleado@correo.com / empleado123
+   - Cliente → cliente@correo.com / cliente123
 
 ✅ Swagger ya está configurado con estos usuarios para facilitar las pruebas.
    Solo es necesario autenticarse en /auth/login y usar el token generado.

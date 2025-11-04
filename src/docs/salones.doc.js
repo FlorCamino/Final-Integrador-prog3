@@ -85,7 +85,7 @@
  *       content:
  *         application/json:
  *           example:
- *             titulo: "Salón PKES Premium"
+ *             titulo: "Salón Premium"
  *             direccion: "Av. Siempre Viva 123"
  *             latitud: -31.42
  *             longitud: -64.18
@@ -120,7 +120,7 @@
  *       content:
  *         application/json:
  *           example:
- *             titulo: "Salón PKES Kids"
+ *             titulo: "Salón Kids"
  *             direccion: "Calle Principal 456"
  *             latitud: -31.43
  *             longitud: -64.19

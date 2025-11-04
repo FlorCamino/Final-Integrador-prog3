@@ -69,7 +69,7 @@ export class NotificationService {
     const bannerUrl = NotificationService.randomBanner();
 
     const mailOptions = {
-      from: `"Reservas PKES" <${process.env.EMAIL_USER}>`,
+      from: `"Reservas" <${process.env.EMAIL_USER}>`,
       to: reserva.emailCliente,
       subject: '🎉 Confirmación de tu Reserva',
       template: 'reserva',
@@ -98,7 +98,7 @@ export class NotificationService {
     const bannerUrl = NotificationService.randomBanner();
 
     const mailOptions = {
-      from: `"Sistema PKES" <${process.env.EMAIL_USER}>`,
+      from: `"Sistema" <${process.env.EMAIL_USER}>`,
       to: adminEmails.join(','),
       subject: '📩 Nueva Reserva Registrada',
       template: 'reserva.admin',

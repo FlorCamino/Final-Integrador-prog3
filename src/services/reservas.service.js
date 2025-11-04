@@ -1,6 +1,7 @@
 import { ROLES } from '../constants/roles.js';
 import Reservas from '../Models/reservas.js';
 import ReservasServicios from '../Models/reservas_servicios.js';
+import { ErrorResponse } from '../utils/errorResponse.js';
 
 export default class ReservasService {
   constructor() {
@@ -11,86 +12,73 @@ export default class ReservasService {
   buscarTodas = async ({ limit = 10, offset = 0, estado, sort, order, usuario }) => {
     limit = parseInt(limit, 10);
     offset = parseInt(offset, 10);
-
     if (isNaN(limit) || limit <= 0) limit = 10;
     if (isNaN(offset) || offset < 0) offset = 0;
 
     if (usuario.tipo_usuario === ROLES.CLIENTE) {
-      const { rows } = await this.reservaModel.buscarReservasPorUsuario(usuario.usuario_id, { limit, offset, estado, sort, order });
-      return { data: rows };
+      const data = await this.reservaModel.buscarReservasDetalladasPorUsuario(usuario.usuario_id, { limit, offset });
+      return { data };
+    } else if ([ROLES.ADMINISTRADOR, ROLES.EMPLEADO].includes(usuario.tipo_usuario)) {
+      const data = await this.reservaModel.buscarReservasDetalladas({ limit, offset });
+      return { data };
     } else {
-        const { rows } = await this.reservaModel.buscarTodasReservas({ limit, offset, estado, sort, order });
-        return { data: rows };
+      throw new Error('Rol no autorizado para consultar reservas');
     }
   };
 
   buscarPorId = async (id, usuario) => {
-    if (usuario.tipo_usuario === ROLES.CLIENTE) {
-      const reserva = await this.reservaModel.buscarReservasPorUsuario(usuario.usuario_id, { id });
-      return reserva.length ? reserva[0] : null;
-    } else {
-      const reserva = await this.reservaModel.buscarReservaPorId(id);
-      return reserva;
+    const reserva = await this.reservaModel.buscarReservaPorId(id);
+
+    if (!reserva) {
+      return { error: 'NOT_FOUND', data: null };
     }
+
+    if (usuario.tipo_usuario === ROLES.CLIENTE && reserva.usuario_id !== usuario.usuario_id) {
+      return { error: 'FORBIDDEN', data: null };
+    }
+    return { error: null, data: reserva };
   };
 
-  actualizarReserva = async (reserva_id, datos) => {
-    const resultado = await this.reservaModel.modificarReservaPorId(reserva_id, {
-      fecha_reserva: datos.fecha_reserva,
-      salon_id: datos.salon_id,
-      usuario_id: datos.usuario_id,
-      turno_id: datos.turno_id,
-      foto_cumpleaniero: datos.foto_cumpleaniero,
-      tematica: datos.tematica,
-      importe_salon: datos.importe_salon,
-      importe_total: datos.importe_total,
-    });
+  obtenerReservaDetalladaPorId = async (id) => {
+    const reservasDetalladas = await this.reservaModel.buscarReservasDetalladas({ limit: 999, offset: 0 });
+    const reserva = reservasDetalladas.find(r => r.reserva_id === parseInt(id));
 
-    if (Array.isArray(datos.servicios)) {
-      const { nuevosServicios = [], serviciosModificados = [], serviciosEliminados = [] } = datos.servicios;
-
-      if (nuevosServicios.length) {
-        await this.reservasServiciosModel.agregarServiciosDeReserva(reserva_id, nuevosServicios);
-      }
-
-      if (serviciosModificados.length) {
-        await this.reservasServiciosModel.modificarServiciosDeReserva(reserva_id, serviciosModificados);
-      }
-
-      if (serviciosEliminados.length) {
-        await this.reservasServiciosModel.eliminarServiciosDeReserva(reserva_id, serviciosEliminados);
-      }
-    }
-    return resultado;
+    if (!reserva) throw new ErrorResponse('Reserva no encontrada.', 404);
+    return reserva;
   };
 
   crearReserva = async (datos) => {
-    const reservaDatos = {
-      fecha_reserva: datos.fecha_reserva,
+    await this.reservaModel.validarEntidadesActivas(datos);
+
+    const disponible = await this.reservaModel.buscarDisponibilidad({
       salon_id: datos.salon_id,
-      usuario_id: datos.usuario_id,
       turno_id: datos.turno_id,
-      foto_cumpleaniero: datos.foto_cumpleaniero,
-      tematica: datos.tematica,
-      importe_salon: datos.importe_salon,
-      importe_total: datos.importe_total,
-    };
+      fecha_reserva: datos.fecha_reserva,
+    });
+    if (!disponible)
+      throw new ErrorResponse('El salón no está disponible en el turno seleccionado.', 409);
 
-    const nuevaReserva = await this.reservaModel.crearReserva(reservaDatos);
-
-    if (Array.isArray(datos.servicios) && datos.servicios.length > 0) {
-      await this.reservasServiciosModel.crearReservaConServicios(
-        nuevaReserva.reserva_id,
-        datos.servicios
-      );
-    };
-
+    const nuevaReserva = await this.reservaModel.crearReservaCompleta(datos);
     return nuevaReserva;
   };
 
+  actualizarReserva = async (reserva_id, datos) => {
+    await this.reservaModel.validarEntidadesActivas(datos);
+
+    const disponible = await this.reservaModel.buscarDisponibilidad({
+      salon_id: datos.salon_id,
+      turno_id: datos.turno_id,
+      fecha_reserva: datos.fecha_reserva,
+      excluir_id: reserva_id,
+    });
+    if (!disponible)
+      throw new ErrorResponse('El salón no está disponible en ese turno y fecha.', 409);
+
+    return await this.reservaModel.actualizarReservaCompleta(reserva_id, datos);
+  };
+
   borrarReserva = async (reserva_id) => {
-    const resultado = await this.reservaModel.eliminarReservaPorId(reserva_id);
-    return resultado;
+    return await this.reservaModel.desactivarReservaEnCascada(reserva_id);
   };
 
   generarReporte = async (desde, hasta) => {
