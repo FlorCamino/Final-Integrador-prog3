@@ -1,8 +1,8 @@
 import express from 'express';
-import passport from 'passport';
 import { FieldsValidator } from '../../middlewares/validators/campos.validator.js';
 import { validarCreacionServicio, validarActualizacionServicio, validarServicioIdParam } from '../../middlewares/validators/servicios.validator.js';
 import { RoleCheck } from '../../middlewares/auth/RoleMiddleware.js';
+import { GetCache } from '../../middlewares/cache/GetCacheMiddleware.js';
 import { ROLES } from '../../constants/roles.js';
 import ServiciosController from '../../controllers/servicios.controller.js';
 
@@ -11,16 +11,16 @@ const controller = new ServiciosController();
 
 router.get('/',
   [ 
-    passport.authenticate('jwt', { session: false }),
     RoleCheck.verificarRoles([ROLES.ADMINISTRADOR, ROLES.EMPLEADO, ROLES.CLIENTE]),
+    GetCache('1 minutes')
   ],
   (req, res, next) => controller.obtenerServicios(req, res, next));
 
 router.get(
   '/:id',
   [
-    passport.authenticate('jwt', { session: false }),
     RoleCheck.verificarRoles([ROLES.ADMINISTRADOR, ROLES.EMPLEADO, ROLES.CLIENTE]),
+    GetCache('1 minutes'),
     ...validarServicioIdParam,
     FieldsValidator.validate,
   ],
@@ -30,7 +30,6 @@ router.get(
 router.post(
   '/',
   [
-    passport.authenticate('jwt', { session: false }),
     RoleCheck.verificarRoles([ROLES.ADMINISTRADOR, ROLES.EMPLEADO]),
     ...validarCreacionServicio,
   ],
@@ -40,7 +39,6 @@ router.post(
 router.put(
   '/:servicio_id',
   [
-    passport.authenticate('jwt', { session: false }),
     RoleCheck.verificarRoles([ROLES.ADMINISTRADOR, ROLES.EMPLEADO]),
     ...validarActualizacionServicio,
   ],
@@ -50,7 +48,6 @@ router.put(
 router.delete(
   '/:servicio_id',
   [
-    passport.authenticate('jwt', { session: false }),
     RoleCheck.verificarRoles([ROLES.ADMINISTRADOR, ROLES.EMPLEADO]),
     ...validarServicioIdParam,
     FieldsValidator.validate,
