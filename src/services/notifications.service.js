@@ -69,7 +69,7 @@ export class NotificationService {
     const bannerUrl = NotificationService.randomBanner();
 
     const mailOptions = {
-      from: `"Reservas" <${process.env.EMAIL_USER}>`,
+      from: `"Reservas PKES" <${process.env.EMAIL_USER}>`,
       to: reserva.emailCliente,
       subject: '🎉 Confirmación de tu Reserva',
       template: 'reserva',
@@ -77,7 +77,11 @@ export class NotificationService {
         nombreCliente: reserva.nombreCliente || 'Cliente',
         salon: reserva.salon || 'Sin especificar',
         fecha: reserva.fecha || 'No definida',
-        importe: reserva.importe_total || 0,
+        turno: reserva.turno || 'No especificado',
+        tematica: reserva.tematica || '',
+        servicios: reserva.servicios || [],
+        importeSalon: reserva.importeSalon || reserva.importe_salon || 0,
+        importeTotal: reserva.importeTotal || reserva.importe_total || 0,
         year: new Date().getFullYear(),
         bannerUrl,
       },
@@ -98,7 +102,7 @@ export class NotificationService {
     const bannerUrl = NotificationService.randomBanner();
 
     const mailOptions = {
-      from: `"Sistema" <${process.env.EMAIL_USER}>`,
+      from: `"Sistema PKES" <${process.env.EMAIL_USER}>`,
       to: adminEmails.join(','),
       subject: '📩 Nueva Reserva Registrada',
       template: 'reserva.admin',
@@ -107,9 +111,9 @@ export class NotificationService {
         emailCliente: reserva.emailCliente || 'Sin correo',
         salon: reserva.salon || 'Sin especificar',
         fecha: reserva.fecha || 'No definida',
-        importeSalon: reserva.importe_salon || 0,
-        importeTotal: reserva.importe_total || 0,
-        tematica: reserva.tematica || 'Sin especificar',
+        importeSalon: reserva.importeSalon || reserva.importe_salon || 0,
+        importeTotal: reserva.importeTotal || reserva.importe_total || 0,
+        tematica: reserva.tematica || '',
         year: new Date().getFullYear(),
         bannerUrl,
       },

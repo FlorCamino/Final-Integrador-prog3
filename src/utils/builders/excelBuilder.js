@@ -142,17 +142,6 @@ export class ExcelBuilder {
     wsServicios.addRows(data.serviciosMasContratados || []);
     this._estilizarEncabezado(wsServicios);
 
-    const wsComentarios = workbook.addWorksheet('Comentarios');
-    wsComentarios.addRows([
-      ['Total Comentarios', data.comentarios?.total_comentarios || 0],
-      ['Calificación Promedio', data.comentarios?.calificacion_promedio || 0],
-    ]);
-    wsComentarios.columns = [{ width: 40 }, { width: 20 }];
-    wsComentarios.eachRow((row) => {
-      row.font = { bold: true };
-      row.alignment = { vertical: 'middle', horizontal: 'center' };
-    });
-
     workbook.eachSheet((sheet) => {
       sheet.eachRow((row) => (row.height = 22));
     });

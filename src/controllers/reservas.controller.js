@@ -35,13 +35,10 @@ export default class ReservasController {
       const usuario = req.user;
       const { error, data: reserva } = await this.reservasService.buscarPorId(id, usuario);
 
-      if (error === 'FORBIDDEN') {
+      if (error === 'FORBIDDEN')
         throw new ErrorResponse('No tiene permiso para acceder a esta reserva', 403);
-      }
-
-      if (error === 'NOT_FOUND') {
+      if (error === 'NOT_FOUND')
         throw new ErrorResponse('Reserva no encontrada', 404);
-      }
 
       return ResponseBuilder.success(res, reserva, 'Reserva obtenida correctamente');
     } catch (error) {
@@ -93,23 +90,27 @@ export default class ReservasController {
       if (reserva?.emailCliente) {
         try {
           await NotificationService.enviarCorreoReserva({
-            nombreCliente: reserva.nombreCliente ?? 'Cliente',
+            nombreCliente: reserva.nombreCliente,
             emailCliente: reserva.emailCliente,
-            salon: reserva.salon ?? 'Sin especificar',
+            salon: reserva.salon,
             fecha: reserva.fecha_reserva,
-            importe: reserva.importe_total ?? 0,
+            turno: reserva.turno_descripcion || reserva.turno,
+            tematica: reserva.tematica,
+            servicios: reserva.servicios || [],
+            importeSalon: reserva.importe_salon,
+            importeTotal: reserva.importe_total,
           });
 
           await NotificationService.enviarCorreoAdministrador(reserva);
 
           console.log(
-            `Correos enviados correctamente a ${reserva.emailCliente} y al administrador.`
+            `Correos enviados correctamente a ${reserva.emailCliente} y a los administradores.`
           );
         } catch (mailError) {
           console.error('Error al enviar correo de confirmación:', mailError.message);
         }
       } else {
-        console.warn('No se envió correo: falta el campo emailCliente.');
+        console.warn('No se envió correo: falta el campo emailCliente en la reserva.');
       }
 
       return ResponseBuilder.success(res, reserva, 'Reserva creada correctamente.');
@@ -120,7 +121,7 @@ export default class ReservasController {
 
   modificarReserva = async (req, res) => {
     try {
-      if (req.user.tipo_usuario !== ROLES.ADMIN) {
+      if (req.user.tipo_usuario !== ROLES.ADMINISTRADOR) {
         throw new ErrorResponse('Solo el administrador puede modificar reservas.', 403);
       }
 
@@ -161,7 +162,7 @@ export default class ReservasController {
 
   eliminarReserva = async (req, res) => {
     try {
-      if (req.user.tipo_usuario !== ROLES.ADMIN) {
+      if (req.user.tipo_usuario !== ROLES.ADMINISTRADOR) {
         throw new ErrorResponse('Solo el administrador puede eliminar reservas.', 403);
       }
 
@@ -174,7 +175,7 @@ export default class ReservasController {
         throw new ErrorResponse('Reserva no encontrada', 404);
       }
 
-      return ResponseBuilder.success(res, null, 'Reserva eliminada correctamente (soft delete).');
+      return ResponseBuilder.success(res, null, 'Reserva eliminada correctamente.');
     } catch (error) {
       return ResponseBuilder.handleError(res, error);
     }

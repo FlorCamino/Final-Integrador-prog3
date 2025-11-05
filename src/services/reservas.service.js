@@ -1,6 +1,6 @@
 import { ROLES } from '../constants/roles.js';
-import Reservas from '../Models/reservas.js';
-import ReservasServicios from '../Models/reservas_servicios.js';
+import Reservas from '../models/reservas.js';
+import ReservasServicios from '../models/reservas_servicios.js';
 import { ErrorResponse } from '../utils/errorResponse.js';
 
 export default class ReservasService {
@@ -22,30 +22,27 @@ export default class ReservasService {
       const data = await this.reservaModel.buscarReservasDetalladas({ limit, offset });
       return { data };
     } else {
-      throw new Error('Rol no autorizado para consultar reservas');
+      throw new ErrorResponse('Rol no autorizado para consultar reservas.', 403);
     }
   };
 
   buscarPorId = async (id, usuario) => {
     const reserva = await this.reservaModel.buscarReservaPorId(id);
-
-    if (!reserva) {
-      return { error: 'NOT_FOUND', data: null };
-    }
+    if (!reserva) return { error: 'NOT_FOUND', data: null };
 
     if (usuario.tipo_usuario === ROLES.CLIENTE && reserva.usuario_id !== usuario.usuario_id) {
       return { error: 'FORBIDDEN', data: null };
     }
+
     return { error: null, data: reserva };
   };
 
   obtenerReservaDetalladaPorId = async (id) => {
-    const reservasDetalladas = await this.reservaModel.buscarReservasDetalladas({ limit: 999, offset: 0 });
-    const reserva = reservasDetalladas.find(r => r.reserva_id === parseInt(id));
-
+    const reserva = await this.reservaModel.buscarReservaDetalladaPorId(id);
     if (!reserva) throw new ErrorResponse('Reserva no encontrada.', 404);
     return reserva;
   };
+
 
   crearReserva = async (datos) => {
     await this.reservaModel.validarEntidadesActivas(datos);
@@ -58,8 +55,13 @@ export default class ReservasService {
     if (!disponible)
       throw new ErrorResponse('El salón no está disponible en el turno seleccionado.', 409);
 
-    const nuevaReserva = await this.reservaModel.crearReservaCompleta(datos);
-    return nuevaReserva;
+    const reservaCompleta = await this.reservaModel.crearReserva(datos);
+
+    if (!reservaCompleta?.emailCliente) {
+      console.warn('Reserva creada pero sin emailCliente asociado.');
+    }
+
+    return reservaCompleta;
   };
 
   actualizarReserva = async (reserva_id, datos) => {
