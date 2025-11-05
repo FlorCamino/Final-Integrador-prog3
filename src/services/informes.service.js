@@ -15,20 +15,29 @@ export class InformesService {
         throw new ErrorResponse('La fecha inicial no puede ser posterior a la fecha final.', 400);
       }
 
-      const resultados = await this.model.obtenerInformeGeneral(fechaDesde, fechaHasta);
+      const resultSets = await this.model.obtenerInformeGeneral(fechaDesde, fechaHasta);
 
-      if (!resultados || resultados.length === 0) {
+      if (!resultSets || resultSets.length === 0) {
         console.warn('El procedimiento sp_informe_general no devolvió resultados.');
         return {};
       }
 
+      const [
+        reservasPorSalon = [],
+        reservasPorCliente = [],
+        resumenGeneral = [],
+        usuariosPorRol = [],
+        serviciosMasContratados = [],
+        comentarios = [],
+      ] = resultSets;
+
       return {
-        reservasPorSalon: resultados[0],
-        reservasPorCliente: resultados[1],
-        resumenGeneral: resultados[2]?.[0] || {},
-        usuariosPorRol: resultados[3],
-        serviciosMasContratados: resultados[4],
-        comentarios: resultados[5]?.[0] || {},
+        reservasPorSalon,
+        reservasPorCliente,
+        resumenGeneral: resumenGeneral[0] || {},
+        usuariosPorRol,
+        serviciosMasContratados,
+        comentarios: comentarios[0] || {},
       };
     } catch (error) {
       console.error('Error al generar informe estadístico:', error.message);
@@ -46,18 +55,14 @@ export class InformesService {
       }
 
       const buffer = await ExcelBuilder.generarReporteInformes(data, fechaDesde, fechaHasta);
-
       const outputDir = path.join(process.cwd(), 'reports');
-      if (!fs.existsSync(outputDir)) {
-        fs.mkdirSync(outputDir, { recursive: true });
-        console.log(`Carpeta creada: ${outputDir}`);
-      }
+      if (!fs.existsSync(outputDir)) fs.mkdirSync(outputDir, { recursive: true });
 
       const rango = fechaDesde && fechaHasta ? `${fechaDesde}_a_${fechaHasta}` : 'completo';
       const filePath = path.join(outputDir, `informe_estadistico_${rango}_${Date.now()}.xlsx`);
       await fs.promises.writeFile(filePath, buffer);
 
-      console.log(`Informe Excel exportado correctamente en: ${filePath}`);
+      console.log(`Informe Excel exportado correctamente: ${filePath}`);
       return filePath;
     } catch (error) {
       console.error('Error al exportar informe Excel:', error.message);
