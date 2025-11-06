@@ -26,11 +26,6 @@ export default class PassportConfig {
         },
         async (nombre_usuario, contrasenia, done) => {
           try {
-            if (!nombre_usuario?.trim() || !contrasenia?.trim()) {
-              return done(null, false, {
-                message: 'Debe ingresar nombre de usuario y contraseña.',
-              });
-            }
 
             const usuario = await this.usuariosService.buscarPorNombreUsuario(nombre_usuario);
 
@@ -97,3 +92,4 @@ export default class PassportConfig {
     );
   }
 }
+
