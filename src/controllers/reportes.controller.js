@@ -13,11 +13,6 @@ export default class ReportesController {
   generarExcel = async (req, res) => {
     try {
       const { desde, hasta } = req.query;
-
-      if (!desde || !hasta) {
-        throw new ErrorResponse('Debe proporcionar un rango de fechas válido (desde y hasta)', 400);
-      }
-
       const data = await this.reservasService.generarReporte(desde, hasta);
 
       if (!data || data.length === 0) {
@@ -27,10 +22,7 @@ export default class ReportesController {
       const buffer = await ExcelBuilder.generarReporteReservas(data);
       const nombreArchivo = `reporte_reservas_${Date.now()}.xlsx`;
 
-      res.setHeader(
-        'Content-Type',
-        'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
-      );
+      res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
       res.setHeader('Content-Disposition', `attachment; filename="${nombreArchivo}"`);
       res.send(buffer);
     } catch (error) {
@@ -42,11 +34,6 @@ export default class ReportesController {
   generarCSV = async (req, res) => {
     try {
       const { desde, hasta } = req.query;
-
-      if (!desde || !hasta) {
-        throw new ErrorResponse('Debe proporcionar un rango de fechas válido (desde y hasta)', 400);
-      }
-
       const data = await this.reservasService.generarReporte(desde, hasta);
 
       if (!data || data.length === 0) {
@@ -68,11 +55,6 @@ export default class ReportesController {
   generarPDF = async (req, res) => {
     try {
       const { desde, hasta } = req.query;
-
-      if (!desde || !hasta) {
-        throw new ErrorResponse('Debe proporcionar un rango de fechas válido (desde y hasta)', 400);
-      }
-
       const data = await this.reservasService.generarReporte(desde, hasta);
 
       if (!data || data.length === 0) {
@@ -94,11 +76,6 @@ export default class ReportesController {
   generarPDFIndividual = async (req, res) => {
     try {
       const { id } = req.params;
-
-      if (!id) {
-        throw new ErrorResponse('Debe proporcionar un ID de reserva válido', 400);
-      }
-
       const reserva = await this.reservasService.obtenerReservaDetalladaPorId(id);
 
       if (!reserva) {
@@ -117,3 +94,4 @@ export default class ReportesController {
     }
   };
 }
+

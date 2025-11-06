@@ -26,8 +26,7 @@ export default class ServiciosController {
 
   obtenerServicioPorId = async (req, res) => {
     try {
-      const id = parseInt(req.params.id, 10);
-      if (isNaN(id)) throw new ErrorResponse('ID no válido', 400);
+      const id = parseInt(req.params.id || req.params.servicio_id, 10);
 
       const servicio = await this.serviciosService.buscarPorId(id);
       if (!servicio) throw new ErrorResponse('Servicio no encontrado', 404);
@@ -42,14 +41,7 @@ export default class ServiciosController {
     try {
       const { descripcion, importe } = req.body;
 
-      if (!descripcion || isNaN(importe)) {
-        throw new ErrorResponse('La descripción y el importe son obligatorios', 400);
-      }
-
-      const nuevoServicio = await this.serviciosService.agregarServicio({
-        descripcion,
-        importe,
-      });
+      const nuevoServicio = await this.serviciosService.agregarServicio({ descripcion, importe });
 
       return ResponseBuilder.success(res, nuevoServicio, 'Servicio creado correctamente', 201);
     } catch (error) {
@@ -59,21 +51,16 @@ export default class ServiciosController {
 
   modificarServicio = async (req, res) => {
     try {
-      const { servicio_id } = req.params;
-      const { descripcion, importe } = req.body;
-
-      if (!descripcion || isNaN(importe)) {
-        throw new ErrorResponse('Descripción e importe son requeridos', 400);
-      }
+      const servicio_id = parseInt(req.params.servicio_id, 10);
+      const { descripcion, importe, activo } = req.body;
 
       const resultado = await this.serviciosService.actualizarServicio(servicio_id, {
         descripcion,
         importe,
+        activo,
       });
 
-      if (resultado.affectedRows === 0) {
-        throw new ErrorResponse('Servicio no encontrado', 404);
-      }
+      if (resultado.affectedRows === 0) throw new ErrorResponse('Servicio no encontrado', 404);
 
       return ResponseBuilder.success(res, null, 'Servicio modificado correctamente');
     } catch (error) {
@@ -83,13 +70,10 @@ export default class ServiciosController {
 
   eliminarServicio = async (req, res) => {
     try {
-      const { servicio_id } = req.params;
-      if (isNaN(servicio_id)) throw new ErrorResponse('ID no válido', 400);
+      const servicio_id = parseInt(req.params.servicio_id, 10);
 
       const resultado = await this.serviciosService.borrarServicios(servicio_id);
-      if (resultado.affectedRows === 0) {
-        throw new ErrorResponse('Servicio no encontrado', 404);
-      }
+      if (resultado.affectedRows === 0) throw new ErrorResponse('Servicio no encontrado', 404);
 
       return ResponseBuilder.success(res, null, 'Servicio eliminado correctamente');
     } catch (error) {

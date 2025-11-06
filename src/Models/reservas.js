@@ -122,6 +122,7 @@ export default class Reservas {
         nombreCliente: `${reservaBase.nombreCliente} ${reservaBase.apellidoCliente}`,
         emailCliente: reservaBase.emailCliente,
         servicios: serviciosRows,
+        foto_cumpleaniero,
       };
     } catch (err) {
       await conn.rollback();
@@ -516,6 +517,7 @@ export default class Reservas {
         r.reserva_id,
         r.fecha_reserva,
         r.tematica,
+        r.foto_cumpleaniero,
         s.salon_id,
         s.titulo AS salon_titulo,
         s.capacidad AS salon_capacidad,
@@ -564,6 +566,7 @@ export default class Reservas {
       reserva_id: reserva.reserva_id,
       fecha_reserva: reserva.fecha_reserva,
       tematica: reserva.tematica,
+      foto_cumpleaniero: reserva.foto_cumpleaniero,
       importe_salon: importeSalon,
       importe_total: totalReserva,
       salon: {

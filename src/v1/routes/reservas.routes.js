@@ -5,11 +5,13 @@ import { validarCreacionReserva, validarActualizacionReserva, validarReservaIdPa
 import { RoleCheck } from '../../middlewares/auth/RoleMiddleware.js';
 import { GetCache } from '../../middlewares/cache/GetCacheMiddleware.js';
 import { ROLES  } from '../../constants/roles.js';
+import MulterConfig from '../../config/multerConfig.js';
 
 import ReservasController from '../../controllers/reservas.controller.js';
 
 const router = express.Router();
 const controller = new ReservasController();
+const multerConfig = new MulterConfig();
 
 router.get(
     '/',
@@ -32,21 +34,22 @@ router.get(
 );
 
 router.post(
-    '/',
-    [
-        RoleCheck.verificarRoles([ROLES.ADMINISTRADOR, ROLES.CLIENTE]),
-        ...validarCreacionReserva,
-    ],
-    (req, res, next) => controller.crearReserva(req, res, next)
+  '/',
+  [
+    RoleCheck.verificarRoles([ROLES.ADMINISTRADOR, ROLES.CLIENTE]),
+    multerConfig.uploader.fields([{ name: 'foto_cumpleaniero', maxCount: 1 }]),
+    ...validarCreacionReserva,
+  ],
+  (req, res, next) => controller.crearReserva(req, res, next)
 );
-
 router.put(
-    '/:reserva_id',
-    [
-        RoleCheck.verificarRoles([ROLES.ADMINISTRADOR]),
-        ...validarActualizacionReserva,
-    ],
-    (req, res, next) => controller.modificarReserva(req, res, next)
+  '/:reserva_id',
+  [
+    RoleCheck.verificarRoles([ROLES.ADMINISTRADOR]),
+    multerConfig.uploader.fields([{ name: 'foto_cumpleaniero', maxCount: 1 }]),
+    ...validarActualizacionReserva,
+  ],
+  (req, res, next) => controller.modificarReserva(req, res, next)
 );
 
 router.delete (
