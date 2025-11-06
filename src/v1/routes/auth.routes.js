@@ -1,13 +1,35 @@
 import express from 'express';
 import passport from 'passport';
 import jwt from 'jsonwebtoken';
+import { body, validationResult } from 'express-validator';
 import { ResponseBuilder } from '../../utils/responseBuilder.js';
 import { ErrorResponse } from '../../utils/errorResponse.js';
 
 process.loadEnvFile();
 const router = express.Router();
 
-router.post('/login', (req, res, next) => {
+const validarLogin = [
+  body('nombre_usuario')
+    .trim()
+    .notEmpty().withMessage('El nombre de usuario es obligatorio.'),
+  body('contrasenia')
+    .trim()
+    .notEmpty().withMessage('La contraseña es obligatoria.'),
+  (req, res, next) => {
+    const errores = validationResult(req);
+    if (!errores.isEmpty()) {
+      
+      const mensajes = errores.array().map(e => e.msg).join(' ');
+      return ResponseBuilder.handleError(
+        res,
+        new ErrorResponse(mensajes, 400)
+      );
+    }
+    next();
+  },
+];
+
+router.post('/login', validarLogin, (req, res, next) => {
   passport.authenticate('local', { session: false }, (err, usuario, info) => {
     if (err) {
       console.error('Error en autenticación:', err);
