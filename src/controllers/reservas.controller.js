@@ -48,19 +48,28 @@ export default class ReservasController {
 
   crearReserva = async (req, res) => {
     try {
+      if (typeof req.body.servicios === 'string') {
+        try {
+          req.body.servicios = JSON.parse(req.body.servicios);
+        } catch {
+          throw new ErrorResponse('Formato de servicios inválido. Debe ser un arreglo JSON.', 400);
+        }
+      }
+
       let usuario_id = req.body.usuario_id;
 
       if (req.user.tipo_usuario === ROLES.CLIENTE) {
         usuario_id = req.user.usuario_id;
-      } else if (!usuario_id) {
-        throw new ErrorResponse('Debe indicar el usuario para la reserva', 400);
+      } else {
+        usuario_id = usuario_id || req.user.usuario_id;
       }
+
+      const foto_cumpleaniero = req.files?.foto_cumpleaniero?.[0]?.path || null;
 
       const {
         fecha_reserva,
         salon_id,
         turno_id,
-        foto_cumpleaniero,
         tematica,
         importe_salon,
         importe_total,
@@ -102,7 +111,6 @@ export default class ReservasController {
           });
 
           await NotificationService.enviarCorreoAdministrador(reserva);
-
           console.log(
             `Correos enviados correctamente a ${reserva.emailCliente} y a los administradores.`
           );
@@ -125,13 +133,27 @@ export default class ReservasController {
         throw new ErrorResponse('Solo el administrador puede modificar reservas.', 403);
       }
 
+      if (typeof req.body.servicios === 'string') {
+        try {
+          req.body.servicios = JSON.parse(req.body.servicios);
+        } catch {
+          throw new ErrorResponse('Formato de servicios inválido. Debe ser un arreglo JSON.', 400);
+        }
+      }
+
+      let usuario_id = req.body.usuario_id;
+
+      if (req.user.tipo_usuario === ROLES.ADMINISTRADOR) {
+        usuario_id = req.user.usuario_id;
+      } 
+
       const { reserva_id } = req.params;
+      const foto_cumpleaniero = req.files?.foto_cumpleaniero?.[0]?.path || null;
+
       const {
         fecha_reserva,
         salon_id,
-        usuario_id,
         turno_id,
-        foto_cumpleaniero,
         tematica,
         importe_salon,
         importe_total,
@@ -154,7 +176,7 @@ export default class ReservasController {
         servicios,
       });
 
-      return ResponseBuilder.success(res, null, 'Reserva modificada correctamente');
+      return ResponseBuilder.success(res, null, 'Reserva modificada correctamente.');
     } catch (error) {
       return ResponseBuilder.handleError(res, error);
     }
@@ -170,7 +192,6 @@ export default class ReservasController {
       if (isNaN(reserva_id)) throw new ErrorResponse('ID no válido', 400);
 
       const resultado = await this.reservasService.borrarReserva(reserva_id);
-
       if (resultado.affectedRows === 0) {
         throw new ErrorResponse('Reserva no encontrada', 404);
       }

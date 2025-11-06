@@ -1,6 +1,5 @@
 import EncuestasService from '../services/encuestas.service.js';
 import { ResponseBuilder } from '../utils/responseBuilder.js';
-import { ErrorResponse } from '../utils/errorResponse.js';
 
 export default class EncuestasController {
   constructor() {

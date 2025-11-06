@@ -1,3 +1,4 @@
+import fs from 'fs';
 import { ROLES } from '../constants/roles.js';
 import Reservas from '../models/reservas.js';
 import ReservasServicios from '../models/reservas_servicios.js';
@@ -43,7 +44,6 @@ export default class ReservasService {
     return reserva;
   };
 
-
   crearReserva = async (datos) => {
     await this.reservaModel.validarEntidadesActivas(datos);
 
@@ -52,6 +52,7 @@ export default class ReservasService {
       turno_id: datos.turno_id,
       fecha_reserva: datos.fecha_reserva,
     });
+
     if (!disponible)
       throw new ErrorResponse('El salón no está disponible en el turno seleccionado.', 409);
 
@@ -73,14 +74,40 @@ export default class ReservasService {
       fecha_reserva: datos.fecha_reserva,
       excluir_id: reserva_id,
     });
+
     if (!disponible)
       throw new ErrorResponse('El salón no está disponible en ese turno y fecha.', 409);
 
-    return await this.reservaModel.actualizarReservaCompleta(reserva_id, datos);
+    const reservaActual = await this.reservaModel.buscarReservaPorId(reserva_id);
+    if (reservaActual?.foto_cumpleaniero && datos.foto_cumpleaniero && reservaActual.foto_cumpleaniero !== datos.foto_cumpleaniero) {
+      try {
+        if (fs.existsSync(reservaActual.foto_cumpleaniero)) {
+          fs.unlinkSync(reservaActual.foto_cumpleaniero);
+          console.log(`Imagen anterior eliminada: ${reservaActual.foto_cumpleaniero}`);
+        }
+      } catch (error) {
+        console.warn('No se pudo eliminar la imagen anterior:', error.message);
+      }
+    }
+
+    return await this.reservaModel.modificarReservaPorId(reserva_id, datos);
   };
 
   borrarReserva = async (reserva_id) => {
-    return await this.reservaModel.desactivarReservaEnCascada(reserva_id);
+    const reserva = await this.reservaModel.buscarReservaPorId(reserva_id);
+
+    const resultado = await this.reservaModel.desactivarReservaEnCascada(reserva_id);
+
+    if (reserva?.foto_cumpleaniero && fs.existsSync(reserva.foto_cumpleaniero)) {
+      try {
+        fs.unlinkSync(reserva.foto_cumpleaniero);
+        console.log(`Imagen eliminada al borrar la reserva: ${reserva.foto_cumpleaniero}`);
+      } catch (error) {
+        console.warn('No se pudo eliminar la imagen de la reserva borrada:', error.message);
+      }
+    }
+
+    return resultado;
   };
 
   generarReporte = async (desde, hasta) => {
