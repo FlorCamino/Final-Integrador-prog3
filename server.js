@@ -1,5 +1,5 @@
-import app from './app.js';
-import { initDatabase } from './config/initDB.js';
+import app from './src/app.js';
+import { initDatabase } from './src/config/initDB.js';
 
 process.loadEnvFile();
 const PORT = process.env.PORT || 4000;
