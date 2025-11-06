@@ -19,6 +19,7 @@ import authRoutes from './v1/routes/auth.routes.js';
 import usuariosRoutes from './v1/routes/usuarios.routes.js';
 import reportesRoutes from './v1/routes/reportes.routes.js';
 import informesRoutes from './v1/routes/informes.routes.js';
+import encuestasRoutes from './v1/routes/encuestas.routes.js';
 
 const app = express();
 
@@ -64,6 +65,7 @@ app.use('/api/v1/comentarios', comentariosRoutes);
 app.use('/api/v1/usuarios', usuariosRoutes);
 app.use('/api/v1/reportes', reportesRoutes);
 app.use('/api/v1/informes', informesRoutes);
+app.use('/api/v1/encuestas', encuestasRoutes);
 
 app.get('/', (_req, res) =>
   res.json({
