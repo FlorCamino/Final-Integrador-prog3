@@ -9,12 +9,8 @@ export class AuthController {
 
   login = async (req, res) => {
     try {
+
       const { nombre_usuario, contrasenia } = req.body;
-
-      if (!nombre_usuario?.trim() || !contrasenia?.trim()) {
-        throw new ErrorResponse('Nombre de usuario y contraseña son requeridos', 400);
-      }
-
       const resultado = await this.authService.login(nombre_usuario, contrasenia);
 
       return ResponseBuilder.success(res, resultado, 'Inicio de sesión exitoso');
