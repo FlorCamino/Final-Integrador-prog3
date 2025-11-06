@@ -5,6 +5,7 @@ import path from 'path';
 import passport from 'passport';
 
 import PassportConfig from './config/passportConfig.js';
+import { corsMiddleware } from './config/corsConfig.js'; 
 import { CacheMiddleware } from './middlewares/cache/CacheMiddleware.js';
 import { swaggerSpec, swaggerUiMiddleware } from './config/swaggerConfig.js';
 import { ResponseBuilder } from './utils/responseBuilder.js';
@@ -35,6 +36,8 @@ if (!fs.existsSync(logDir)) fs.mkdirSync(logDir);
 const accessLogStream = fs.createWriteStream(logFile, { flags: 'a' });
 app.use(morgan('combined', { stream: accessLogStream }));
 app.use(morgan('dev'));
+
+app.use(corsMiddleware);
 
 const passportConfig = new PassportConfig(passport);
 passportConfig.initialize();
