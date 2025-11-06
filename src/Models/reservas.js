@@ -258,11 +258,25 @@ export default class Reservas {
     return rows;
   }
 
-  async buscarReservasDetalladasPorUsuario(usuario_id, { limit = 10, offset = 0 }) {
+  async buscarReservasDetalladasPorUsuario(usuario_id, { limit = 10, offset = 0, estado, sort, order }) {
     limit = parseInt(limit, 10);
     offset = parseInt(offset, 10);
     if (isNaN(limit) || limit <= 0) limit = 10;
     if (isNaN(offset) || offset < 0) offset = 0;
+
+    const validSortFields = [
+      'fecha_reserva',
+      'salon_id',
+      'turno_id',
+      'tematica',
+      'importe_salon',
+      'importe_total',
+      'creado',
+      'modificado',
+    ];
+    const sortField = validSortFields.includes(sort) ? sort : 'fecha_reserva';
+    const direction =
+      typeof order === 'string' && order.toLowerCase() === 'desc' ? 'DESC' : 'ASC';
 
     const [reservas] = await ejecutarConsulta(
       `
@@ -290,11 +304,14 @@ export default class Reservas {
       JOIN salones s ON r.salon_id = s.salon_id
       JOIN turnos t ON r.turno_id = t.turno_id
       JOIN usuarios u ON r.usuario_id = u.usuario_id
-      WHERE r.activo = 1 AND r.usuario_id = ?
-      ORDER BY r.fecha_reserva DESC
+      WHERE r.usuario_id = ?
+        ${estado !== undefined ? 'AND r.activo = ?' : ''}
+      ORDER BY ${sortField} ${direction}
       LIMIT ? OFFSET ?
       `,
-      [usuario_id, limit, offset]
+      estado !== undefined
+        ? [usuario_id, estado, limit, offset]
+        : [usuario_id, limit, offset]
     );
 
     const reservaIds = reservas.map(r => r.reserva_id);
@@ -302,7 +319,11 @@ export default class Reservas {
 
     const [servicios] = await ejecutarConsulta(
       `
-      SELECT rs.reserva_id, se.servicio_id, se.descripcion, rs.importe
+      SELECT 
+        rs.reserva_id,
+        se.servicio_id,
+        se.descripcion,
+        rs.importe
       FROM reservas_servicios rs
       JOIN servicios se ON rs.servicio_id = se.servicio_id
       WHERE rs.reserva_id IN (?) AND se.activo = 1
@@ -316,21 +337,25 @@ export default class Reservas {
       tematica: r.tematica,
       importe_salon: r.importe_salon,
       importe_total: r.importe_total,
+      activo: r.activo,
       salon: {
+        salon_id: r.salon_id,
         titulo: r.salon_titulo,
-        capacidad: r.salon_capacidad
+        capacidad: r.salon_capacidad,
       },
       turno: {
+        turno_id: r.turno_id,
         descripcion: r.turno_descripcion,
         hora_desde: r.hora_desde,
-        hora_hasta: r.hora_hasta
+        hora_hasta: r.hora_hasta,
       },
       usuario: {
+        usuario_id: r.usuario_id,
         nombre: r.usuario_nombre,
         apellido: r.usuario_apellido,
-        email: r.usuario_email
+        email: r.usuario_email,
       },
-      servicios: servicios.filter(s => s.reserva_id === r.reserva_id)
+      servicios: servicios.filter(s => s.reserva_id === r.reserva_id),
     }));
   }
 
@@ -390,11 +415,25 @@ export default class Reservas {
     };
   }
 
-  async buscarReservasDetalladas({ limit = 10, offset = 0 }) {
+  async buscarReservasDetalladas({ limit = 10, offset = 0, estado, sort, order }) {
     limit = parseInt(limit, 10);
     offset = parseInt(offset, 10);
     if (isNaN(limit) || limit <= 0) limit = 10;
     if (isNaN(offset) || offset < 0) offset = 0;
+
+    const validSortFields = [
+      'fecha_reserva',
+      'salon_id',
+      'turno_id',
+      'tematica',
+      'importe_salon',
+      'importe_total',
+      'creado',
+      'modificado',
+    ];
+    const sortField = validSortFields.includes(sort) ? sort : 'fecha_reserva';
+    const direction =
+      typeof order === 'string' && order.toLowerCase() === 'desc' ? 'DESC' : 'ASC';
 
     const [reservas] = await ejecutarConsulta(
       `
@@ -422,11 +461,12 @@ export default class Reservas {
       JOIN salones s ON r.salon_id = s.salon_id
       JOIN turnos t ON r.turno_id = t.turno_id
       JOIN usuarios u ON r.usuario_id = u.usuario_id
-      WHERE r.activo = 1
-      ORDER BY r.fecha_reserva DESC, r.turno_id ASC
+      WHERE 1=1
+        ${estado !== undefined ? 'AND r.activo = ?' : ''}
+      ORDER BY ${sortField} ${direction}
       LIMIT ? OFFSET ?
       `,
-      [limit, offset]
+      estado !== undefined ? [estado, limit, offset] : [limit, offset]
     );
 
     const reservaIds = reservas.map(r => r.reserva_id);
@@ -452,24 +492,25 @@ export default class Reservas {
       tematica: r.tematica,
       importe_salon: r.importe_salon,
       importe_total: r.importe_total,
+      activo: r.activo,
       salon: {
         salon_id: r.salon_id,
         titulo: r.salon_titulo,
-        capacidad: r.salon_capacidad
+        capacidad: r.salon_capacidad,
       },
       turno: {
         turno_id: r.turno_id,
         descripcion: r.turno_descripcion,
         hora_desde: r.hora_desde,
-        hora_hasta: r.hora_hasta
+        hora_hasta: r.hora_hasta,
       },
       usuario: {
         usuario_id: r.usuario_id,
         nombre: r.usuario_nombre,
         apellido: r.usuario_apellido,
-        email: r.usuario_email
+        email: r.usuario_email,
       },
-      servicios: servicios.filter(s => s.reserva_id === r.reserva_id)
+      servicios: servicios.filter(s => s.reserva_id === r.reserva_id),
     }));
   }
 
