@@ -19,8 +19,7 @@ export default class SalonesController {
 
   obtenerSalonPorId = async (req, res) => {
     try {
-      const id = parseInt(req.params.id, 10);
-      if (isNaN(id)) throw new ErrorResponse('ID no válido', 400);
+      const id = parseInt(req.params.id || req.params.salon_id, 10);
 
       const salon = await this.salonesService.buscarPorId(id);
       if (!salon) throw new ErrorResponse('Salón no encontrado', 404);
@@ -34,10 +33,6 @@ export default class SalonesController {
   crearSalon = async (req, res) => {
     try {
       const { titulo, direccion, latitud, longitud, capacidad, importe } = req.body;
-
-      if (!titulo || !direccion || isNaN(importe)) {
-        throw new ErrorResponse('Faltan campos obligatorios o el importe no es válido', 400);
-      }
 
       const nuevoSalon = await this.salonesService.agregarSalon({
         titulo,
@@ -56,12 +51,8 @@ export default class SalonesController {
 
   modificarSalon = async (req, res) => {
     try {
-      const { salon_id } = req.params;
-      const { titulo, direccion, latitud, longitud, capacidad, importe } = req.body;
-
-      if (!titulo || !direccion || isNaN(importe)) {
-        throw new ErrorResponse('Faltan campos obligatorios o el importe no es válido', 400);
-      }
+      const salon_id = parseInt(req.params.salon_id, 10);
+      const { titulo, direccion, latitud, longitud, capacidad, importe, activo } = req.body;
 
       const resultado = await this.salonesService.actualizarSalon(salon_id, {
         titulo,
@@ -70,11 +61,10 @@ export default class SalonesController {
         longitud,
         capacidad,
         importe,
+        activo,
       });
 
-      if (resultado.affectedRows === 0) {
-        throw new ErrorResponse('Salón no encontrado', 404);
-      }
+      if (resultado.affectedRows === 0) throw new ErrorResponse('Salón no encontrado', 404);
 
       return ResponseBuilder.success(res, null, 'Salón modificado correctamente');
     } catch (error) {
@@ -84,13 +74,10 @@ export default class SalonesController {
 
   eliminarSalon = async (req, res) => {
     try {
-      const { salon_id } = req.params;
-      if (isNaN(salon_id)) throw new ErrorResponse('ID no válido', 400);
+      const salon_id = parseInt(req.params.salon_id, 10);
 
       const resultado = await this.salonesService.borrarSalon(salon_id);
-      if (resultado.affectedRows === 0) {
-        throw new ErrorResponse('Salón no encontrado', 404);
-      }
+      if (resultado.affectedRows === 0) throw new ErrorResponse('Salón no encontrado', 404);
 
       return ResponseBuilder.success(res, null, 'Salón eliminado correctamente');
     } catch (error) {
