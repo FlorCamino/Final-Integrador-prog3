@@ -64,7 +64,6 @@ Incluye autenticación y autorización con **JWT**, control de roles (`Administr
 FINAL-INTEGRADOR-PROG3/
 ├─ src/
 │  ├─ app.js                      # Configuración principal de Express
-│  ├─ server.js                   # Punto de entrada: levanta el servidor y DB
 │  │
 │  ├─ config/                     # Configuración global
 │  │   ├─ db.js                   # Pool de conexiones MySQL (mysql2/promise)
@@ -133,9 +132,11 @@ FINAL-INTEGRADOR-PROG3/
 │      ├─ reserva.admin.hbs
 │      └─ reserva.hbs
 │
-├─ .env.example                   # Variables de entorno de ejemplo
+├─ .env.example.prod                   # Variables de entorno de ejemplo producción (completar)
+├─ .env.example.dev                    # Variables de entorno de ejemplo local (solo para presentar el tp)
 ├─ package.json
 ├─ package-lock.json
+├─ server.js                   # Punto de entrada: levanta el servidor y DB
 └─ README.md
 
 ```
