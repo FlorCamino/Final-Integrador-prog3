@@ -47,14 +47,17 @@ export class CSVBuilder {
         r.descripcion_servicio ?? '',
         this.formatNumber(r.importe_salon),
         this.formatNumber(r.importe_servicios),
-        this.formatNumber(r.costo_total),
+        this.formatNumber(r.costo_total ?? r.total_reserva ?? r.importe_total ?? ''),
       ];
 
       return row.map((v) => this.escape(v)).join(',');
     });
 
     if (reservas.length > 0) {
-      const totalGeneral = reservas.reduce((acc, r) => acc + (Number(r.costo_total) || 0), 0);
+      const totalGeneral = reservas.reduce(
+        (acc, r) => acc + Number(r.costo_total ?? r.total_reserva ?? r.importe_total ?? 0),
+        0
+      );
       const totalRow = [
         '', // ID Reserva
         '', // Cliente
