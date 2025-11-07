@@ -14,7 +14,7 @@ export default class ReportesController {
     try {
       const { desde, hasta } = req.query;
       const data = await this.reservasService.generarReporte(desde, hasta);
-
+      
       if (!data || data.length === 0) {
         throw new ErrorResponse('No se encontraron reservas en el rango seleccionado', 404);
       }

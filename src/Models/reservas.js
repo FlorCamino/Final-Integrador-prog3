@@ -231,33 +231,41 @@ export default class Reservas {
   }
 
   async obtenerReportePorRango(desde, hasta) {
-    const query = `
-      SELECT 
-        r.reserva_id,
-        CONCAT(u.nombre, ' ', u.apellido) AS cliente,
-        r.fecha_reserva,
-        CONCAT(t.hora_desde, ' - ', t.hora_hasta) AS turno,
-        r.tematica,
-        s.titulo AS salon,
-        r.importe_salon,
-        GROUP_CONCAT(DISTINCT se.descripcion ORDER BY se.descripcion SEPARATOR ', ') AS descripcion_servicio,
-        COALESCE(SUM(se.importe), 0) AS importe_servicios,
-        (r.importe_salon + COALESCE(SUM(se.importe), 0)) AS costo_total
-      FROM reservas r
-      JOIN usuarios u ON r.usuario_id = u.usuario_id
-      JOIN salones s ON r.salon_id = s.salon_id
-      JOIN turnos t ON r.turno_id = t.turno_id
-      LEFT JOIN reservas_servicios rs ON r.reserva_id = rs.reserva_id
-      LEFT JOIN servicios se ON se.servicio_id = rs.servicio_id
-      WHERE r.activo = 1
-        AND r.fecha_reserva BETWEEN ? AND ?
-      GROUP BY r.reserva_id
-      ORDER BY r.fecha_reserva ASC, r.reserva_id ASC;
-    `;
-    const [rows] = await ejecutarConsulta(query, [desde, hasta]);
-    return rows;
-  }
+    try {
+      const query = `
+        SELECT 
+          r.reserva_id,
+          CONCAT(u.nombre, ' ', u.apellido) AS cliente,
+          u.nombre_usuario AS emailCliente,
+          r.fecha_reserva,
+          CONCAT(t.hora_desde, ' - ', t.hora_hasta) AS turno,
+          r.tematica,
+          s.titulo AS salon,
+          COALESCE(s.importe, 0) AS importe_salon,
+          GROUP_CONCAT(DISTINCT se.descripcion ORDER BY se.descripcion SEPARATOR ', ') AS descripcion_servicio,
+          COALESCE(SUM(se.importe), 0) AS importe_servicios,
+          (COALESCE(s.importe, 0) + COALESCE(SUM(se.importe), 0)) AS total_reserva,
+          COUNT(se.servicio_id) AS cantidad_servicios
+        FROM reservas r
+        JOIN usuarios u ON r.usuario_id = u.usuario_id
+        JOIN salones s ON r.salon_id = s.salon_id
+        JOIN turnos t ON r.turno_id = t.turno_id
+        LEFT JOIN reservas_servicios rs ON r.reserva_id = rs.reserva_id
+        LEFT JOIN servicios se ON se.servicio_id = rs.servicio_id
+        WHERE r.activo = 1
+          AND r.fecha_reserva BETWEEN ? AND ?
+        GROUP BY r.reserva_id
+        ORDER BY r.fecha_reserva ASC, r.reserva_id ASC;
+      `;
 
+      const [rows] = await ejecutarConsulta(query, [desde, hasta]);
+      return rows;
+    } catch (error) {
+      console.error('Error al obtener reporte de reservas:', error);
+      throw new ErrorResponse('Error al obtener reporte de reservas', 500);
+    }
+  }
+  
   async buscarReservasDetalladasPorUsuario(usuario_id, { limit = 10, offset = 0, estado, sort, order }) {
     limit = parseInt(limit, 10);
     offset = parseInt(offset, 10);
@@ -512,43 +520,6 @@ export default class Reservas {
       },
       servicios: servicios.filter(s => s.reserva_id === r.reserva_id),
     }));
-  }
-
-  async obtenerReportePorRango(desde, hasta) {
-    try {
-      const query = `
-        SELECT 
-          r.reserva_id,
-          CONCAT(u.nombre, ' ', u.apellido) AS cliente,
-          u.nombre_usuario AS emailCliente,
-          r.fecha_reserva,
-          CONCAT(t.hora_desde, ' - ', t.hora_hasta) AS turno,
-          r.tematica,
-          s.titulo AS salon,
-          s.capacidad AS capacidad_salon,
-          r.importe_salon,
-          COALESCE(SUM(rs.importe), 0) AS importe_servicios,
-          (r.importe_salon + COALESCE(SUM(rs.importe), 0)) AS total_reserva,
-          COUNT(DISTINCT rs.servicio_id) AS cantidad_servicios
-        FROM reservas r
-        JOIN usuarios u ON r.usuario_id = u.usuario_id
-        JOIN salones s ON r.salon_id = s.salon_id
-        JOIN turnos t ON r.turno_id = t.turno_id
-        LEFT JOIN reservas_servicios rs ON r.reserva_id = rs.reserva_id
-        WHERE r.activo = 1
-          AND r.fecha_reserva BETWEEN ? AND ?
-        GROUP BY 
-          r.reserva_id, u.nombre, u.apellido, u.nombre_usuario, 
-          s.titulo, s.capacidad, t.hora_desde, t.hora_hasta
-        ORDER BY r.fecha_reserva ASC, r.reserva_id ASC;
-      `;
-
-      const [rows] = await ejecutarConsulta(query, [desde, hasta]);
-      return rows;
-    } catch (error) {
-      console.error('Error al generar el informe estadístico:', error.message);
-      throw new ErrorResponse('No se pudo generar el informe estadístico.', 500);
-    }
   }
 
   async buscarReservaDetalladaPorId(id) {
