@@ -18,9 +18,9 @@
    npm run start
 
 Servidor disponible en:
-   http://localhost:4000
+   http://localhost:3000
 Swagger UI:
-   http://localhost:4000/swagger
+   http://localhost:3000/swagger
 
 ------------------------------------------
 2️⃣ INFORMACIÓN IMPORTANTE

@@ -2,7 +2,7 @@ import app from './src/app.js';
 import { initDatabase } from './src/config/initDB.js';
 
 process.loadEnvFile();
-const PORT = process.env.PORT || 4000;
+const PORT = process.env.PORT || 3000;
 
 (async () => {
   try {

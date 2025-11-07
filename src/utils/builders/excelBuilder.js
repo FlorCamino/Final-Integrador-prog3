@@ -42,10 +42,7 @@ export class ExcelBuilder {
       right: { style: 'thin' },
     };
 
-    console.log('📊 Datos recibidos para generar el reporte:');
     reservas.forEach((r, i) => {
-      console.log(`Reserva #${i + 1}:`, r);
-
       const row = worksheet.addRow([
         parseInt(r.reserva_id) || '',
         r.cliente ?? '',
