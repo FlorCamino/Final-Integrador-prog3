@@ -14,7 +14,7 @@ const controller = new EncuestasController();
 router.get(
   '/',
   passport.authenticate('jwt', { session: false }),
-  RoleCheck.verificarRoles([ROLES.ADMINISTRADOR, ROLES.EMPLEADO]),
+  RoleCheck.verificarRoles([ROLES.ADMINISTRADOR, ROLES.EMPLEADO, ROLES.CLIENTE]),
   controller.listarEncuestas
 );
 
