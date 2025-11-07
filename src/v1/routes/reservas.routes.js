@@ -1,7 +1,10 @@
 import express from 'express';
 
-import { FieldsValidator } from '../../middlewares/validators/campos.validator.js';
-import { validarCreacionReserva, validarActualizacionReserva, validarReservaIdParam } from '../../middlewares/validators/reservas.validator.js';
+import { 
+  validarCreacionReserva,
+  validarActualizacionReserva,
+  validarReservaIdParam 
+} from '../../middlewares/validators/reservas.validator.js';
 import { RoleCheck } from '../../middlewares/auth/RoleMiddleware.js';
 import { GetCache } from '../../middlewares/cache/GetCacheMiddleware.js';
 import { ROLES  } from '../../constants/roles.js';
@@ -28,7 +31,6 @@ router.get(
         RoleCheck.verificarRoles([ROLES.ADMINISTRADOR, ROLES.EMPLEADO, ROLES.CLIENTE]),
         GetCache('1 minutes'),
         ...validarReservaIdParam,
-        FieldsValidator.validate,
     ],
     (req, res, next) => controller.obtenerReservaPorId(req, res, next)
 );
@@ -57,7 +59,6 @@ router.delete (
     [
         RoleCheck.verificarRoles([ROLES.ADMINISTRADOR]),
         ...validarReservaIdParam,
-        FieldsValidator.validate,
     ],
     (req, res, next) => controller.eliminarReserva(req, res, next)
 );
