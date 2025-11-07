@@ -5,7 +5,8 @@ import EncuestasController from '../../controllers/encuestas.controller.js';
 import { ROLES } from '../../constants/roles.js';
 import {
   validarCreacionEncuesta,
-  validarReservaId,
+  validarReservaIdParam,
+  validarEncuestaIdParam,
 } from '../../middlewares/validators/encuestas.validator.js';
 
 const router = express.Router();
@@ -22,7 +23,7 @@ router.get(
   '/:reserva_id',
   passport.authenticate('jwt', { session: false }),
   RoleCheck.verificarRoles([ROLES.ADMINISTRADOR, ROLES.EMPLEADO, ROLES.CLIENTE]),
-  validarReservaId,
+  ...validarReservaIdParam,
   controller.obtenerPorReserva
 );
 
@@ -30,7 +31,7 @@ router.post(
   '/',
   passport.authenticate('jwt', { session: false }),
   RoleCheck.verificarRoles([ROLES.ADMINISTRADOR, ROLES.CLIENTE]),
-  validarCreacionEncuesta,
+  ...validarCreacionEncuesta,
   controller.crearEncuesta
 );
 
@@ -38,6 +39,7 @@ router.delete(
   '/:encuesta_id',
   passport.authenticate('jwt', { session: false }),
   RoleCheck.verificarRoles([ROLES.ADMINISTRADOR]),
+  ...validarEncuestaIdParam,
   controller.eliminarEncuesta
 );
 

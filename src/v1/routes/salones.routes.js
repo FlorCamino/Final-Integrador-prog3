@@ -1,6 +1,9 @@
 import express from 'express';
-import { FieldsValidator } from '../../middlewares/validators/campos.validator.js';
-import { validarCreacionSalon, validarActualizacionSalon, validarSalonIdParam } from '../../middlewares/validators/salones.validator.js';
+import { 
+  validarCreacionSalon,
+  validarActualizacionSalon,
+  validarSalonIdParam
+} from '../../middlewares/validators/salones.validator.js';
 import { ROLES } from '../../constants/roles.js';
 import { RoleCheck } from '../../middlewares/auth/RoleMiddleware.js';
 import { GetCache } from '../../middlewares/cache/GetCacheMiddleware.js';
@@ -23,7 +26,6 @@ router.get(
     RoleCheck.verificarRoles([ROLES.ADMINISTRADOR, ROLES.EMPLEADO, ROLES.CLIENTE]),
     GetCache('1 minutes'),
     ...validarSalonIdParam,
-    FieldsValidator.validate,
   ],
   (req, res, next) => controller.obtenerSalonPorId(req, res, next)
 );
@@ -51,7 +53,6 @@ router.delete(
   [
     RoleCheck.verificarRoles([ROLES.ADMINISTRADOR, ROLES.EMPLEADO]),
     ...validarSalonIdParam,
-    FieldsValidator.validate,
   ],
   (req, res, next) => controller.eliminarSalon(req, res, next)
 );

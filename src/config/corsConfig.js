@@ -9,7 +9,7 @@ const allowedOrigins = rawOrigins
   .map(o => o.trim())
   .filter(Boolean);
 
-const serverOrigin = `http://localhost:${process.env.PORT || 4000}`;
+const serverOrigin = `http://localhost:${process.env.PORT || 3000}`;
 if (!allowedOrigins.includes(serverOrigin)) allowedOrigins.push(serverOrigin);
 
 function isLocalhost(origin) {
