@@ -2,9 +2,6 @@ import PDFDocument from "pdfkit";
 import moment from "moment";
 
 export const PDFBuilder = {
-  // ============================================================
-  //  REPORTE GENERAL DE RESERVAS (varias filas, landscape)
-  // ============================================================
   generarReporteReservas: async (reservas, rango = {}) => {
     const { desde, hasta } = rango;
 
@@ -99,8 +96,8 @@ export const PDFBuilder = {
           const montoSalon = r.importe_salon
             ? `$${Number(r.importe_salon).toLocaleString("es-AR")}`
             : "-";
-          const totalReserva = r.costo_total
-            ? `$${Number(r.costo_total).toLocaleString("es-AR")}`
+          const totalReserva = r.total_reserva
+            ? `$${Number(r.total_reserva).toLocaleString("es-AR")}`
             : "-";
 
           const valores = [
@@ -167,9 +164,6 @@ export const PDFBuilder = {
     });
   },
 
-  // ============================================================
-  //  COMPROBANTE INDIVIDUAL (tipo remito, portrait)
-  // ============================================================
   generarComprobanteReserva: async (r) => {
     return new Promise((resolve, reject) => {
       try {
@@ -197,9 +191,10 @@ export const PDFBuilder = {
         doc.fillColor("#000").font("Helvetica").fontSize(11);
 
         const fecha = r.fecha_reserva ? moment(r.fecha_reserva).format("DD/MM/YYYY") : "-";
-        const turno = r.turno
-          ? `${r.turno.hora_desde?.slice(0, 5)} - ${r.turno.hora_hasta?.slice(0, 5)}`
-          : "-";
+        const turno =
+          typeof r.turno === "string"
+            ? r.turno
+            : r.turno?.descripcion ?? "-";
         const cliente = `${r.usuario?.nombre ?? ""} ${r.usuario?.apellido ?? ""}`.trim() || "Cliente no identificado";
         const salon = r.salon?.titulo ?? "Sin salón";
         const capacidad = r.salon?.capacidad ? `${r.salon.capacidad} personas` : "";

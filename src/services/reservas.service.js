@@ -17,14 +17,21 @@ export default class ReservasService {
     if (isNaN(offset) || offset < 0) offset = 0;
 
     if (usuario.tipo_usuario === ROLES.CLIENTE) {
-      const data = await this.reservaModel.buscarReservasDetalladasPorUsuario(usuario.usuario_id, { limit, offset });
+      const data = await this.reservaModel.buscarReservasDetalladasPorUsuario(
+        usuario.usuario_id,
+        { limit, offset, estado, sort, order }
+      );
       return { data };
-    } else if ([ROLES.ADMINISTRADOR, ROLES.EMPLEADO].includes(usuario.tipo_usuario)) {
-      const data = await this.reservaModel.buscarReservasDetalladas({ limit, offset });
-      return { data };
-    } else {
-      throw new ErrorResponse('Rol no autorizado para consultar reservas.', 403);
     }
+
+    if ([ROLES.ADMINISTRADOR, ROLES.EMPLEADO].includes(usuario.tipo_usuario)) {
+      const data = await this.reservaModel.buscarReservasDetalladas({
+        limit, offset, estado, sort, order
+      });
+      return { data };
+    }
+
+    throw new ErrorResponse('Rol no autorizado para consultar reservas.', 403);
   };
 
   buscarPorId = async (id, usuario) => {
